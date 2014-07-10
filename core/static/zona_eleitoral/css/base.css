@@ -1,0 +1,20 @@
+input.date {
+    width: 100px;
+}
+
+.botao-grupo {
+    width: 300%;
+    padding-top: 15px;
+    margin-top: 15px;
+    border-width: 1px 0 0 0;
+    border-style: inset;
+    border-color: grey;
+}
+
+.linha1 > td{
+    background-color: #F9F9F9;
+}
+
+.linha2  > td{
+    background-color: #FFFFFF;
+}

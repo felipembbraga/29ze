@@ -1,0 +1,5 @@
+$(document).ready(function(){
+    $('.date').glDatePicker({
+        cssName: 'default fixed'
+    });
+});
