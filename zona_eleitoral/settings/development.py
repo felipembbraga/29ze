@@ -8,3 +8,19 @@ MY_APPS = (
 INSTALLED_APPS = INSTALLED_APPS + MY_APPS
 
 #AUTH_USER_MODEL = 'acesso.Usuario'
+
+# Database
+# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+        'NAME': 'db_zona_eleitoral_dev',
+        'USER': 'zona_eleitoral_dev',
+        'PASSWORD': 'swordfish0001'
+    }
+}
+
+WSGI_APPLICATION = 'zona_eleitoral.deploy.wsgi-dev.application'

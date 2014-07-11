@@ -4,4 +4,5 @@ from django.conf import settings
 # Create your views here.
 
 def home(request):
-    return HttpResponse(settings.AUTHENTICATION_BACKENDS)
+    titulo = u'Seja Bem Vindo'
+    return render(request, 'home.html', locals())
