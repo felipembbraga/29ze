@@ -1,10 +1,10 @@
- {% load static from staticfiles %}
+{% load static from staticfiles %}
  <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>{% block title %}{% endblock %}</title>
+        <title>{% block title %}Zona Eleitoral{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/bootstrap.min.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/bootstrap-theme.min.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/base.css' %}" />
@@ -28,45 +28,50 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">{% block branding %}Project name{% endblock %}</a>
+          <a class="navbar-brand" href="{% url 'home' %}">{% block branding %}{{ eleicao_atual.nome }}{% endblock %}</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Eleição<span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
+              	<li class="dropdown-header">Locais</li>
+                <li><a href="#">listar</a></li>
+                <li><a href="{% url 'local:importar' %}">Importar locais</a></li>
                 <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
               </ul>
             </li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="../navbar/">Default</a></li>
-            <li><a href="../navbar-static-top/">Static top</a></li>
-            <li class="active"><a href="./">Fixed top</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administração<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+              	<li class="dropdown-header">Eleições</li>
+                <li><a href="{% url "eleicao:index" %}">Listar</a></li>
+                <li><a href="{% url "eleicao:cadastrar" %}">Cadastrar</a></li>
+                <li class="divider"></li>
+              </ul>
+            </li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
     {% endblock %}
+    
 
     <div class="container">
+    <div class="titulo"><h1>{% block titulo %}{{ titulo }} {% endblock %}</h1></div>
         {% block container %}
       <h1>Bootstrap starter template</h1>
       <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
         {% endblock %}
     </div>
-    <script src="{% static 'zona_eleitoral/js/jquery.min.js' %}"></script>
+    <script src="{% static 'zona_eleitoral/js/jquery-1.10.2.js' %}"></script>
+    <script src="{% static 'zona_eleitoral/js/modernizr.js' %}"></script>
+    <script src="{% static 'zona_eleitoral/js/tooltip.js' %}"></script>
     <script src="{% static 'zona_eleitoral/js/jquery.maskedinput.min.js' %}"></script>
     <script src="{% static 'zona_eleitoral/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'zona_eleitoral/js/respond.min.js' %}"></script>
+	<script src="{% static 'zona_eleitoral/js/setup.js' %}"></script>
+	<script src="{% static 'zona_eleitoral/js/modal.js' %}"></script>
     {% block extrascripts %}{% endblock %}
     </body>
 </html> 

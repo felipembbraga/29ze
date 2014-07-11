@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+ {% load static from staticfiles %}
+ {% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/glDatePicker/developr.fixed.css' %}" />
+ {% endblock %}
+{% block container %}
+   <form role="form" method="post" class="form-horizontal col-md-4"> {% csrf_token %}
+    {% for field in form %}
+        {% if field.name == 'atual'%}
+        <div class="checkbox">
+            <label>
+                {{ field }} {{ field.label }}
+            </label>
+        </div>
+        {% else %}
+        
+        <div class="form-group{% if field.errors %} has-error{% endif %}">
+             {% if field.errors %}<label class="control-label" for="{{field.id_for_label}}">{{field.errors.as_text}}</label><br />{% endif %}
+            <label for="{{field.id_for_label}}">{{ field.label }}</label>
+                {{ field }}
+            <p class="help-block">{{ field.help_text }}</p>
+        </div>
+        
+        {% endif %}
+    
+    
+    {% endfor %}
+    <div class="divisor">
+    <p class="botao-grupo">
+    <button type="submit" class="btn btn-primary botao">Cadastrar</button>
+    <button type="button" class="btn btn-default botao" onclick="window.location = '{% url 'eleicao:index' %}';">Cancelar</button>
+    </p>
+    </form>
+    
+{% endblock %}
+
+{%block extrascripts %}
+    <script src="{% static 'zona_eleitoral/js/jquery_meio_mask.js' %}"></script>
+    <script src="{% static 'eleicao/js/eleicao/cadastrar.js' %}"></script>
+    <script src="{% static 'zona_eleitoral/js/glDatePicker/glDatePicker.js' %}"></script>
+{% endblock %}

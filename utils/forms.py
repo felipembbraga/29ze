@@ -8,8 +8,13 @@ class BootstrapForm(forms.Form):
         super(BootstrapForm, self).__init__(data, files, auto_id, prefix, initial,
                                             error_class, label_suffix, empty_permitted)
         
-        for name, field in self.fields:
-            field.widget.attrs.update({'class':'form-control'})
+        for name in self.fields.keys():
+            if isinstance(self.fields[name].widget, forms.TextInput):
+                self.fields[name].widget.attrs.update({'class':'form-control'})
+            if isinstance(self.fields[name].widget, forms.DateInput):
+                self.fields[name].widget.attrs.update({'class':self.fields[name].widget.attrs['class'] + ' date'})
+           
+                
 
     def as_bootstrap(self):
         "Retorna div no padrao bootstrap"

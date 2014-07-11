@@ -319,8 +319,8 @@
 				var selectableMonths = getSelectableList(0, 11, options.selectableMonths);
 				var selectableYears = getSelectableList(todayVal.year - 5, todayVal.year + 5, options.selectableYears);
 				var selectableDOW = getSelectableList(0, 6, options.selectableDOW);
-				var dowNames = options.dowNames || [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab' ];
-				var monthNames = options.monthNames || [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro' ];
+				var dowNames = options.dowNames || [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ];
+				var monthNames = options.monthNames || [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
 
 				// Create cell width based on el size
 				var containerWidth = el.outerWidth();

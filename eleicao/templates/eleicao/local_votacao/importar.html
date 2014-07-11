@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+ {% load static from staticfiles %}
+  {% block extrastyle %}
+ {% endblock %}
+ 
+{% block container %}
+    <form role="form" method="post" class="form-horizontal col-md-4" enctype="multipart/form-data"> {% csrf_token %}
+    {% for field in form %}
+        
+        <div class="form-group{% if field.errors %} has-error{% endif %}">
+             {% if field.errors %}<label class="control-label" for="{{field.id_for_label}}">{{field.errors.as_text}}</label><br />{% endif %}
+            <label for="{{field.id_for_label}}">{{ field.label }}</label>
+                {{ field }}
+            <p class="help-block">{{ field.help_text }}</p>
+        </div>
+        
+    
+    
+    {% endfor %}
+    <div class="divisor">
+    <p class="botao-grupo">
+    <button type="submit" class="btn btn-primary botao">Cadastrar</button>
+    <button type="button" class="btn btn-default botao" onclick="window.location = '{% url 'local:index' %}';">Cancelar</button>
+    </p>
+    </form>
+{% endblock %}
+
+{%block extrascripts %}
+	<script src="{% static 'eleicao/js/eleicao/index.js' %}"></script>
+{% endblock %}

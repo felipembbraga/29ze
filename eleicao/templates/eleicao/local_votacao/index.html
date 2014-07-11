@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+ {% load static from staticfiles %}
+  {% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
+ {% endblock %}
+ 
+{% block container %}
+
+<div class="row">
+
+</div>
+  <table class="table table-striped" id="tabela-eleicao">
+  <thead>
+  <tr>
+    <th width="30%">Nome</th>
+    <th width="20%">Endereco</th>
+    <th width="20%">Bairro</th>
+    <th width="30%">Seções</th>
+    <!--<th width="15%"></th> -->
+  </tr>
+  </thead>
+  <tbody>
+  {% for local in locais %}
+  <tr>
+    <td>{{local.local.nome}}</td>
+    <td>{{local.local.endereco}}</td>
+    <td>{{local.local.bairro}}</td>
+    <td>{{local.get_secoes}}</td>
+    <!-- <td class="botoes" width="15%">
+    <div class="btn-group btn-group-xs"  style="float:right;">
+    	<a href="{{eleicao.get_absolute_url}}" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span>Editar</a>
+    	<a href="javascript:void(0);" data-id="{{eleicao.id}}" class="btn btn-danger btn-xs delete"><span class="glyphicon glyphicon-trash"></span>Excluir</a>
+    </div>
+    </td>--> 
+    
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
+    
+{% endblock %}
+
+{%block extrascripts %}
+	<script src="{% static 'eleicao/js/eleicao/index.js' %}"></script>
+{% endblock %}
