@@ -10,7 +10,6 @@ class EleicaoForm(BootstrapModelForm):
 
 
 class LocalImportarForm(forms.Form):
-    nome = forms.CharField()
     arquivo = forms.FileField(
                               help_text='Entre com o arquivo no formato CSV ou TXT',
                               widget=forms.ClearableFileInput(attrs={'accept':'text/csv,text/plain'})
