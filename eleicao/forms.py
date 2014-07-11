@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 from django import forms
 from models import Eleicao
 from utils.forms import BootstrapModelForm, BootstrapForm
@@ -11,6 +12,6 @@ class EleicaoForm(BootstrapModelForm):
 
 class LocalImportarForm(forms.Form):
     arquivo = forms.FileField(
-                              help_text='Entre com o arquivo no formato CSV ou TXT',
+                              help_text=u'Entre com o arquivo no formato CSV ou TXT. O arquivo deve conter 6 colunas, com o id do local, nome do local, endereco, bairro, numero da seção e quantidade de pessoas na seção',
                               widget=forms.ClearableFileInput(attrs={'accept':'text/csv,text/plain'})
                               )
