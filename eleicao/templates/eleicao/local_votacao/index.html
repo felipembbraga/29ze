@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
- {% load static from staticfiles %}
+ {% load static from staticfiles %}{% load extra_tags %}
   {% block extrastyle %}
     <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
  {% endblock %}
@@ -7,25 +7,34 @@
 {% block container %}
 
 <div class="row">
-
+	<div class="col-md-4"><label>Total de locais: </label>{{ eleicao_atual.locais.count }}</div>
+	<div class="col-md-4"><label>Total de seções: </label>{{ eleicao_atual.secao_set.count }}</div>
+	<div class="col-md-4"><label>Total de eleitores: </label>{{ eleicao_atual.get_total_eleitores }}</div>
 </div>
-  <table class="table table-striped" id="tabela-eleicao">
+<div class="row">
+	<form role="form" method="get" class="form-inline pull-right">
+    	<input type="text" class="form-control" value="{{ pesquisar }}" id="pesquisar" name="pesquisar" placeholder="Pesquisar Local">
+    	<button type="submit" class="btn btn-default">Pesquisar</button>
+	</form>
+</div>
+  <table class="table table-striped" id="tabela-locais">
   <thead>
   <tr>
     <th width="30%">Nome</th>
-    <th width="20%">Endereco</th>
+    <th width="25%">Endereco</th>
     <th width="20%">Bairro</th>
-    <th width="30%">Seções</th>
-    <!--<th width="15%"></th> -->
+    <th width="20%">Seções</th>
+    <th width="5%">Qtde. de Eleitores</th>
   </tr>
   </thead>
   <tbody>
   {% for local in locais %}
   <tr>
-    <td>{{local.local.nome}}</td>
+    <td><a href="{% url 'local:detalhar' local.pk %}">{{local.local.nome}}</a></td>
     <td>{{local.local.endereco}}</td>
     <td>{{local.local.bairro}}</td>
     <td>{{local.get_secoes}}</td>
+    <td>{{local.get_total_eleitores}}</td>
     <!-- <td class="botoes" width="15%">
     <div class="btn-group btn-group-xs"  style="float:right;">
     	<a href="{{eleicao.get_absolute_url}}" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span>Editar</a>
@@ -38,6 +47,21 @@
   </tbody>
 </table>
 
+<ul class="pager">
+	{% if locais.has_previous %}
+  <li class="previous"><a href="?pagina={{ locais.previous_page_number }}{%if pesquisar %}&pesquisar={{pesquisar}}{%endif%}">&larr; Anterior</a></li>
+  {% endif %}
+  
+  <li>
+  	Página <input type="number" value="{{locais.number}}" style="width:40px;" min="1" max="{{locais.paginator.num_pages}}"	
+  	onchange="window.location='?pagina=' + this.value {%if pesquisar %} + '&pesquisar={{pesquisar}}'{%endif%}"/> de {{locais.paginator.num_pages}}
+  </li>
+	
+  
+  {% if locais.has_next %}
+  <li class="next"><a href="?pagina={{ locais.next_page_number }}{%if pesquisar %}&pesquisar={{pesquisar}}{%endif%}">Próxima &rarr;</a></li>
+  {% endif %}
+</ul>
 
     
 {% endblock %}

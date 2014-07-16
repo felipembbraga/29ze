@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+
+{% block container %}
+
+	<p>
+		<label>Local: </label> {{ local.local.nome }}
+	</p>
+	<p>
+		<div class="row">
+			<div class="col-md-4 col-xs-6">
+				<label>Endereço: </label> {{ local.local.endereco }}
+			</div>
+			<div class="col-md-4 col-xs-6">
+				<label>Bairro: </label> {{ local.local.bairro }}
+			</div>
+		</div>
+	</p>	
+<form method="post" role="form" id="form-agregar-secoes" data-id-local="{{ local.pk }}">{% csrf_token %}
+<table class="table table-striped" id="tabela-secao">
+    <thead>
+    <tr>
+    <th width="10%"></th>
+    <th width="40%">Nº da seção</th>
+    <th width="30%">Total de eleitores</th>
+    <th width="20"></th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for secao in local.secao_set.secao_pai %}
+  <tr>
+    <td> <input type="checkbox" name="pk_secao" id="id_pk_secao_{{forloop.counter0}}" value="{{secao.pk}}"> </td>
+    <td >{{secao.get_num_secao|safeseq|join:" + "}}</td>
+    <td >{{secao.get_total_eleitores}}</td>
+    <td>
+    <div class="btn-group btn-group-xs"  style="float:right;">
+    	{% if secao.principal %}<a data-secao="{{ secao.pk }}" href="javascript:void(0);" class="btn btn-info btn-xs bt-desacoplar"><span class="glyphicon glyphicon-resize-full"></span>Desagregar</a>{% endif %}
+    	{#<a href="javascript:void(0);" data-secao="{{ secao.pk }}" class="btn btn-danger btn-xs bt-excluir"><span class="glyphicon glyphicon-trash"></span>Excluir</a>#}
+    </div>
+    </td> 
+    
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<div class="row">
+<button type="button" class="btn btn-primary botao pull-right" id="bt-agregar">Agregar seções</button>
+</div>
+</form>
+{% endblock %}
+{% block extrascripts %}
+    <script src="{% static 'eleicao/js/classes/Secao.js' %}"></script>
+    <script src="{% static 'eleicao/js/local_votacao/detalhar.js' %}"></script>
+{% endblock %}

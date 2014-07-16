@@ -40,7 +40,7 @@
 		transition: background-color 300ms;
 		}
 		.modal-blocker.visible {
-			background: url('../../../../img/misc/developr/old-browsers/black45.png');
+			background: url('../../../img/misc/old-browsers/black45.png');
 			background: rgba(0, 0, 0, 0.45);
 		}
 

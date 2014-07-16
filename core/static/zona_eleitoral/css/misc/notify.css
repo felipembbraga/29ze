@@ -1,0 +1,110 @@
+@CHARSET "UTF-8";
+/* Notify */
+.tecno_notify_main {
+	position: fixed;
+	z-index: 999500;
+	width: 385px;
+	right: 20px;
+	top: 25px;
+	padding: 0;
+}
+
+.tecno_notify {
+	position: relative;
+	
+	width: 370px;
+	padding: 8px;
+	
+	margin-bottom: 10px;
+
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+
+	-moz-box-shadow: 0 4px 5px -4px #666;
+	-webkit-box-shadow: 0 4px 5px -4px #666;
+
+	color: #fff;
+}
+
+.tecno_notify li {
+	padding: 0 0 3px 2px;
+	list-style: square;
+}
+
+.tecno_notify .title {
+	float: left;
+	font-size: 16px;
+	margin-top: 9px;
+}
+
+/* Error */
+	.tecno_notify.error {
+		border: 1px solid #6F1A11;
+
+		background: #ff3523;
+		background: -moz-linear-gradient(top,  #ff3523 0%, #ce1818 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff3523), color-stop(100%,#ce1818));
+		background: -webkit-linear-gradient(top,  #ff3523 0%,#ce1818 100%);
+	}
+	
+	.notify.alert-danger .image {
+		width: 40px;
+		height: 32px;
+		background: url("../../img/misc/tecnonotify/error.png") no-repeat left top;
+		float: left;
+	}
+	
+	
+/* Success */
+	.tecno_notify.success {
+		border: 1px solid #657F25;
+	
+		background: #94ce48;
+		background: -moz-linear-gradient(top,  #94ce48 1%, #60bf41 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#94ce48), color-stop(100%,#60bf41));
+		background: -webkit-linear-gradient(top,  #94ce48 1%,#60bf41 100%);
+	}
+	
+	.notify.alert-success .image {
+		width: 40px;
+		height: 32px;
+		background: url("../../img/misc/tecnonotify/success.png") no-repeat left top;
+		float: left;
+	}
+	
+	
+/* Notify */
+	.tecno_notify.notify {
+		border: 1px solid #173B7C;
+	
+		background: #265894;
+		background: -moz-linear-gradient(top,  #265894 1%, #173976 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#265894), color-stop(100%,#173976));
+		background: -webkit-linear-gradient(top,  #265894 1%,#173976 100%);
+	}
+	
+	.notify.alert-warning .image {
+		width: 40px;
+		height: 32px;
+		background: url("../../img/misc/tecnonotify/notify.png") no-repeat left top;
+		float: left;
+	}
+	
+/* Loading */
+	.tecno_notify.loading {
+		border: 1px solid #666;
+		color: #666;
+	
+		background: #fcfcfc;
+		background: -moz-linear-gradient(top,  #fcfcfc 1%, #dddddd 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#fcfcfc), color-stop(100%,#dddddd));
+		background: -webkit-linear-gradient(top,  #fcfcfc 1%,#dddddd 100%);
+	}
+	
+	.notify.alert-info .image {
+		width: 40px;
+		height: 32px;
+		background: url("../../img/misc/standard/loaders/loading32.gif") no-repeat left top;
+		float: left;
+	}

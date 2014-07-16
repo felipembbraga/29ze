@@ -45,6 +45,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'eleicao.middleware.EleicaoMiddleware',
+    'eleicao.middleware.FormAgregarSecaoMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -56,7 +57,8 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
 "django.core.context_processors.static",
 "django.core.context_processors.tz",
 "django.contrib.messages.context_processors.messages",
-"eleicao.context_processors.eleicao_atual")
+"eleicao.context_processors.eleicao_atual",
+"zona_eleitoral.context_processors.base_url")
 
 ROOT_URLCONF = 'zona_eleitoral.urls'
 

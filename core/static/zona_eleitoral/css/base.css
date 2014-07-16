@@ -1,25 +1,17 @@
 input.date {
-    width: 100px;
+	width: 100px;
 }
 
 .botao-grupo {
-    width: 300%;
-    padding-top: 15px;
-    margin-top: 15px;
-    border-width: 2px 0 0 0;
-    border-style: solid;
-    border-color: grey;
+	width: 300%;
+	padding-top: 15px;
+	margin-top: 15px;
+	border-width: 2px 0 0 0;
+	border-style: solid;
+	border-color: grey;
 }
 
-.linha1 > td{
-    background-color: #F9F9F9;
-}
-
-.linha2  > td{
-    background-color: #FFFFFF;
-}
-
-.cursor-pointer:HOVER{
+.cursor-pointer:HOVER {
 	cursor: pointer;
 }
 
@@ -28,13 +20,21 @@ input.date {
 }
 
 div.titulo {
-	clear: both;
-	margin-bottom:15px;
-	border-bottom: solid;
-	border-bottom-color: grey;
-	
+	padding-bottom: 9px;
+	margin: 20px 0px 20px;
+	border-bottom: 1px solid #CCC;
 }
 
-div.titulo > h1{
+div.titulo>h1 {
 	color: grey;
+}
+
+/* para modal */
+
+#janela-modal{
+	display:none;
+}
+
+.tooltip-iniciar {
+	cursor: pointer;
 }

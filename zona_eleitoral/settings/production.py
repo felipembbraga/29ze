@@ -22,7 +22,7 @@ DATABASES = {
         'PASSWORD': 'swordfish0001'
     }
 }
+ALLOWED_HOSTS = ['*']
+DEBUG = True
 
-#DEBUG = False
-
-TEMPLATE_DEBUG = False
+TEMPLATE_DEBUG = True
