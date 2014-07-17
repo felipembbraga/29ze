@@ -20,16 +20,18 @@
   <table class="table table-striped" id="tabela-locais">
   <thead>
   <tr>
+    <th width="5%">Código</th>
     <th width="30%">Nome</th>
     <th width="25%">Endereco</th>
-    <th width="20%">Bairro</th>
-    <th width="20%">Seções</th>
+    <th width="15%">Bairro</th>
+    <th width="15%">Seções</th>
     <th width="5%">Qtde. de Eleitores</th>
   </tr>
   </thead>
   <tbody>
   {% for local in locais %}
   <tr>
+    <td>{{local.local.id_local}}</td>
     <td><a href="{% url 'local:detalhar' local.pk %}">{{local.local.nome}}</a></td>
     <td>{{local.local.endereco}}</td>
     <td>{{local.local.bairro}}</td>

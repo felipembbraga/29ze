@@ -4,7 +4,14 @@
 {% block container %}
 
 	<p>
-		<label>Local: </label> {{ local.local.nome }}
+	   <div class="row">
+	       <div class="col-md-2">
+	       <label>Código: </label> {{ local.local.id_local }}
+	       </div>
+	       <div class="col-md-6">
+            <label>Local: </label> {{ local.local.nome }}
+	       </div>
+	   </div>
 	</p>
 	<p>
 		<div class="row">
