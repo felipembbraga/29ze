@@ -160,6 +160,7 @@ def local_detalhar(request, id_local):
     #raise Exception(form['pk_secao'])
     return render(request, 'eleicao/local_votacao/detalhar.html', locals())
 
+@eleicao_required
 def local_definir_equipe(request, id_local):
     local = get_object_or_404(LocalVotacao, pk=int(id_local))
     titulo = u'Alterar equipe - ' + local.local.nome
@@ -216,11 +217,13 @@ def secao_desagregar(request, id_secao):
         return NotifyResponse('Erro ao desagregar', theme='erro', lista=[e.message,])
     return NotifyResponse('Desagregação feita com sucesso', theme='sucesso')
 
+@eleicao_required
 def equipe_index(request):
     titulo = u'Equipes'
     equipes = Equipe.objects.filter(eleicao = request.eleicao_atual)
     return render(request, 'eleicao/equipe/index.html', locals())
 
+@eleicao_required
 def equipe_cadastrar(request):
     titulo = u'Cadastrar Equipe'
     if request.method == 'POST':
@@ -237,6 +240,7 @@ def equipe_cadastrar(request):
         form = EquipeForm()
     return render(request, 'eleicao/equipe/form.html', locals())
 
+@eleicao_required
 def equipe_editar(request, pk_equipe):
     titulo = u'Editar Equipe'
     equipe = get_object_or_404(Equipe, pk=int(pk_equipe))
