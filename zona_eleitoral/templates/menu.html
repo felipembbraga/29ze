@@ -1,0 +1,29 @@
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Eleição<span class="caret"></span></a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Locais</li>
+    <li><a href="{% url 'local:index' %}">Listar</a></li>
+    <li><a href="{% url 'local:importar' %}">Importar locais</a></li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Equipes</li>
+    <li><a href="{% url 'equipe:index' %}">Listar</a></li>
+    <li><a href="{% url 'equipe:cadastrar' %}">Cadastrar</a></li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Relatórios<span class="caret"></span></a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Local</li>
+    <li><a href="{% url 'eleicao-report:local-geral' %}">Geral</a></li>
+    <li><a href="{% url 'eleicao-report:local-equipe' %}">Por equipes</a></li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administração<span class="caret"></span></a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Eleições</li>
+    <li><a href="{% url "eleicao:index" %}">Listar</a></li>
+    <li><a href="{% url "eleicao:cadastrar" %}">Cadastrar</a></li>
+    <li class="divider"></li>
+  </ul>
+</li>

@@ -11,6 +11,10 @@
 	       <div class="col-md-6">
             <label>Local: </label> {{ local.local.nome }}
 	       </div>
+	       <div class="col-md-4">
+            <label>Equipe: </label> {% firstof local.equipe 'sem equipe' %}
+            <a href="{% url 'local:definir-equipe' local.pk %}" data-idlocal="{{ local.local.id_local }}" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span>Editar</a>
+           </div>
 	   </div>
 	</p>
 	<p>

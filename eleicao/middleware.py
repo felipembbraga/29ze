@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.functional import SimpleLazyObject
 from django.middleware.csrf import rotate_token
 from models import Eleicao, LocalVotacao
@@ -12,7 +13,10 @@ def definir_eleicao_padrao(request, eleicao=None):
     the anonymous session is retained when the user logs in.
     """
     if eleicao is None:
-        eleicao = Eleicao.objects.get(atual=True)
+        try:
+            eleicao = Eleicao.objects.get(atual=True)
+        except:
+            return
     if SESSION_KEY in request.session:
         if request.session[SESSION_KEY] != eleicao.pk:
             request.session.flush()
@@ -34,7 +38,10 @@ def get_eleicao(request):
         eleicao_id = request.session[SESSION_KEY]
         eleicao = Eleicao.objects.get(pk=int(eleicao_id))
     except (KeyError):
-        eleicao =  Eleicao.objects.get(atual=True)
+        try:
+            eleicao =  Eleicao.objects.get(atual=True)
+        except ObjectDoesNotExist:
+            eleicao = None
     return eleicao
 
 def get_eleicao_persistente(request):

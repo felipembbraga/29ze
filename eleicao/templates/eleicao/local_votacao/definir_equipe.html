@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+ {% load static from staticfiles %}
+{% block container %}
+   <form role="form" method="post" class="form-horizontal col-md-4"> {% csrf_token %}
+        <div class="form-group{% if field.errors %} has-error{% endif %}">
+             {% if form.errors %}<label class="control-label" for="{{form.equipe.id_for_label}}">{{form.errors}}</label><br />{% endif %}
+            <label for="{{form.equipe.id_for_label}}">{{ form.equipe.label }}</label>
+                {{ form.equipe }}
+            <p class="help-block">{{ form.equipe.help_text }}</p>
+        </div>
+    
+    <div class="divisor">
+    <p class="botao-grupo">
+    <button type="submit" class="btn btn-primary botao">Alterar</button>
+    <button type="button" class="btn btn-default botao" onclick="window.location = '{% url 'local:detalhar' id_local %}';">Cancelar</button>
+    </p>
+    </form>
+    
+{% endblock %}
+
+{%block extrascripts %}
+    <script src="{% static 'zona_eleitoral/js/misc/jquery_meio_mask.js' %}"></script>
+    <script src="{% static 'zona_eleitoral/js/misc/glDatePicker/glDatePicker.js' %}"></script>
+{% endblock %}

@@ -3,6 +3,7 @@ from zona_eleitoral.base_settings import *
 MY_APPS = (
     'core',
     'eleicao',
+    'equipe'
 )
 
 INSTALLED_APPS = INSTALLED_APPS + MY_APPS
@@ -19,7 +20,7 @@ DATABASES = {
         'PORT': '5432',
         'NAME': 'db_zona_eleitoral_dev',
         'USER': 'zona_eleitoral_dev',
-        'PASSWORD': 'swordfish0001'
+        'PASSWORD': 'qwerasdf'
     }
 }
 

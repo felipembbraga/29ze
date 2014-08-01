@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+{% block extrastyle %}
+<style>
+body {
+    padding-top: 30px;
+}
+
+.report {
+    padding-top:15px;
+}
+@media print {
+
+    body {
+        padding-top: 10px;
+        font-size: 12px;
+    }
+
+    .botoes {
+        display: none;
+    }    
+    
+    .table > tbody > tr > td{
+        padding: 3px;
+    }
+    @page {
+        margin: 1.5cm;
+    }
+    
+    .table-bordered {
+       /* page-break-inside: avoid; */
+    }
+}
+</style>
+{% endblock %}
+{% block navbar %}
+{% endblock %}
+{% block div_titulo %}
+{% endblock %}
+{% block container %}
+<div class="row botoes">
+    <div class="btn-group">
+    {% block botoes %}
+    <button type="button" onclick="history.back()" class="btn btn-default btn-xs">Voltar</button>
+    <button type="button" onclick="window.print()" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-print"></span>Imprimir</button>
+    {% endblock %}
+    </div>
+</div>
+<div class="cabecalho print" align="center">
+<div align="center">
+<img src="{% static 'zona_eleitoral/img/brasao.png' %}">
+</div>
+<div align="center">
+    <strong>
+        PODER JUDICIÁRIO
+    </strong>
+</div>
+<div align="center">
+    <strong>
+        TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
+    </strong>
+</div>
+<div align="center">
+    <strong>
+        29ª ZONA ELEITORAL - PALMAS
+    </strong>
+</div>
+</div>
+<div class="report">
+{% block report %}
+{% endblock %}
+</div>
+{% endblock %}
+
+{% block extrascripts %}{% endblock %}

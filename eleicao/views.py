@@ -2,6 +2,7 @@
 import csv
 import json
 from core.models import Local
+from decorators import eleicao_required
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
@@ -10,18 +11,28 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from forms import EleicaoForm, LocalImportarForm, SecaoAgregarForm
-from models import Eleicao, LocalVotacao, Secao
+from forms import EleicaoForm, LocalImportarForm, EquipeForm, LocalEquipeForm
+from models import Eleicao, LocalVotacao, Secao, Equipe
 from middleware import definir_eleicao_padrao
 from utils.Response import NotifyResponse
+from django.contrib import messages
+
+
 
 def javascript(request, nome_arquivo):
     return render(request, 'js/'+nome_arquivo, content_type='text/javascript')
 
 def ler_csv(request, f):
-    linhas = list(csv.reader(f, delimiter=','))
+    if request.eleicao_atual == None:
+        messages.error(request, 'Cadastre uma eleição antes.')
+        return False
+    try:
+        linhas = list(csv.reader(f, delimiter=','))
+    except:
+        messages.error(request, 'Erro ao importar o arquivo.')
+        return False
     for linha in linhas[1:]:
-        id_local, nome, endereco, bairro, secao, num_eleitores = linha
+        id_local, nome, endereco, bairro, secao, tipo_secao, num_eleitores = linha
         try:
             local = Local.objects.get(pk=int(id_local))
             local.nome, local.endereco, local.bairro = nome, endereco, bairro
@@ -33,11 +44,24 @@ def ler_csv(request, f):
         except:
             local_votacao = LocalVotacao.objects.create(local=local, eleicao=request.eleicao_atual)
         try:
+            especial = False
             secao = Secao.objects.get(num_secao=int(secao), eleicao=request.eleicao_atual)
             secao.local_votacao, secao.num_eleitores = local_votacao, num_eleitores
+            if tipo_secao.lower() == 'especial':
+                especial = True
+            secao.especial = especial
             secao.save()
         except:
-            secao = Secao.objects.create(num_secao=int(secao), eleicao=request.eleicao_atual, local_votacao = local_votacao, num_eleitores=num_eleitores)
+            especial = False
+            if tipo_secao.lower() == 'especial':
+                especial = True
+            secao = Secao.objects.create(\
+                                         num_secao = int(secao),\
+                                         eleicao = request.eleicao_atual,\
+                                         local_votacao = local_votacao,\
+                                         num_eleitores = num_eleitores,\
+                                         especial = especial)
+    return True
 
 #Módulo de eleição
 
@@ -82,7 +106,7 @@ def eleicao_index(request):
 
 
 #Módulo de locais
-
+@eleicao_required
 def local_importar(request):
     titulo = u'Importar Locais de Votação'
     if request.method == 'POST':
@@ -90,8 +114,8 @@ def local_importar(request):
         form = LocalImportarForm(request.POST, request.FILES)
         # check whether it's valid:
         if form.is_valid():
-            ler_csv(request, request.FILES['arquivo'])
-            return redirect('local:index')
+            if ler_csv(request, request.FILES['arquivo']):
+                return redirect('local:index')
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -99,14 +123,18 @@ def local_importar(request):
     return render(request, 'eleicao/local_votacao/importar.html', locals())
 
 
+@eleicao_required
 def local_index(request):
     titulo = u'Locais de Votação'
     pesquisar = request.GET.get('pesquisar') and request.GET.get('pesquisar') or ''
     args = dict({'eleicao':request.eleicao_atual}) 
     if pesquisar != '':
         try:
-            lista_locais = LocalVotacao.objects.filter(Q(local__nome__icontains=pesquisar)|Q(secao__num_secao=int(pesquisar)),
-                                                   eleicao=request.eleicao_atual).distinct('local__nome').order_by('local__nome')
+            lista_locais = LocalVotacao.objects.filter(\
+                                                       Q(local__nome__icontains=pesquisar)|\
+                                                       Q(secao__num_secao=int(pesquisar))|\
+                                                       Q(local__id_local=int(pesquisar)),
+                                                       eleicao=request.eleicao_atual).distinct('local__nome').order_by('local__nome')
         except ValueError:
             lista_locais = LocalVotacao.objects.filter(local__nome__icontains=pesquisar,
                                                    eleicao=request.eleicao_atual).distinct('local__nome').order_by('local__nome')
@@ -132,8 +160,26 @@ def local_detalhar(request, id_local):
     #raise Exception(form['pk_secao'])
     return render(request, 'eleicao/local_votacao/detalhar.html', locals())
 
-def local_editar(request, id_local):
-    pass
+def local_definir_equipe(request, id_local):
+    local = get_object_or_404(LocalVotacao, pk=int(id_local))
+    titulo = u'Alterar equipe - ' + local.local.nome
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = LocalEquipeForm(request, request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            if form.cleaned_data['equipe'] == '':
+                local.equipe = None
+            else:
+                equipe = get_object_or_404(Equipe, pk=int(form.cleaned_data['equipe']))
+                local.equipe = equipe
+            local.save()
+            return redirect('local:detalhar', id_local)
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = LocalEquipeForm(request, {'equipe': local.equipe and local.equipe.pk or ''})
+    return render(request, 'eleicao/local_votacao/definir_equipe.html', locals())
 
 def secao_agregar(request):
     if not request.is_ajax():
@@ -169,3 +215,39 @@ def secao_desagregar(request, id_secao):
     except Exception, e:
         return NotifyResponse('Erro ao desagregar', theme='erro', lista=[e.message,])
     return NotifyResponse('Desagregação feita com sucesso', theme='sucesso')
+
+def equipe_index(request):
+    titulo = u'Equipes'
+    equipes = Equipe.objects.filter(eleicao = request.eleicao_atual)
+    return render(request, 'eleicao/equipe/index.html', locals())
+
+def equipe_cadastrar(request):
+    titulo = u'Cadastrar Equipe'
+    if request.method == 'POST':
+        
+        equipe = Equipe(eleicao = request.eleicao_atual)
+        form = EquipeForm(request.POST, instance=equipe)
+        # check whether it's valid:
+        if form.is_valid():
+            form.save()
+            return redirect('equipe:index')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = EquipeForm()
+    return render(request, 'eleicao/equipe/form.html', locals())
+
+def equipe_editar(request, pk_equipe):
+    titulo = u'Editar Equipe'
+    equipe = get_object_or_404(Equipe, pk=int(pk_equipe))
+    if request.method == 'POST':
+        form = EquipeForm(request.POST, instance=equipe)
+        # check whether it's valid:
+        if form.is_valid():
+            form.save()
+            return redirect('equipe:index')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = EquipeForm(instance=equipe)
+    return render(request, 'eleicao/equipe/form.html', locals())

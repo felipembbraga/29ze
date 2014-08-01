@@ -1,5 +1,6 @@
 eclipse.preferences.version=1
 encoding//core/models.py=utf-8
+encoding//eleicao/decorators.py=utf-8
 encoding//eleicao/forms.py=utf-8
 encoding//eleicao/models.py=utf-8
 encoding//eleicao/views.py=utf-8
