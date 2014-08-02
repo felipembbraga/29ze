@@ -78,6 +78,14 @@ USE_I18N = True
 
 USE_L10N = True
 
+NUMBER_GROUPING = 3
+
+USE_THOUSAND_SEPARATOR = True
+
+THOUSAND_SEPARATOR = '.'
+
+DECIMAL_SEPARATOR = ','
+
 USE_TZ = True
 
 from django.contrib import messages

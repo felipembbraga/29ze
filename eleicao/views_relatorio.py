@@ -1,6 +1,8 @@
+#-*- coding: utf-8 -*-
+
 from django.shortcuts import render
 from django.http import HttpResponse
-from models import LocalVotacao, Equipe
+from models import LocalVotacao, Equipe, Secao
 from excel_response import ExcelResponse
 
 def relatorio_local_geral(request):
@@ -17,6 +19,8 @@ def relatorio_local_mala_direta(request):
     data = [cabecalho,]
     max_secoes = 0
     for local in locais:
+        if local.get_total_eleitores() == 0:
+            continue
         equipe = local.equipe and local.equipe.nome or 'Sem equipe'
         num_local = local.local.id_local
         nome_local = local.local.nome
@@ -26,6 +30,7 @@ def relatorio_local_mala_direta(request):
         secoes = local.get_secoes(delimitador='/')
         lista = [equipe, num_local, nome_local, endereco, bairro, total_eleitores, secoes]
         total_secoes = local.secao_set.secao_pai()
+        total_secoes
         for secao in total_secoes:
             lista.append(secao.unicode_agregadas(especial=False))
         data.append(lista)
@@ -36,3 +41,19 @@ def relatorio_local_mala_direta(request):
             max_secoes = len(total_secoes)
             
     return ExcelResponse(data, 'locais_mala_direta')
+
+def relatorio_secao_ordenado(request):
+    secoes = Secao.objects.filter(eleicao=request.eleicao_atual).order_by('num_secao')
+    return render(request, 'eleicao/reports/secao_ordenado.html', locals())
+
+def relatorio_secao_ordenado_xls(request):
+    secoes = Secao.objects.filter(eleicao=request.eleicao_atual).order_by('num_secao')
+    cabecalho = ['numero_secao', 'local', 'endereco', 'bairro']
+    data = [cabecalho,]
+    for secao in secoes:
+        local = secao.get_local()
+        if secao.secoes_agregadas:
+            local += u'(agregada à seção %d)'%secao.secoes_agregadas.num_secao
+        data.append([secao.num_secao, local, secao.get_endereco(), secao.get_bairro()])
+            
+    return ExcelResponse(data, 'secoes_ordenadas')

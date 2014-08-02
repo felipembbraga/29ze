@@ -27,7 +27,9 @@ class Local(models.Model):
     nome = models.CharField(max_length=100)
     endereco = models.CharField(max_length=150)
     bairro = models.CharField(max_length = 30)
-
+    
+    def get_id_local(self):
+        return unicode(self.id_local)
 
 #classes referente a veículos
 class Marca(models.Model):

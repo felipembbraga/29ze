@@ -42,4 +42,26 @@ var Secao = function(){
 		});
 	};
 	
+	this.selecionarSecoes = function(id_local, element){
+		var url = this.url_root + '/selecionar-secoes/' + id_local + '/';
+		
+		$.ajax({
+			type: 'POST',
+		    url: url,
+		    			
+		    success: function(resultado) {
+		    	$.each(resultado, function(i, item){
+		    		option = $('<option></option>');
+		    		option.val(item.pk);
+		    		option.text(item.fields.num_secao);
+		    		element.append(option);
+		    	});	
+			},
+			error: function(elemento, status, erro){
+				$.notify({theme:'erro', title:status, list: new Array(erro)});
+			}
+		});
+		
+	}
+	
 }

@@ -22,11 +22,11 @@ class Eleicao(models.Model):
         return self.nome
     
     def get_total_eleitores(self):
-        return u'%(num_eleitores__sum)d' % self.secao_set.aggregate(models.Sum('num_eleitores'))
+        return self.secao_set.aggregate(models.Sum('num_eleitores')).get('num_eleitores__sum')
         
 
 @receiver(post_save, sender=Eleicao)
-def artigo_pre_save(signal, instance, sender, **kwargs):
+def eleicao_pre_save(signal, instance, sender, **kwargs):
     
     if instance.atual:
         sender.objects.exclude(pk=instance.pk).update(atual=False)
@@ -47,7 +47,11 @@ class LocalVotacao(models.Model):
         return self.secao_set.secao_pai().count()
     
     def get_total_eleitores(self):
-        return u'%(num_eleitores__sum)d' % self.secao_set.aggregate(models.Sum('num_eleitores'))
+        secoes = self.secao_set.secao_pai()
+        total = 0
+        for secao in secoes:
+            total += secao.get_total_eleitores()
+        return total
 
     @models.permalink
     def get_absolute_url(self):
@@ -60,6 +64,9 @@ class SecaoManager(models.Manager):
     
     def all_ordenado(self):
         return self.all().order_by('num_secao')
+    
+    def get_by_natural_key(self, num_secao):
+        return self.get(num_secao=num_secao)
     
     
 class Secao(models.Model):
@@ -85,9 +92,26 @@ class Secao(models.Model):
     def unicode_agregadas(self, especial = True):
         agregadas = list(self.secao_secoes_agregadas.all_ordenado())
         if especial:
-            return u' + '.join([unicode(s) for s in ([self, ] + agregadas)])
-        return u' + '.join([unicode(self.num_secao) for s in ([self, ] + agregadas)])
+            return u'+'.join([unicode(s) for s in ([self, ] + agregadas)])
+        return u'+'.join([unicode(s.num_secao) for s in ([self, ] + agregadas)])
     
+    def get_local(self):
+        if not self.secoes_agregadas:
+            return self.local_votacao.local.nome
+        return self.secoes_agregadas.local_votacao.local.nome
+    
+    def get_endereco(self):
+        if not self.secoes_agregadas:
+            return self.local_votacao.local.endereco
+        return self.secoes_agregadas.local_votacao.local.endereco
+    
+    def get_bairro(self):
+        if not self.secoes_agregadas:
+            return self.local_votacao.local.bairro
+        return self.secoes_agregadas.local_votacao.local.bairro
+        
+            
+        
     def desagregarSecoes(self):
         secoes = self.secao_secoes_agregadas.all()
         for secao in secoes:
@@ -98,18 +122,22 @@ class Secao(models.Model):
 
     def secao_with_popover(self, principal=False):
         html = u'''<span  class="tooltip-iniciar"
-            href="#" data-toggle="tooltip" title="<label>Quantidade de eleitores:&nbsp;</label>%(num_eleitores)d %(especial)s">
+            href="#" data-toggle="tooltip" title="<label>Quantidade de eleitores:&nbsp;</label>%(num_eleitores)d %(especial)s %(local)s">
             %(num_secao)s
             </span>'''
         
         especial = self.especial and '<br /><label>especial</label>' or ''
+        local = ''
+        if self.secoes_agregadas:
+            if self.local_votacao.pk != self.secoes_agregadas.local_votacao.pk:
+                local = '<br /><label>Local de origem:&nbsp;</label>' + self.local_votacao.local.nome
         if self.principal or principal:
-            return html%{'num_secao': '<strong>' +  str(self)  + '</strong>', 'num_eleitores':self.num_eleitores, 'especial' : especial}
-        return html%{'num_secao':str(self), 'num_eleitores':self.num_eleitores, 'especial' : especial}
+            return html%{'num_secao': '<strong>' +  str(self)  + '</strong>', 'num_eleitores':self.num_eleitores, 'especial' : especial, 'local': local}
+        return html%{'num_secao':str(self), 'num_eleitores':self.num_eleitores, 'especial' : especial, 'local': local}
     
     def get_total_eleitores(self):
         total_agregado = self.secao_secoes_agregadas.aggregate(soma_agregados=models.Sum('num_eleitores'))
-        return total_agregado['soma_agregados'] and self.num_eleitores + total_agregado['soma_agregados'] or self.num_eleitores
+        return total_agregado.get('soma_agregados') and self.num_eleitores + total_agregado['soma_agregados'] or self.num_eleitores
         
     def get_num_secao(self):
         agregadas = list(self.secao_secoes_agregadas.all_ordenado())

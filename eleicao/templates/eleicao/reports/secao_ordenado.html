@@ -1,0 +1,47 @@
+{% extends 'base_relatorio.html' %}
+{% block botoes %}
+{{ block.super }}
+<a href="{% url 'eleicao-report:secao-ordenado-xls' %}" class="btn btn-default btn-xs">Exportar XLS</a>
+{% endblock %}
+{% block report %}
+
+<table class="table table-striped" style="margin-bottom:0;">
+    <thead>
+        <tr>
+            <th width = "10%">Nº Seção</th>
+            <th width = "40%">Local</th>
+            <th width="30%">Endereço</th>
+            <th width="20%">Bairro</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for secao in secoes %}
+            <tr>
+                <td>
+                    {%if secao.secoes_agregadas%}<strong>{% endif %}
+                    {{ secao.num_secao }}
+                    {%if secao.secoes_agregadas%}</strong>{% endif %}
+                </td>
+                <td>
+                    {%if secao.secoes_agregadas%}<strong>{% endif %}
+                    {{ secao.get_local }}
+                    {%if secao.secoes_agregadas%}
+                        (agregada à seção {{secao.secoes_agregadas.num_secao}})
+                        </strong>
+                    {% endif %}
+                </td>
+                <td>
+                    {%if secao.secoes_agregadas%}<strong>{% endif %}
+                    {{ secao.get_endereco }}
+                    {%if secao.secoes_agregadas%}</strong>{% endif %}
+                </td>
+                <td>
+                    {%if secao.secoes_agregadas%}<strong>{% endif %}
+                    {{ secao.get_bairro }}
+                    {%if secao.secoes_agregadas%}</strong>{% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

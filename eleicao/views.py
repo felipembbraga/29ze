@@ -11,7 +11,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from forms import EleicaoForm, LocalImportarForm, EquipeForm, LocalEquipeForm
+from forms import EleicaoForm, LocalImportarForm, EquipeForm, LocalEquipeForm, SecaoAgregarExternoForm
 from models import Eleicao, LocalVotacao, Secao, Equipe
 from middleware import definir_eleicao_padrao
 from utils.Response import NotifyResponse
@@ -217,6 +217,43 @@ def secao_desagregar(request, id_secao):
         return NotifyResponse('Erro ao desagregar', theme='erro', lista=[e.message,])
     return NotifyResponse('Desagregação feita com sucesso', theme='sucesso')
 
+def secao_agregar_externo(request, id_secao):
+    FormClass = SecaoAgregarExternoForm
+    secao = get_object_or_404(Secao, pk=int(id_secao))
+    titulo = u'Agregar seção %d a uma seção externa'%secao.num_secao
+    locais = LocalVotacao.objects.exclude(pk=secao.local_votacao.pk)\
+            .order_by('local__nome').values_list('local__pk', 'local__nome')
+    if request.method == 'POST':
+        FormClass.base_fields['secao'].choices += [(request.POST['secao'],'')]
+        form = SecaoAgregarExternoForm(locais, request.POST)
+        if form.is_valid():
+            secao_agregada = Secao.objects.get(pk=int(form.cleaned_data['secao']))
+            secao_principal = secao.num_eleitores >= secao_agregada.num_eleitores and secao or secao_agregada
+            secao_filho = secao.num_eleitores < secao_agregada.num_eleitores and secao or secao_agregada
+            if secao_filho.secao_secoes_agregadas.count() > 0:
+                for s in secao_filho.secao_secoes_agregadas.all():
+                    secao_principal.secao_secoes_agregadas.add(s)
+                secao_filho.principal = False
+            secao_principal.secao_secoes_agregadas.add(secao_filho)
+            secao_principal.principal = True
+            secao_principal.save()
+            return redirect('local:detalhar', secao_principal.local_votacao.pk)
+    else:
+        form = SecaoAgregarExternoForm(locais)
+    
+    return render(request, 'eleicao/local_votacao/form.html', locals())
+    
+def secao_selecionar_secoes(request, id_local):
+    #if not request.is_ajax():
+    #    raise PermissionDenied
+    secoes = Secao.objects.secao_pai()\
+        .filter(local_votacao__local__pk=int(id_local)).order_by('num_secao')
+    for secao in secoes:
+        secao.nome = secao.unicode_agregadas()
+    resposta = serializers.serialize('json', secoes, fields=('pk', 'num_secao', 'secoes_agregadas'))
+    #raise Exception(resposta)
+    return HttpResponse(resposta, mimetype='application/json')
+    
 @eleicao_required
 def equipe_index(request):
     titulo = u'Equipes'

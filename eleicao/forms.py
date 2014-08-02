@@ -28,6 +28,20 @@ class LocalEquipeForm(forms.Form):
 class SecaoAgregarForm(forms.Form):
     pk_secao = forms.MultipleChoiceField(widget  = forms.CheckboxSelectMultiple)
     
+class SecaoAgregarExternoForm(forms.Form):
+    local = forms.ChoiceField(
+                              choices = [('', 'Selecione o local'),],
+                              widget = forms.Select(attrs={'class':'form-control'})
+                              )
+    secao = forms.ChoiceField(
+                              choices = [('', u'Selecione a seção'),],
+                              widget = forms.Select(attrs={'class':'form-control','disabled':'disabled'})
+                              )
+    
+    def __init__(self, queryset = None, *args, **kwargs):
+        super(SecaoAgregarExternoForm, self).__init__(*args, **kwargs)
+        self.fields['local'].choices += list(queryset)
+    
 class EquipeForm(forms.ModelForm):
     
     class Meta:

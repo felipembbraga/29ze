@@ -6,7 +6,7 @@
 	<p>
 	   <div class="row">
 	       <div class="col-md-2">
-	       <label>Código: </label> {{ local.local.id_local }}
+	       <label>Código: </label> {{ local.local.get_id_local }}
 	       </div>
 	       <div class="col-md-6">
             <label>Local: </label> {{ local.local.nome }}
@@ -32,9 +32,9 @@
     <thead>
     <tr>
     <th width="10%"></th>
-    <th width="40%">Nº da seção</th>
+    <th width="30%">Nº da seção</th>
     <th width="30%">Total de eleitores</th>
-    <th width="20"></th>
+    <th width="30"></th>
   </tr>
   </thead>
   <tbody>
@@ -45,8 +45,8 @@
     <td >{{secao.get_total_eleitores}}</td>
     <td>
     <div class="btn-group btn-group-xs"  style="float:right;">
-    	{% if secao.principal %}<a data-secao="{{ secao.pk }}" href="javascript:void(0);" class="btn btn-info btn-xs bt-desacoplar"><span class="glyphicon glyphicon-resize-full"></span>Desagregar</a>{% endif %}
-    	{#<a href="javascript:void(0);" data-secao="{{ secao.pk }}" class="btn btn-danger btn-xs bt-excluir"><span class="glyphicon glyphicon-trash"></span>Excluir</a>#}
+    	{% if secao.principal %}<a data-secao="{{ secao.pk }}" href="javascript:void(0);" class="btn btn-warning btn-xs bt-desacoplar"><span class="glyphicon glyphicon-resize-full"></span>Desagregar</a>{% endif %}
+    	<a href="{% url 'secao:agregar-externo' secao.pk %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-resize-full"></span>Agregar a outro local</a>
     </div>
     </td> 
     

@@ -2,12 +2,13 @@
 
 {% block report %}
 {% for local in locais %}
+{% if local.get_total_eleitores > 0 %}
 <table class="table table-bordered">
 <tbody>
 <tr>
 <td><div class="row">
     <div class="col-md-2">
-        <label>Código: </label> {{ local.local.id_local }}
+        <label>Código: </label> {{ local.local.get_id_local }}
     </div>
     <div class="col-md-6">
         <label>Local: </label> {{ local.local.nome }}
@@ -61,5 +62,6 @@
 </tr>
 </tbody>
 </table>
+{% endif %}
 {% endfor %}
 {% endblock %}

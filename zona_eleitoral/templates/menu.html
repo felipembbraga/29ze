@@ -13,9 +13,12 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Relatórios<span class="caret"></span></a>
   <ul class="dropdown-menu" role="menu">
-    <li class="dropdown-header">Local</li>
+    <li class="dropdown-header">Locais</li>
     <li><a href="{% url 'eleicao-report:local-geral' %}">Geral</a></li>
     <li><a href="{% url 'eleicao-report:local-equipe' %}">Por equipes</a></li>
+    <li class="divider"></li>
+    <li class="dropdown-header">Seções</li>
+    <li><a href="{% url 'eleicao-report:secao-ordenado' %}">Seções ordenadas</a></li>
   </ul>
 </li>
 <li class="dropdown">
@@ -24,6 +27,5 @@
     <li class="dropdown-header">Eleições</li>
     <li><a href="{% url "eleicao:index" %}">Listar</a></li>
     <li><a href="{% url "eleicao:cadastrar" %}">Cadastrar</a></li>
-    <li class="divider"></li>
   </ul>
 </li>

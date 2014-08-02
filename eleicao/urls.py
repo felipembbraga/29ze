@@ -1,11 +1,7 @@
 from django.conf.urls import include, url, patterns
-from views import eleicao_cadastrar, eleicao_editar, eleicao_index,\
-     local_importar, local_index, local_detalhar, local_definir_equipe,\
-     secao_desagregar, secao_agregar,\
-     equipe_index, equipe_cadastrar, equipe_editar
+from views import *
 
-from views_relatorio import relatorio_local_geral, relatorio_local_equipe,\
-     relatorio_local_mala_direta
+from views_relatorio import *
 eleicao_patterns = [
     url(r'^cadastrar/$', eleicao_cadastrar, name='cadastrar'),
     url(r'^editar/(\d+)/$', eleicao_editar, name='editar'),
@@ -20,7 +16,9 @@ local_votacao_patterns = [
 ]
 
 secao_patterns = [
-    url(r'^agregar/$', secao_agregar, name='desagregar'),
+    url(r'^agregar/$', secao_agregar, name='agregar'),
+    url(r'^agregar-externo/(\d+)/$', secao_agregar_externo, name='agregar-externo'),
+    url(r'^selecionar-secoes/(\d+)/$', secao_selecionar_secoes, name='selecionar-secoes'),
     url(r'^desagregar/(\d+)/$', secao_desagregar, name='desagregar'),
 ]
 
@@ -35,6 +33,8 @@ reports_patterns = [
     url(r'^local-geral/$', relatorio_local_geral, name='local-geral'),
     url(r'^local-equipe/$', relatorio_local_equipe, name='local-equipe'),
     url(r'^local-mala-direta/$', relatorio_local_mala_direta, name='local-mala-direta'),
+    url(r'^secao-ordenado/$', relatorio_secao_ordenado, name='secao-ordenado'),
+    url(r'^secao-ordenado-xls/$', relatorio_secao_ordenado_xls, name='secao-ordenado-xls'),
 ]
 
 

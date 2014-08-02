@@ -9,11 +9,30 @@ body {
 .report {
     padding-top:15px;
 }
+
+
+
 @media print {
 
     body {
         padding-top: 10px;
         font-size: 12px;
+    }
+    
+    @page {
+       @bottom-left {
+            content: counter(page) " de " counter(pages);
+        }
+        
+        #pageFooter {
+	        float: right;
+	        display: table-footer-group;
+	    }
+	    
+	    #pageFooter:after {
+	        counter-increment: page;
+	        content: counter(page);
+	    }
     }
 
     .botoes {
@@ -23,12 +42,9 @@ body {
     .table > tbody > tr > td{
         padding: 3px;
     }
-    @page {
-        margin: 1.5cm;
-    }
     
     .table-bordered {
-       /* page-break-inside: avoid; */
+       page-break-inside: avoid;
     }
 }
 </style>
@@ -70,6 +86,7 @@ body {
 {% block report %}
 {% endblock %}
 </div>
+<div id="pageFooter"></div>
 {% endblock %}
 
 {% block extrascripts %}{% endblock %}
