@@ -29,6 +29,13 @@ def ler_csv(request, f):
         return False
     try:
         linhas = list(csv.reader(f, delimiter=','))
+        id_local, nome, endereco, bairro, secao, tipo_secao, num_eleitores = linhas[0]
+    except ValueError, e:
+        try:
+            linhas = list(csv.reader(f, delimiter=';'))
+        except:
+            messages.error(request, 'Erro ao importar o arquivo.')
+            return False
     except:
         messages.error(request, 'Erro ao importar o arquivo.')
         return False
