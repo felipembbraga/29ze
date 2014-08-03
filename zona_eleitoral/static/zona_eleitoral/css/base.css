@@ -38,3 +38,7 @@ div.titulo>h1 {
 .tooltip-iniciar {
 	cursor: pointer;
 }
+
+.navbar {
+	padding:8px;
+}

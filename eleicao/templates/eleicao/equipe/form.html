@@ -13,7 +13,7 @@
     {% endfor %}
     <div class="divisor"></div>
     <p class="botao-grupo">
-    <button type="submit" class="btn btn-primary botao">{% if form.instance %}Editar{% else %}Cadastrar{% endif %}</button>
+    <button type="submit" class="btn btn-primary botao">{% if form.instance.nome %}Editar{% else %}Cadastrar{% endif %}</button>
     <button type="button" class="btn btn-default botao" onclick="window.location = '{% url 'equipe:index' %}';">Cancelar</button>
     </p>
     </form>

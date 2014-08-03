@@ -32,7 +32,7 @@
   {% for local in locais %}
   <tr>
     <td>{{local.local.get_id_local}}</td>
-    <td><a href="{% url 'local:detalhar' local.pk %}">{{local.local.nome}}</a></td>
+    <td><a href="{{ local.get_absolute_url }}">{{local.local.nome}}</a></td>
     <td>{{local.local.endereco}}</td>
     <td>{{local.local.bairro}}</td>
     <td>{{local.get_secoes}}</td>

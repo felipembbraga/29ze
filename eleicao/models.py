@@ -169,6 +169,10 @@ class Equipe(models.Model):
     def __unicode__(self):
         return unicode(self.nome)
     
+    @models.permalink
+    def get_absolute_url(self):
+        return ('equipe:detalhar', [str(self.id)])
+    
     
 class Cargo(models.Model):
     nome = models.CharField(max_length=50)

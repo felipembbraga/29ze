@@ -26,7 +26,9 @@ equipe_patterns = [
     url(r'^$', equipe_index, name='index'),
     url(r'^cadastrar/$', equipe_cadastrar, name='cadastrar'),
     url(r'^editar/(\d+)/$', equipe_editar, name='editar'),
-    url(r'^detalhar/(\d+)/$', local_detalhar, name='detalhar'),
+    url(r'^excluir/(\d+)/$', equipe_excluir, name='excluir'),
+    url(r'^detalhar/(\d+)/$', equipe_detalhar, name='detalhar'),
+    url(r'^selecionar-locais/(\d+)/$', equipe_selecionar_locais, name='selecionar-locais'),
 ]
 
 reports_patterns = [

@@ -47,3 +47,10 @@ class EquipeForm(forms.ModelForm):
     class Meta:
         model = Equipe
         exclude = ['eleicao',]
+        
+class EquipeLocaisForm(forms.Form):
+    local = forms.MultipleChoiceField()
+    def __init__(self, queryset = None, *args, **kwargs):
+        super(EquipeLocaisForm, self).__init__(*args, **kwargs)
+        self.fields['local'].choices = list(queryset)
+    

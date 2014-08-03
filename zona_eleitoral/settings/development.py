@@ -3,7 +3,6 @@ from zona_eleitoral.base_settings import *
 MY_APPS = (
     'core',
     'eleicao',
-    'equipe'
 )
 
 INSTALLED_APPS = INSTALLED_APPS + MY_APPS

@@ -11,7 +11,8 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from forms import EleicaoForm, LocalImportarForm, EquipeForm, LocalEquipeForm, SecaoAgregarExternoForm
+from forms import EleicaoForm, LocalImportarForm, EquipeForm, LocalEquipeForm, SecaoAgregarExternoForm,\
+EquipeLocaisForm
 from models import Eleicao, LocalVotacao, Secao, Equipe
 from middleware import definir_eleicao_padrao
 from utils.Response import NotifyResponse
@@ -190,7 +191,7 @@ def secao_agregar(request):
         if form.is_valid():
             if len(form.cleaned_data['pk_secao']) < 2:
                 raise Exception('Selecione pelo menos duas Seções')
-            secoes = Secao.objects.filter(pk__in=form.cleaned_data['pk_secao']).order_by('-num_eleitores')
+            secoes = Secao.objects.filter(pk__in=form.cleaned_data['pk_secao']).order_by('num_secao')
             secao_principal = secoes[0]
             for secao in secoes[1:]:
                 if secao.secao_secoes_agregadas.count() > 0:
@@ -217,6 +218,7 @@ def secao_desagregar(request, id_secao):
         return NotifyResponse('Erro ao desagregar', theme='erro', lista=[e.message,])
     return NotifyResponse('Desagregação feita com sucesso', theme='sucesso')
 
+@eleicao_required
 def secao_agregar_externo(request, id_secao):
     FormClass = SecaoAgregarExternoForm
     secao = get_object_or_404(Secao, pk=int(id_secao))
@@ -244,8 +246,8 @@ def secao_agregar_externo(request, id_secao):
     return render(request, 'eleicao/local_votacao/form.html', locals())
     
 def secao_selecionar_secoes(request, id_local):
-    #if not request.is_ajax():
-    #    raise PermissionDenied
+    if not request.is_ajax():
+        raise PermissionDenied
     secoes = Secao.objects.secao_pai()\
         .filter(local_votacao__local__pk=int(id_local)).order_by('num_secao')
     for secao in secoes:
@@ -257,8 +259,14 @@ def secao_selecionar_secoes(request, id_local):
 @eleicao_required
 def equipe_index(request):
     titulo = u'Equipes'
-    equipes = Equipe.objects.filter(eleicao = request.eleicao_atual)
+    equipes = Equipe.objects.filter(eleicao = request.eleicao_atual).order_by('nome')
     return render(request, 'eleicao/equipe/index.html', locals())
+
+@eleicao_required
+def equipe_detalhar(request, id_equipe):
+    equipe = get_object_or_404(Equipe, pk=int(id_equipe))
+    titulo = equipe.nome
+    return render(request, 'eleicao/equipe/detalhar.html', locals())
 
 @eleicao_required
 def equipe_cadastrar(request):
@@ -278,9 +286,9 @@ def equipe_cadastrar(request):
     return render(request, 'eleicao/equipe/form.html', locals())
 
 @eleicao_required
-def equipe_editar(request, pk_equipe):
+def equipe_editar(request, id_equipe):
     titulo = u'Editar Equipe'
-    equipe = get_object_or_404(Equipe, pk=int(pk_equipe))
+    equipe = get_object_or_404(Equipe, pk=int(id_equipe))
     if request.method == 'POST':
         form = EquipeForm(request.POST, instance=equipe)
         # check whether it's valid:
@@ -292,3 +300,18 @@ def equipe_editar(request, pk_equipe):
     else:
         form = EquipeForm(instance=equipe)
     return render(request, 'eleicao/equipe/form.html', locals())
+
+def equipe_excluir(request, id_equipe):
+    if not request.is_ajax():
+        raise PermissionDenied
+    try:
+        equipe = Equipe.objects.get(pk=int(id_equipe))
+        equipe.local_equipe.clear()
+        equipe.delete()
+        return NotifyResponse('Deletado com sucesso', theme='sucesso')
+    except:
+        return NotifyResponse('Erro ao deletar', theme='erro')
+    
+def equipe_selecionar_locais(request, id_equipe):
+    equipe = get_object_or_404(Equipe, pk=int(id_equipe))
+    

@@ -14,13 +14,20 @@
   <tr>
     <th>Equipe</th>
     <th>Eleição</th>
+    <th><th>
   </tr>
   </thead>
   <tbody>
   {% for equipe in equipes %}
   <tr>
-    <td>{{equipe.nome}}</td>
-    <td>{{equipe.eleicao}}</td>
+    <td><a href="{{ equipe.get_absolute_url }}">{{ equipe.nome }}</a></td>
+    <td>{{ equipe.eleicao }}</td>
+    <td>
+	    <div class="btn-group btn-group-xs"  style="float:right;">
+	        <a href="{% url 'equipe:editar' equipe.pk %}" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span>Editar</a>
+	        <a href="javascript:void(0);" data-id="{{equipe.id}}" class="btn btn-danger btn-xs delete"><span class="glyphicon glyphicon-trash"></span>Excluir</a>
+	    </div>
+    </td>
   </tr>
   {% endfor %}
   </tbody>
@@ -31,5 +38,6 @@
 {% endblock %}
 
 {%block extrascripts %}
-	<script src="{% static 'eleicao/js/eleicao/index.js' %}"></script>
+	<script src="{% static 'eleicao/js/equipe/index.js' %}"></script>
+	<script src="{% static 'eleicao/js/classes/Equipe.js' %}"></script>
 {% endblock %}
