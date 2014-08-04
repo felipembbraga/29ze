@@ -21,6 +21,14 @@ class Eleicao(models.Model):
     def __unicode__(self):
         return self.nome
     
+    def get_total_local(self):
+        locais = self.locais.all()
+        count = 0
+        for local in locais:
+            if local.localvotacao_set.all()[0].get_total_eleitores() == 0:
+                continue
+            count += 1
+        return count
     def get_total_eleitores(self):
         return self.secao_set.aggregate(models.Sum('num_eleitores')).get('num_eleitores__sum')
         

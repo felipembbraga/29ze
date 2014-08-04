@@ -7,7 +7,7 @@
 {% block container %}
 
 <div class="row">
-	<div class="col-md-3"><label>Total de locais: </label>{{ eleicao_atual.locais.count }}</div>
+	<div class="col-md-3"><label>Total de locais: </label>{{ eleicao_atual.get_total_local }}</div>
 	<div class="col-md-3"><label>Total de seções: </label>{{ eleicao_atual.secao_set.count }}</div>
 	<div class="col-md-3"><label>Total de seções c/ agregações: </label>{{ eleicao_atual.secao_set.secao_pai.count }}</div>
 	<div class="col-md-3"><label>Total de eleitores: </label>{{ eleicao_atual.get_total_eleitores }}</div>
