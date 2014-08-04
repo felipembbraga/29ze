@@ -2,10 +2,35 @@
 
 {% block report %}
     {% for secao in secoes %}
-        <div class="row">
-            <div class="col-md-6"><strong>Seção: </strong> {{ secao.unicode_agregadas }} </div>
-            <div class="col-md-6"><strong>Local: </strong> {{ secao.local_votacao.local.nome }} </div>
+        <div class="row" style="margin-bottom:10px;">
+            <div class="col-md-4"><strong>Seção: </strong> {{ secao.unicode_agregadas }} </div>
+            <div class="col-md-4"><strong>Local: </strong> {{ secao.local_votacao.local.nome }} </div>
+            <div class="col-md-4"><strong>Quantidade de eleitores: </strong> {{ secao.get_total_eleitores }} </div>
         </div>
+        
+        <table class="table table-bordered tabela-impressao">
+            <thead>
+                <tr>
+                    <th>Seção</th>
+                    <th>Local</th>
+                    <th>Nº eleitores</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ secao.num_secao }}</td>
+                    <td>{{ secao.local_votacao.local.nome }}</td>
+                    <td>{{ secao.num_eleitores }}</td>
+                </tr>
+                
+                {% for s in secao.secao_secoes_agregadas.all %}
+                    <tr>
+	                    <td>{{ s.num_secao }}</td>
+	                    <td>{{ s.local_votacao.local.nome }}</td>
+	                    <td>{{ s.num_eleitores }}</td>
+	                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
             
     {% endfor %}
 {% endblock %}
