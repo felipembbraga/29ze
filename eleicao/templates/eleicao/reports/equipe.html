@@ -1,10 +1,6 @@
 {% extends 'base_relatorio.html' %}
-{% block botoes %}
-{{ block.super }}
-<a href="{% url 'eleicao-report:local-mala-direta' %}" class="btn btn-default btn-xs">Exportar XLS</a>
-{% endblock %}
+
 {% block report %}
-{% for equipe in equipes %}
 <div class="page-header">
   <h2>{{ equipe }}</h2>
 </div>
@@ -75,6 +71,5 @@
 </tbody>
 </table>
 {% endif %}
-{% endfor %}
 {% endfor %}
 {% endblock %}

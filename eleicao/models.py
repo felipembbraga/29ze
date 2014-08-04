@@ -173,6 +173,18 @@ class Equipe(models.Model):
     def get_absolute_url(self):
         return ('equipe:detalhar', [str(self.id)])
     
+    def get_total_secoes(self):
+        soma = 0
+        for local in self.local_equipe.all():
+            soma += local.secao_set.secao_pai().count()
+        return soma
+    
+    def get_total_eleitores(self):
+        soma = 0
+        for local in self.local_equipe.all():
+            soma += local.secao_set.secao_pai().aggregate(soma_agregados=models.Sum('num_eleitores')).get('soma_agregados')
+        return soma
+    
     
 class Cargo(models.Model):
     nome = models.CharField(max_length=50)

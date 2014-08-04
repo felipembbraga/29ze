@@ -1,67 +1,75 @@
 {% extends 'base_relatorio.html' %}
 
 {% block report %}
-{% for local in locais %}
-{% if local.get_total_eleitores > 0 %}
-<table class="table table-bordered">
-<tbody>
-<tr>
-<td><div class="row">
-    <div class="col-md-2">
-        <label>Código: </label> {{ local.local.get_id_local }}
-    </div>
-    <div class="col-md-6">
-        <label>Local: </label> {{ local.local.nome }}
-    </div>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<table class="table table-striped" style="margin-bottom:0;">
-    <thead>
-        <tr>
-            <th width = "35%">Endereço</th>
-            <th width = "20%">Bairro</th>
-            <th width="11%">Nº Seções</th>
-            <th width="22%">Nº Seções c/ Agregação</th>
-            <th width="12%">Nº Eleitores</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>{{ local.local.endereco }}</td>
-            <td>{{ local.local.bairro }}</td>
-            <td>{{ local.secao_set.count }}</td>
-            <td>{{ local.get_count_secao_agregadas }}</td>
-            <td>{{ local.get_total_eleitores }}</td>
-        </tr>
-        <tr>
-            <td colspan="2" style="padding-bottom: 0;">
-                <table class="table table-bordered" style="margin-bottom:2;">
-                <thead>
-	                <tr>
-	                    <th width="50%">Nº Seção</th>
-	                    <th width = "50%">Quantidades de eleitores</th>
-	                </tr>
-	            </thead>
-	            <tbody>
-	            {% for secao in local.secao_set.secao_pai %}
-	               <tr>
-	                   <td>{{secao.unicode_agregadas}}</td>
-	                   <td>{{secao.get_total_eleitores}}</td>
-	               </tr>
-	            {% endfor %}
-	            </tbody>
-                </table>
-            </td>
-        </tr>
-    </tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-{% endif %}
-{% endfor %}
+
+	<div class="row">
+	    <div class="col-md-3"><label>Total de locais: </label>{{ eleicao_atual.locais.count }}</div>
+	    <div class="col-md-3"><label>Total de seções: </label>{{ eleicao_atual.secao_set.count }}</div>
+	    <div class="col-md-3"><label>Total de seções c/ agregações: </label>{{ eleicao_atual.secao_set.secao_pai.count }}</div>
+	    <div class="col-md-3"><label>Total de eleitores: </label>{{ eleicao_atual.get_total_eleitores }}</div>
+	</div>
+    {% for local in locais %}
+        {% if local.get_total_eleitores > 0 %}
+			<table class="table table-bordered tabela-impressao">
+				<tbody>
+					<tr>
+						<td>
+							<div class="row">
+							    <div class="col-md-2">
+							        <label>Código: </label> {{ local.local.get_id_local }}
+							    </div>
+							    <div class="col-md-6">
+							        <label>Local: </label> {{ local.local.nome }}
+							    </div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<table class="table table-bordered tabela-impressao" style="margin-bottom:0;">
+							    <thead>
+							        <tr>
+							            <th width = "35%">Endereço</th>
+							            <th width = "20%">Bairro</th>
+							            <th width="11%">Nº Seções</th>
+							            <th width="22%">Nº Seções c/ Agregação</th>
+							            <th width="12%">Nº Eleitores</th>
+							        </tr>
+							    </thead>
+							    <tbody>
+							        <tr>
+							            <td>{{ local.local.endereco }}</td>
+							            <td>{{ local.local.bairro }}</td>
+							            <td>{{ local.secao_set.count }}</td>
+							            <td>{{ local.get_count_secao_agregadas }}</td>
+							            <td>{{ local.get_total_eleitores }}</td>
+							        </tr>
+							        <tr>
+							            <td colspan="2" style="padding-bottom: 0;">
+							                <table class="table table-bordered tabela-impressao" style="margin-bottom:2;">
+							                <thead>
+								                <tr>
+								                    <th width="50%">Nº Seção</th>
+								                    <th width = "50%">Quantidades de eleitores</th>
+								                </tr>
+								            </thead>
+								            <tbody>
+								            {% for secao in local.secao_set.secao_pai %}
+								               <tr>
+								                   <td>{{secao.unicode_agregadas}}</td>
+								                   <td>{{secao.get_total_eleitores}}</td>
+								               </tr>
+								            {% endfor %}
+								            </tbody>
+							                </table>
+							            </td>
+							        </tr>
+							    </tbody>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+        {% endif %}
+    {% endfor %}
 {% endblock %}

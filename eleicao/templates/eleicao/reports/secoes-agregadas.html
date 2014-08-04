@@ -1,0 +1,11 @@
+{% extends 'base_relatorio.html' %}
+
+{% block report %}
+    {% for secao in secoes %}
+        <div class="row">
+            <div class="col-md-6"><strong>Seção: </strong> {{ secao.unicode_agregadas }} </div>
+            <div class="col-md-6"><strong>Local: </strong> {{ secao.local_votacao.local.nome }} </div>
+        </div>
+            
+    {% endfor %}
+{% endblock %}

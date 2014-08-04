@@ -33,10 +33,12 @@ class Local(models.Model):
 
 #classes referente a veículos
 class Marca(models.Model):
-    nome = models.CharField(max_length=30)
+    id = models.IntegerField(primary_key=True)
+    nome = models.CharField(max_length=100)
         
 class Modelo(models.Model):
-    nome = models.CharField(u'Modelo do veículo', max_length = 30)
-    marca = models.ForeignKey(Marca, verbose_name='Marca do veículo')
+    id = models.IntegerField(primary_key=True)
+    nome = models.CharField(u'Modelo do veículo', max_length = 100)
+    marca = models.ForeignKey(Marca, verbose_name='Marca do veículo', related_name='modelo_marca')
     
 

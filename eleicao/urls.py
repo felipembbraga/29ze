@@ -36,7 +36,9 @@ reports_patterns = [
     url(r'^local-equipe/$', relatorio_local_equipe, name='local-equipe'),
     url(r'^local-mala-direta/$', relatorio_local_mala_direta, name='local-mala-direta'),
     url(r'^secao-ordenado/$', relatorio_secao_ordenado, name='secao-ordenado'),
+    url(r'^secoes-agregadas/$', relatorio_secoes_agregadas, name='secoes-agregadas'),
     url(r'^secao-ordenado-xls/$', relatorio_secao_ordenado_xls, name='secao-ordenado-xls'),
+    url(r'^equipe/(\d+)/$', relatorio_equipe, name='equipe'),
 ]
 
 

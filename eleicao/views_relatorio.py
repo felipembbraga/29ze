@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from models import LocalVotacao, Equipe, Secao
 from excel_response import ExcelResponse
@@ -57,3 +57,11 @@ def relatorio_secao_ordenado_xls(request):
         data.append([secao.num_secao, local, secao.get_endereco(), secao.get_bairro()])
             
     return ExcelResponse(data, 'secoes_ordenadas')
+
+def relatorio_secoes_agregadas(request):
+    secoes = Secao.objects.filter(eleicao=request.eleicao_atual, principal=True)
+    return render(request, 'eleicao/reports/secoes-agregadas.html', locals())
+
+def relatorio_equipe(request, id_equipe):
+    equipe = get_object_or_404(Equipe, pk=int(id_equipe))
+    return render(request, 'eleicao/reports/equipe.html', locals())
