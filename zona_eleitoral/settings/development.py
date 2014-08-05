@@ -3,6 +3,7 @@ from zona_eleitoral.base_settings import *
 MY_APPS = (
     'core',
     'eleicao',
+    'acesso'
 )
 
 INSTALLED_APPS = INSTALLED_APPS + MY_APPS
@@ -22,5 +23,8 @@ DATABASES = {
         'PASSWORD': 'qwerasdf'
     }
 }
+
+LOGIN_URL = 'acesso:login'
+LOGIN_REDIRECT_URL='home'
 
 WSGI_APPLICATION = 'zona_eleitoral.deploy.wsgi-dev.application'

@@ -3,6 +3,7 @@ import csv
 import json
 from core.models import Local
 from decorators import eleicao_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
@@ -18,10 +19,6 @@ from middleware import definir_eleicao_padrao
 from utils.Response import NotifyResponse
 from django.contrib import messages
 
-
-
-def javascript(request, nome_arquivo):
-    return render(request, 'js/'+nome_arquivo, content_type='text/javascript')
 
 def ler_csv(request, f):
     if request.eleicao_atual == None:
@@ -73,6 +70,8 @@ def ler_csv(request, f):
 
 #Módulo de eleição
 
+@login_required
+@permission_required('eleicao.add_eleicao', raise_exception=True)
 def eleicao_cadastrar(request):
     titulo = u'Cadastrar Eleição'
     if request.method == 'POST':
@@ -89,6 +88,9 @@ def eleicao_cadastrar(request):
         form = EleicaoForm()
     return render(request, 'eleicao/eleicao/form.html', locals())
 
+
+@login_required
+@permission_required('eleicao.change_eleicao', raise_exception=True)
 def eleicao_editar(request, id_eleicao):
     titulo = u'Editar Eleição'
     eleicao = Eleicao.objects.get(pk=int(id_eleicao))
@@ -107,6 +109,9 @@ def eleicao_editar(request, id_eleicao):
     return render(request, 'eleicao/eleicao/form.html', locals())
 
 
+
+@login_required
+@permission_required('eleicao.view_eleicao', raise_exception=True)
 def eleicao_index(request):
     titulo = u'Eleições'
     eleicoes = Eleicao.objects.all().order_by('-atual','data_turno_1', 'data_turno_2')
@@ -114,6 +119,9 @@ def eleicao_index(request):
 
 
 #Módulo de locais
+
+@login_required
+@permission_required('eleicao.import_local_votacao', raise_exception=True)
 @eleicao_required
 def local_importar(request):
     titulo = u'Importar Locais de Votação'
@@ -131,6 +139,8 @@ def local_importar(request):
     return render(request, 'eleicao/local_votacao/importar.html', locals())
 
 
+@login_required
+@permission_required('eleicao.view_local_votacao', raise_exception=True)
 @eleicao_required
 def local_index(request):
     titulo = u'Locais de Votação'
@@ -161,6 +171,9 @@ def local_index(request):
     
     return render(request, 'eleicao/local_votacao/index.html', locals())
 
+
+@login_required
+@permission_required('eleicao.detail_local_votacao', raise_exception=True)
 @ensure_csrf_cookie
 def local_detalhar(request, id_local):
     titulo = u'Local'
@@ -168,6 +181,9 @@ def local_detalhar(request, id_local):
     #raise Exception(form['pk_secao'])
     return render(request, 'eleicao/local_votacao/detalhar.html', locals())
 
+
+@login_required
+@permission_required('eleicao.change_localvotacao', raise_exception=True)
 @eleicao_required
 def local_definir_equipe(request, id_local):
     local = get_object_or_404(LocalVotacao, pk=int(id_local))
@@ -190,6 +206,9 @@ def local_definir_equipe(request, id_local):
         form = LocalEquipeForm(request, {'equipe': local.equipe and local.equipe.pk or ''})
     return render(request, 'eleicao/local_votacao/definir_equipe.html', locals())
 
+
+@login_required
+@permission_required('eleicao.agg_secao', raise_exception=True)
 def secao_agregar(request):
     if not request.is_ajax():
         raise PermissionDenied
@@ -215,6 +234,9 @@ def secao_agregar(request):
         return NotifyResponse('Erro ao desagregar', theme='erro', lista=[e.message,])
     return NotifyResponse('formulario não válido', theme='erro')
 
+
+@login_required
+@permission_required('eleicao.agg_secao', raise_exception=True)
 def secao_desagregar(request, id_secao):
     if not request.is_ajax():
         raise PermissionDenied
@@ -225,6 +247,9 @@ def secao_desagregar(request, id_secao):
         return NotifyResponse('Erro ao desagregar', theme='erro', lista=[e.message,])
     return NotifyResponse('Desagregação feita com sucesso', theme='sucesso')
 
+
+@login_required
+@permission_required('eleicao.agg_secao', raise_exception=True)
 @eleicao_required
 def secao_agregar_externo(request, id_secao):
     FormClass = SecaoAgregarExternoForm
@@ -251,7 +276,10 @@ def secao_agregar_externo(request, id_secao):
         form = SecaoAgregarExternoForm(locais)
     
     return render(request, 'eleicao/local_votacao/form.html', locals())
-    
+
+
+@login_required
+@permission_required('eleicao.agg_secao', raise_exception=True)
 def secao_selecionar_secoes(request, id_local):
     if not request.is_ajax():
         raise PermissionDenied
@@ -262,19 +290,26 @@ def secao_selecionar_secoes(request, id_local):
     resposta = serializers.serialize('json', secoes, fields=('pk', 'num_secao', 'secoes_agregadas'))
     #raise Exception(resposta)
     return HttpResponse(resposta, mimetype='application/json')
-    
+
+@login_required
 @eleicao_required
+@permission_required(u'eleicao.view_equipe', raise_exception=True)
 def equipe_index(request):
     titulo = u'Equipes'
     equipes = Equipe.objects.filter(eleicao = request.eleicao_atual).order_by('nome')
     return render(request, 'eleicao/equipe/index.html', locals())
 
+
+@login_required
+@permission_required('eleicao.detail_equipe', raise_exception=True)
 @eleicao_required
 def equipe_detalhar(request, id_equipe):
     equipe = get_object_or_404(Equipe, pk=int(id_equipe))
     titulo = equipe.nome
     return render(request, 'eleicao/equipe/detalhar.html', locals())
 
+@login_required
+@permission_required('eleicao.add_equipe', raise_exception=True)
 @eleicao_required
 def equipe_cadastrar(request):
     titulo = u'Cadastrar Equipe'
@@ -292,6 +327,8 @@ def equipe_cadastrar(request):
         form = EquipeForm()
     return render(request, 'eleicao/equipe/form.html', locals())
 
+@login_required
+@permission_required('equipe.change_equipe')
 @eleicao_required
 def equipe_editar(request, id_equipe):
     titulo = u'Editar Equipe'
@@ -308,6 +345,8 @@ def equipe_editar(request, id_equipe):
         form = EquipeForm(instance=equipe)
     return render(request, 'eleicao/equipe/form.html', locals())
 
+@login_required
+@permission_required('eleicao.delete_equipe', raise_exception=True)
 def equipe_excluir(request, id_equipe):
     if not request.is_ajax():
         raise PermissionDenied
@@ -318,7 +357,10 @@ def equipe_excluir(request, id_equipe):
         return NotifyResponse('Deletado com sucesso', theme='sucesso')
     except:
         return NotifyResponse('Erro ao deletar', theme='erro')
-    
+
+
+@login_required
+@permission_required('eleicao.change_localvotacao', raise_exception=True)
 def equipe_selecionar_locais(request, id_equipe):
     equipe = get_object_or_404(Equipe, pk=int(id_equipe))
     

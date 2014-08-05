@@ -1,10 +1,8 @@
-from models import Usuario, Grupo, Permissao
-from zona_eleitoral.utils import custom_admin as admin
+from models import Permissao
+from django.contrib import admin
+from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 
 # Register your models here.
 
-admin.site.register(Usuario)
-admin.site.register(Grupo)
 admin.site.register(Permissao)
-admin.site.register(ContentType)

@@ -1,0 +1,4 @@
+#!/bin/bash
+DJANGO_DIR=`pwd`/..
+
+echo $DJANGO_DIR

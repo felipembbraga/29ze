@@ -39,6 +39,11 @@
                         <ul class="nav navbar-nav">
                             {% include 'menu.html' %}
                         </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><span class="navbar-brand">Olá, {{ user }}</span></li>
+                            <li><a href="{% url 'acesso:logout' %}">Sair</a></li>
+                        </ul>
+        
                     </div><!--/.nav-collapse -->
                 </div>
             </div>

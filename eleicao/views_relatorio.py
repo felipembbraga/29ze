@@ -1,18 +1,22 @@
 #-*- coding: utf-8 -*-
 
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required, permission_required
 from models import LocalVotacao, Equipe, Secao
 from excel_response import ExcelResponse
 
+@login_required
+@permission_required('eleicao.view_local_votacao', raise_exception=True)
 def relatorio_local_geral(request):
     locais = LocalVotacao.objects.filter(eleicao=request.eleicao_atual).order_by('local__nome').select_related()
     return render(request, 'eleicao/reports/local_geral.html', locals())
 
+@permission_required('eleicao.view_equipe', raise_exception=True)
 def relatorio_local_equipe(request):
     equipes = Equipe.objects.filter(eleicao=request.eleicao_atual).order_by('nome').select_related()
     return render(request, 'eleicao/reports/local_equipe.html', locals())
 
+@permission_required('eleicao.view_equipe', raise_exception=True)
 def relatorio_local_mala_direta(request):
     locais = LocalVotacao.objects.filter(eleicao=request.eleicao_atual).order_by('local__nome').select_related()
     cabecalho = ['equipe', 'num_local', 'nome_local', 'endereco', 'bairro', 'total_eleitores', 'secoes']
@@ -42,10 +46,12 @@ def relatorio_local_mala_direta(request):
             
     return ExcelResponse(data, 'locais_mala_direta')
 
+@permission_required('eleicao.view_local_votacao', raise_exception=True)
 def relatorio_secao_ordenado(request):
     secoes = Secao.objects.filter(eleicao=request.eleicao_atual).order_by('num_secao')
     return render(request, 'eleicao/reports/secao_ordenado.html', locals())
 
+@permission_required('eleicao.view_local_votacao', raise_exception=True)
 def relatorio_secao_ordenado_xls(request):
     secoes = Secao.objects.filter(eleicao=request.eleicao_atual).order_by('num_secao')
     cabecalho = ['numero_secao', 'local', 'endereco', 'bairro']
@@ -58,10 +64,12 @@ def relatorio_secao_ordenado_xls(request):
             
     return ExcelResponse(data, 'secoes_ordenadas')
 
+@permission_required('eleicao.view_local_votacao', raise_exception=True)
 def relatorio_secoes_agregadas(request):
     secoes = Secao.objects.filter(eleicao=request.eleicao_atual, principal=True)
     return render(request, 'eleicao/reports/secoes-agregadas.html', locals())
 
+@permission_required('eleicao.detail_equipe', raise_exception=True)
 def relatorio_equipe(request, id_equipe):
     equipe = get_object_or_404(Equipe, pk=int(id_equipe))
     return render(request, 'eleicao/reports/equipe.html', locals())

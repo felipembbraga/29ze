@@ -14,6 +14,12 @@ class Eleicao(models.Model):
     eleitores = models.ManyToManyField(Pessoa, through = 'Eleitor', related_name='eleicao_eleitores')
     locais = models.ManyToManyField(Local, through = 'LocalVotacao', related_name='eleicao_locais')
     
+    class Meta:
+        permissions = [
+                       ('view_eleicao', u'Visualizar Eleições'),
+                       ('view_old_eleicao', u'Visualizar Eleição Anterior'),
+                       ]
+    
     @models.permalink
     def get_absolute_url(self):
         return ('eleicao:editar', [str(self.id)])
@@ -44,6 +50,12 @@ class LocalVotacao(models.Model):
     eleicao = models.ForeignKey(Eleicao)
     local = models.ForeignKey(Local)
     equipe = models.ForeignKey('Equipe', related_name='local_equipe', blank=True, null=True)
+    
+    class Meta:
+        permissions = [
+                       ('view_local_votacao', u'Visualizar Locais de Votação'),
+                       ('import_local_votacao', u'Importar Locais de Votação'),
+                       ]
     
     def __unicode__(self):
         return unicode(self.local.nome)
@@ -90,6 +102,9 @@ class Secao(models.Model):
     
     class Meta:
         unique_together = ('num_secao', 'eleicao')
+        permissions = [
+                       ('agregar_secao', u'Agregar/desagregar Seção'),
+                       ]
     
     def __unicode__(self):
         return unicode(self.num_secao) + (self.especial and u'*' or u'')
@@ -173,6 +188,11 @@ class Partido(models.Model):
 class Equipe(models.Model):
     nome = models.CharField(max_length=100)
     eleicao = models.ForeignKey(Eleicao, related_name='equipe_eleicao')
+    
+    class Meta:
+        permissions=[
+                     ('view_equipe', 'Visualizar Equipes'),
+                     ]
     
     def __unicode__(self):
         return unicode(self.nome)
