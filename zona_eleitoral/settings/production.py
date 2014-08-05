@@ -3,6 +3,7 @@ from zona_eleitoral.base_settings import *
 MY_APPS = (
     'core',
     'eleicao',
+    'acesso',
 )
 
 INSTALLED_APPS = INSTALLED_APPS + MY_APPS
@@ -22,6 +23,10 @@ DATABASES = {
         'PASSWORD': 'swordfish0001'
     }
 }
+
+LOGIN_URL = 'acesso:login'
+LOGIN_REDIRECT_URL='home'
+
 ALLOWED_HOSTS = ['*']
 DEBUG = True
 
