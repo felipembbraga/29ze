@@ -32,7 +32,6 @@
     <li class="dropdown-header">Seções</li>
     <li><a href="{% url 'eleicao-report:secao-ordenado' %}">Seções ordenadas</a></li>
     <li><a href="{% url 'eleicao-report:secoes-agregadas' %}">Seções agregadas</a></li>
-
   </ul>
 </li>
 {% endif %}
@@ -44,6 +43,11 @@
     <li class="dropdown-header">Eleições</li>
     <li><a href="{% url "eleicao:index" %}">Listar</a></li>
     <li><a href="{% url "eleicao:cadastrar" %}">Cadastrar</a></li>
+        {% if user.is_superuser %}
+    <li class="divider"></li>
+    <li class="dropdown-header">Acesso</li>
+    <li><a href="{% url 'admin:index' %}">Controle de acesso</a></li>
+    {% endif %}
   </ul>
 </li>
 {% endif %}
