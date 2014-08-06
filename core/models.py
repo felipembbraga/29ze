@@ -8,16 +8,14 @@ class Pessoa(models.Model):
     u'''
     Classe referente aos dados gerais de Pessoa física
     '''
-    titulo_eleitoral = models.CharField(u'Título Eleitoral', max_length=12)
+    titulo_eleitoral = models.CharField(u'Título Eleitoral', max_length=12, unique=True)
     nome = models.CharField('Nome do eleitor', max_length=100)
-    data_nascimento = models.DateField('Data de Nascimento')
-    endereco = models.CharField(u'Endereço Residencial', max_length=150)
-    cep = models.CharField('CEP', max_length=9)
+    data_nascimento = models.DateField('Data de Nascimento', null=True, blank=True)
+    endereco = models.CharField(u'Endereço Residencial', max_length=150, null=True, blank=True)
+    cep = models.CharField('CEP', max_length=9, null=True, blank=True)
     telefone = models.CharField('Telefone', max_length=11, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
     data_cadastro = models.DateTimeField(default=datetime.datetime.now())
-    class Meta:
-        unique_together = ('titulo_eleitoral',)
     
 class Local(models.Model):
     u'''

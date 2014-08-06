@@ -41,7 +41,7 @@
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li><span class="navbar-brand">Olá, {{ user }}</span></li>
-                            <li><a href="{% url 'acesso:logout' %}">Sair</a></li>
+                            <li><a href="{% if user.is_orgao %}{% url 'acesso:logout-veiculos' %}{% else %}{% url 'acesso:logout' %}{%endif%}">Sair</a></li>
                         </ul>
         
                     </div><!--/.nav-collapse -->

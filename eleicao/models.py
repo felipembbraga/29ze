@@ -40,7 +40,7 @@ class Eleicao(models.Model):
         
 
 @receiver(post_save, sender=Eleicao)
-def eleicao_pre_save(signal, instance, sender, **kwargs):
+def eleicao_post_save(signal, instance, sender, **kwargs):
     
     if instance.atual:
         sender.objects.exclude(pk=instance.pk).update(atual=False)

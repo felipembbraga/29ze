@@ -2,6 +2,8 @@
 
 {% block container %}
 
-
+{% if not 'eleicao' in perms %}
+    <p>Você não tem acesso a esta parte. clique <a href="#" onclick="history.back();">aqui</a> para voltar.</p> 
+{% endif %}
 
 {% endblock %}

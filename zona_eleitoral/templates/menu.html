@@ -35,21 +35,20 @@
   </ul>
 </li>
 {% endif %}
-
-{% if perms.eleicao.add_eleicao or perms.eleicao.view_eleicao  %}
+{% endif %}
+{% if user.is_superuser %}
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administração<span class="caret"></span></a>
   <ul class="dropdown-menu" role="menu">
     <li class="dropdown-header">Eleições</li>
     <li><a href="{% url "eleicao:index" %}">Listar</a></li>
     <li><a href="{% url "eleicao:cadastrar" %}">Cadastrar</a></li>
-        {% if user.is_superuser %}
+        
     <li class="divider"></li>
     <li class="dropdown-header">Acesso</li>
     <li><a href="{% url 'admin:index' %}">Controle de acesso</a></li>
-    {% endif %}
+
   </ul>
 </li>
 {% endif %}
 
-{% endif %}

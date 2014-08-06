@@ -1,0 +1,50 @@
+{% extends 'veiculos/base.html' %}
+{% load static from staticfiles %}
+
+{% block extrastyle %}
+<style>
+.placeholders {
+  margin-bottom: 30px;
+  text-align: center;
+}
+.placeholders h4 {
+  margin-bottom: 0;
+}
+.placeholder {
+  float: automatic  ;
+  margin-bottom: 20px;
+}
+.placeholder img {
+  display: inline-block;
+}
+</style>
+{% endblock %}
+
+{% block container %}
+<div class="row placeholders">
+    <div class="col-md-3 placeholder">
+    <a href="#">
+    <img src="{% static 'veiculos/img/add.png' %}"  height="100" width="100" alt="Adicionar Veículo" class="img-rounded"></img>
+    </a>
+    <h4>Cadastrar Veículo</h4>
+    </div>
+    <div class="col-md-3 placeholder">
+    <a href="#">
+    <img src="{% static 'veiculos/img/edit.png' %}"  height="100" width="100" alt="Adicionar Veículo" class="img-rounded"></img>
+    </a>
+    <h4>Editar Veículos</h4>
+    </div>
+    <div class="col-md-3 placeholder">
+    <a href="#">
+    <img src="{% static 'veiculos/img/report.png' %}"  height="100" width="100" alt="Adicionar Veículo" class="img-rounded"></img>
+    </a>
+    <h4>Gerar Relatório</h4>
+    </div>
+    <div class="col-md-3 placeholder">
+    <a href="#">
+    <img src="{% static 'veiculos/img/info.png' %}"  height="100" width="100" alt="Adicionar Veículo" class="img-rounded"></img>
+    </a>
+    <h4>Informações</h4>
+    </div>
+</div>
+{% endblock %}
