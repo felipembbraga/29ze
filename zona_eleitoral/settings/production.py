@@ -4,6 +4,7 @@ MY_APPS = (
     'core',
     'eleicao',
     'acesso',
+    'veiculos'
 )
 
 INSTALLED_APPS = INSTALLED_APPS + MY_APPS
@@ -26,6 +27,9 @@ DATABASES = {
 
 LOGIN_URL = 'acesso:login'
 LOGIN_REDIRECT_URL='home'
+AUTHENTICATION_BACKENDS = ('acesso.backends.OrgaoBackend',
+                           'django.contrib.auth.backends.ModelBackend',
+                           )
 
 ALLOWED_HOSTS = ['*']
 DEBUG = True
