@@ -26,7 +26,7 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
-SESSION_COOKIE_AGE = 3600
+SESSION_COOKIE_AGE = 86400
 
 # Application definition
 

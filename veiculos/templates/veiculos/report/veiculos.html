@@ -8,11 +8,93 @@
 <div class="row">
     <strong>Órgão:</strong> {{user.nome_secretaria}} <br />
     <strong>Responsável:</strong> {{user.responsavel}} <br />
-    <strong>Endereco:</strong> {{user.endereco}} <br />
+    {% if user.responsavel_info %}<strong>Responsável pela Informação:</strong> {{user.responsavel_info}} <br />{% endif %}
+    {% if user.endereco %}<strong>Endereco:</strong> {{user.endereco}} <br />{% endif %}
     {% if user.tel_comercial %}<strong>Telefone comercial:</strong> {{user.tel_comercial}}{% endif %}
     {% if user.tel_residencial %}<strong>Telefone residencial:</strong> {{user.tel_residencial}}{% endif %}
     {% if user.tel_celular %}<strong>Telefone celular:</strong> {{user.tel_celular}}{% endif %}<br />
 </div>
 {% endif %}
 
+{% for veiculo in veiculos %}
+    <div class="pagina">
+        <div class="titulo">
+            <h2>Veículo {{ forloop.counter }}</h2>
+        </div>
+
+	    <table class="table table-bordered" >
+	        <tbody>
+	            <tr>
+	                <td>
+						    <label style="margin-bottom:3px;"><small>Placa</small></label>
+						    <p class="form-control-static" style="padding:0;">{{ veiculo.placa|upper }}</p>
+	                </td>
+	                <td>
+	                        <label style="margin-bottom:3px;"><small>Marca</small></label>
+	                        <p class="form-control-static" style="padding:0;">{{ veiculo.marca|upper }}</p>
+	                </td>
+	                <td colspan="2">
+	                        <label style="margin-bottom:3px;"><small>Modelo</small></label>
+	                        <p class="form-control-static" style="padding:0;">{{ veiculo.modelo|upper }}</p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="10%">
+	                        <label style="margin-bottom:3px;"><small>Ano</small></label>
+	                        <p class="form-control-static" style="padding:0;">{{ veiculo.get_ano }}</p>
+	                </td>
+	                <td width="30%">
+	                        <label style="margin-bottom:3px;"><small>Tipo de Veículo</small></label>
+	                        <p class="form-control-static" style="padding:0;">{{ veiculo.get_tipo|upper }}</p>
+	                </td>
+	                <td width="20%">
+	                    <label style="margin-bottom:3px;"><small>Lotação</small></label>
+	                    <p class="form-control-static" style="padding:0;">{{ veiculo.lotacao }}</p>
+	                </td>
+	                <td width="40%">
+	                    <label style="margin-bottom:3px;"><small>Estado</small></label>
+	                    <p class="form-control-static" style="padding:0;">{{ veiculo.get_estado|upper }}</p>
+	                </td>
+	            </tr>
+	            <tr style="background-color:#EEE">
+	                <td colspan="4">
+	                    <p class="form-control-static text-center" style="padding:0;"><strong>DADOS DO MOTORISTA</strong></p>
+	                </td>
+	            </tr>
+	            {% if veiculo.motorista_titulo_eleitoral %}
+	            <tr>
+	                <td colspan="2">
+	                    <label style="margin-bottom:3px;"><small>Nº Título Eleitoral</small></label>
+	                    <p class="form-control-static" style="padding:0;">{{ veiculo.motorista_titulo_eleitoral }}</p>
+	                </td>
+	                <td colspan="2">
+	                    <label style="margin-bottom:3px;"><small>Nome</small></label>
+	                    <p class="form-control-static" style="padding:0;">{{ veiculo.motorista_nome }}</p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2">
+	                    <label style="margin-bottom:3px;"><small>Endereço</small></label>
+	                    <p class="form-control-static" style="padding:0;">{{ veiculo.endereco }}</p>
+	                </td>
+	                <td>
+	                    <label style="margin-bottom:3px;"><small>Telefone Residencial</small></label>
+	                    <p class="form-control-static" style="padding:0;">{{ veiculo.tel_residencial }}</p>
+	                </td>
+	                <td>
+	                    <label style="margin-bottom:3px;"><small>Telefone Celular</small></label>
+	                    <p class="form-control-static" style="padding:0;">{{ veiculo.tel_celular }}</p>
+	                </td>
+	            </tr>
+	            {% else %}
+	            <tr>
+	                <td colspan="4">
+	                    <p class="form-control-static text-center" style="padding:0;">SEM MOTORISTA CADASTRADO</p>
+	                </td>
+	            </tr>
+	            {% endif %}
+	        </tbody>
+	    </table>
+    </div>
+{% endfor %}
 {% endblock %}

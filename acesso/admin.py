@@ -9,7 +9,7 @@ from models import Permissao, OrgaoPublico
 
 class OrgaoPublicoAdmin(UserAdmin):
     filter_horizontal=[]
-    list_display=['sigla', 'nome_secretaria', 'responsavel']
+    list_display=['sigla', 'nome_secretaria', 'endereco', 'responsavel']
     list_filter=[]
     ordering=['nome_secretaria']
     add_form = AddOrgaoPublicoForm

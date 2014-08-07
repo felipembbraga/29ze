@@ -26,7 +26,7 @@ def info(request):
 def veiculo_cadastrar(request):
     if request.method == 'POST':
         if request.POST.get('marca') != '':
-            VeiculoForm.base_fields['modelo'].choices = [('','---------')] + list(Modelo.objects.filter(marca__pk=int(request.POST.get('marca'))).values_list('pk', 'nome'))
+            VeiculoForm.base_fields['modelo'].choices = [('','---------')] + list(Modelo.objects.filter(marca__pk=int(request.POST.get('marca'))).order_by('nome').values_list('pk', 'nome'))
         else:
             VeiculoForm.base_fields['modelo'].choices = [('','---------')]
         v = Veiculo(orgao = request.user, eleicao=request.eleicao_atual)
@@ -58,10 +58,10 @@ def veiculo_cadastrar(request):
 @login_required(login_url='acesso:login-veiculos')
 def veiculo_editar(request, id_veiculo):
     veiculo = get_object_or_404(Veiculo, pk=int(id_veiculo))
-    VeiculoForm.base_fields['modelo'].choices = [('','---------')] + list(Modelo.objects.filter(marca=veiculo.marca).values_list('pk', 'nome'))
+    VeiculoForm.base_fields['modelo'].choices = [('','---------')] + list(Modelo.objects.filter(marca=veiculo.marca).order_by('nome').values_list('pk', 'nome'))
     if request.method == 'POST':
         if request.POST.get('marca') != '':
-            VeiculoForm.base_fields['modelo'].choices = [('','---------')] + list(Modelo.objects.filter(marca__pk=int(request.POST.get('marca'))).values_list('pk', 'nome'))
+            VeiculoForm.base_fields['modelo'].choices = [('','---------')] + list(Modelo.objects.filter(marca__pk=int(request.POST.get('marca'))).order_by('nome').values_list('pk', 'nome'))
         else:
             VeiculoForm.base_fields['modelo'].choices = [('','---------')]
         form = VeiculoForm(request.POST, instance = veiculo)
@@ -105,7 +105,7 @@ def veiculo_index(request):
     return render(request, 'veiculos/veiculo/index.html', locals())
 
 def veiculo_ajax_get_modelo(request, id_marca):
-    modelos = Modelo.objects.filter(marca__pk=int(id_marca))
+    modelos = Modelo.objects.filter(marca__pk=int(id_marca)).order_by('nome')
     json = serializers.serialize('json', modelos)
     return HttpResponse(json, mimetype="application/json")
 

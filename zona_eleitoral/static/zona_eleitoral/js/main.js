@@ -16,9 +16,18 @@ function getCookie(name) {
     return cookieValue;
 }
 var csrftoken = getCookie('csrftoken');
-$(document).ready(function(){
-	BASE_URL = $('body').data('base-url');
 
+String.prototype.rjust = function(width, char) {
+	s = this;
+	
+	while(s.length < width)
+		s = char + s;
+	return s;
+}
+$(document).ready(function(){
+	
+	BASE_URL = $('body').data('base-url');
+	
 	function csrfSafeMethod(method) {
 	    // these HTTP methods do not require CSRF protection
 	    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -45,4 +54,5 @@ $(document).ready(function(){
 	$('.date').mask('99/99/9999');
 	$('.telefone').mask('(99)9999-9999');
 	$('.tooltip-iniciar').tooltip({html:true,placement:'top'});
+	
 });

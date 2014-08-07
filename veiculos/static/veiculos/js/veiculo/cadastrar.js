@@ -4,6 +4,9 @@ $(document).ready(function(){
 	$.mask.definitions['Z'] = "[a-zA-Z]";
 	$('#id_placa').mask('ZZZ-9999');
 	$('#id_motorista_titulo_eleitoral').mask('99999999999?9');
+	$('#id_motorista_titulo_eleitoral').change(function(){
+		$(this).val($(this).val().rjust(12,'0'));
+	});
 	
 	$('#form-motorista').hide();
 	if($('#id_marca').val()=='') {

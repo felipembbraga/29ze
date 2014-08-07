@@ -7,8 +7,8 @@ from eleicao.models import Eleicao
 from core.models import Marca, Modelo
 import datetime
 
-tipo_veiculo_choices = enumerate(('Passeio', 'Caminhonete', u'Caminhão', u'Micro-ônibus', 'Moto' ))
-estado_choices = enumerate((u'Ótimo','Bom','Regular',u'Sem condições de uso'))
+tipo_veiculo_choices = list(enumerate(('Passeio', 'Caminhonete', u'Caminhão', u'Micro-ônibus', 'Moto' )))
+estado_choices = list(enumerate((u'Ótimo','Bom','Regular',u'Sem condições de uso')))
 ano_choices = [(i,i) for i in range(1990, datetime.date.today().year + 1)]
 
 class Veiculo(models.Model):
@@ -23,10 +23,10 @@ class Veiculo(models.Model):
     orgao = models.ForeignKey(OrgaoPublico, related_name='veiculo_orgao')
     eleicao = models.ForeignKey(Eleicao, related_name='veiculo_eleicao')
     motorista_titulo_eleitoral = models.CharField(u'Título Eleitoral do Motorista', max_length=12, null=True)
-    motorista_nome = models.CharField('Nome do motorista', max_length=100, null=True)
+    motorista_nome = models.CharField('Nome do Motorista', max_length=100, null=True)
     endereco = models.CharField(u'Endereço Residencial', max_length=150, null=True)
-    tel_residencial = models.CharField('Telefone residencial', max_length=14, null=True)
-    tel_celular = models.CharField('Telefone celular', max_length=14, null=True)
+    tel_residencial = models.CharField('Telefone Residencial', max_length=14, null=True)
+    tel_celular = models.CharField('Telefone Celular', max_length=14, null=True, blank = True)
     
     class Meta:
         verbose_name = u'Veículo'
@@ -40,5 +40,11 @@ class Veiculo(models.Model):
     def get_absolute_url(self):
         return ('veiculo:editar', [str(self.pk)])
     
+    def get_tipo(self):
+        return dict(tipo_veiculo_choices).get(self.tipo)
+    
+    def get_estado(self):
+        return dict(estado_choices).get(self.estado)
     def get_ano(self):
         return unicode(self.ano)
+    

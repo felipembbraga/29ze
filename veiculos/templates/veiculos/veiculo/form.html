@@ -8,6 +8,10 @@
 </style>
 {% endblock %}
 {% block container %}
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-6"><h2>{% if id_veiculo %}Editar{% else %}Cadastrar{% endif %} Veículo</h2> </div>
+    </div>
     <form role="form" method="post" class="form-horizontal">
     {% csrf_token %}
         <div class="row">
@@ -186,6 +190,10 @@
                     </div>
                 </div>
 	        </div>
+	    </div>
+	    <div class="row">
+	       <div class="col-md-2"></div>
+	       <div class="col-md-4"><small>(*) Campo obrigatório</small></div>
 	    </div>
         <p class="botao-grupo">
             <button type="submit" class="btn btn-primary botao">{% if id_veiculo %}Editar{% else %}Cadastrar{% endif %}</button>

@@ -10,7 +10,7 @@ from models import Veiculo
 class VeiculoForm(forms.ModelForm):
     placa = forms.RegexField(
                         r'[A-Za-z]{3}-\d{4}',max_length=8, help_text='Ex.:ABC-1234', error_messages={'invalid' : u'Insira uma placa válida.'})
-    cadastrar_motorista = forms.BooleanField(required=False)
+    cadastrar_motorista = forms.BooleanField(initial=False,label = 'Cadastrar Motorista para o Veículo',required=False)
     
     class Meta:
         model = Veiculo

@@ -100,7 +100,7 @@ class LoginVeiculosForm(forms.Form):
     Base class for authenticating users. Extend this to get a form that accepts
     username/password logins.
     """
-    username = forms.ModelChoiceField(queryset=OrgaoPublico.objects.all(),
+    username = forms.ModelChoiceField(queryset=OrgaoPublico.objects.all().order_by('nome_secretaria'),
                                  label=u'Órgão Público',
                                  widget=forms.Select(attrs={'class':'form-control'}))
     password = forms.CharField(label="Senha",
