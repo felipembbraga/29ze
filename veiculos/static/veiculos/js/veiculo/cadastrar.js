@@ -3,7 +3,7 @@ $(document).ready(function(){
 	
 	$.mask.definitions['Z'] = "[a-zA-Z]";
 	$('#id_placa').mask('ZZZ-9999');
-	$('#id_motorista_titulo_eleitoral').mask('999999999999');
+	$('#id_motorista_titulo_eleitoral').mask('99999999999?9');
 	
 	$('#form-motorista').hide();
 	if($('#id_marca').val()=='') {
