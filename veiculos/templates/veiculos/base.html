@@ -10,9 +10,9 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="{% url 'veiculos:index' %}">
+                        <a class="navbar-brand" href="{% url 'veiculos_index' %}">
                             {% block branding %}
-                                Cadastro de Veículos
+                                Cadastro de Veículos - 29ª Zona Eleitoral
                             {% endblock %}
                         </a>
                     </div>
@@ -27,5 +27,5 @@
 {% endblock %}
 
 {% block titulo %}
-    {% firstof user.nome_secretaria user.username %}
+    {% firstof user.nome_secretaria user.username user.first_name user.username %}
 {% endblock %}

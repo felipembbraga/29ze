@@ -33,10 +33,18 @@ class Local(models.Model):
 class Marca(models.Model):
     id = models.IntegerField(primary_key=True)
     nome = models.CharField(max_length=100)
+    
+    def __unicode__(self):
+        return self.nome
         
 class Modelo(models.Model):
     id = models.IntegerField(primary_key=True)
     nome = models.CharField(u'Modelo do veículo', max_length = 100)
     marca = models.ForeignKey(Marca, verbose_name='Marca do veículo', related_name='modelo_marca')
     
+    def __unicode__(self):
+        return self.nome
+    
+    def unicode_completo(self):
+        return u'%s %s'%(unicode(self.marca), unicode(self.nome))
 

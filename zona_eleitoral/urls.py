@@ -15,5 +15,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^custom_admin/', include(custom_admin.site.urls)),
     url(r'^eleicao/', include('eleicao.urls', app_name='eleicao')),
-    url(r'^veiculos/', include('veiculos.urls',namespace='veiculos', app_name='veiculos')),
+    url(r'^veiculos/', include('veiculos.urls',app_name='veiculos')),
 )

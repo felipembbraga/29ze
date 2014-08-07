@@ -30,3 +30,7 @@ def soma(a,b):
 @register.filter
 def diferenca(a,b):
     return int(a) - int(b)
+
+@register.filter
+def mod(a, b):
+    return int(a) % int(b)

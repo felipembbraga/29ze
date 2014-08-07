@@ -8,4 +8,6 @@ encoding//eleicao/forms.py=utf-8
 encoding//eleicao/models.py=utf-8
 encoding//eleicao/views.py=utf-8
 encoding//eleicao/views_relatorio.py=utf-8
+encoding//veiculos/forms.py=utf-8
 encoding//veiculos/models.py=utf-8
+encoding//veiculos/views.py=utf-8

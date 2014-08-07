@@ -3,12 +3,12 @@ input.date {
 }
 
 .botao-grupo {
-	width: 300%;
+	width: 100%;
 	padding-top: 15px;
 	margin-top: 15px;
-	border-width: 2px 0 0 0;
+	border-width: 1px 0 0 0;
 	border-style: solid;
-	border-color: grey;
+	border-color: #DDD;
 }
 
 .cursor-pointer:HOVER {

@@ -1,0 +1,27 @@
+{% extends 'veiculos/base.html' %}
+{% load static from staticfiles %}
+{% block extrastyle %}
+<style>
+    .campo {
+    margin-right:20px;
+    }
+</style>
+{% endblock %}
+{% block container %}
+    <form role="form" method="post" class="form-horizontal">
+    {% csrf_token %}
+        <div class="row">
+            Você deseja excluir o veículo {{ veiculo.modelo.unicode_completo }} de placa {{ veiculo.placa }}?
+            <input type="hidden" id="id-excluir-confirmar" name="excluir-confirmar" value="{{ veiculo.pk }}" />
+        </div>
+        <p class="botao-grupo">
+            <button type="submit" class="btn btn-danger botao">Excluir</button>
+            <button type="button" class="btn btn-default botao"
+                onclick="window.location = '{% url 'veiculo:index' %}';">Cancelar</button>
+        </p>
+</form>
+{% endblock %}
+{%block extrascripts %}
+<script src="{% static 'veiculos/js/classes/Veiculo.js' %}"></script>
+<script src="{% static 'veiculos/js/veiculo/cadastrar.js' %}"></script>
+{% endblock %}

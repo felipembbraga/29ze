@@ -1,19 +1,16 @@
 #-*- coding: utf-8 -*-
 import csv
-import json
 from core.models import Local
 from decorators import eleicao_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from forms import EleicaoForm, LocalImportarForm, EquipeForm, LocalEquipeForm, SecaoAgregarExternoForm,\
-EquipeLocaisForm
+from django.views.decorators.csrf import ensure_csrf_cookie
+from forms import EleicaoForm, LocalImportarForm, EquipeForm, LocalEquipeForm, SecaoAgregarExternoForm
 from models import Eleicao, LocalVotacao, Secao, Equipe
 from middleware import definir_eleicao_padrao
 from utils.Response import NotifyResponse
@@ -27,7 +24,7 @@ def ler_csv(request, f):
     try:
         linhas = list(csv.reader(f, delimiter=','))
         id_local, nome, endereco, bairro, secao, tipo_secao, num_eleitores = linhas[0]
-    except ValueError, e:
+    except ValueError:
         try:
             linhas = list(csv.reader(f, delimiter=';'))
         except:
@@ -362,5 +359,5 @@ def equipe_excluir(request, id_equipe):
 @login_required
 @permission_required('eleicao.change_localvotacao', raise_exception=True)
 def equipe_selecionar_locais(request, id_equipe):
-    equipe = get_object_or_404(Equipe, pk=int(id_equipe))
+    pass
     

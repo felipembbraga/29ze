@@ -23,16 +23,16 @@
 {% block container %}
 <div class="row placeholders">
     <div class="col-md-3 placeholder">
-    <a href="#">
+    <a href="{% url 'veiculo:cadastrar' %}">
     <img src="{% static 'veiculos/img/add.png' %}"  height="100" width="100" alt="Adicionar Veículo" class="img-rounded"></img>
     </a>
     <h4>Cadastrar Veículo</h4>
     </div>
     <div class="col-md-3 placeholder">
-    <a href="#">
+    <a href="{% url 'veiculo:index' %}">
     <img src="{% static 'veiculos/img/edit.png' %}"  height="100" width="100" alt="Adicionar Veículo" class="img-rounded"></img>
     </a>
-    <h4>Editar Veículos</h4>
+    <h4>Gerenciar Veículos</h4>
     </div>
     <div class="col-md-3 placeholder">
     <a href="#">
@@ -41,7 +41,7 @@
     <h4>Gerar Relatório</h4>
     </div>
     <div class="col-md-3 placeholder">
-    <a href="#">
+    <a href="{% url 'veiculos_info' %}">
     <img src="{% static 'veiculos/img/info.png' %}"  height="100" width="100" alt="Adicionar Veículo" class="img-rounded"></img>
     </a>
     <h4>Informações</h4>
