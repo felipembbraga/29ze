@@ -8,14 +8,17 @@ from django import forms
 from models import Veiculo
 
 class VeiculoForm(forms.ModelForm):
-    placa = forms.RegexField(r'[A-Za-z]{3}\d{4}', max_length=7, help_text='Ex.:ABC1234')
+    placa = forms.RegexField(
+                        r'[A-Za-z]{3}-\d{4}',max_length=8, help_text='Ex.:ABC-1234', error_messages={'invalid' : u'Insira uma placa válida.'})
     cadastrar_motorista = forms.BooleanField(required=False)
+    
     class Meta:
         model = Veiculo
         fields = ['placa', 'marca', 'modelo', 'ano', 'tipo', 'lotacao', 'estado', 'observacao']
         widgets = {
             'observacao': forms.Textarea(attrs={'rows': 3}),
         }
+        
     
     def __init__(self, *args, **kwargs):
         super(VeiculoForm, self).__init__(*args, **kwargs)
@@ -32,7 +35,7 @@ class VeiculoForm(forms.ModelForm):
     
     
 class MotoristaForm(forms.ModelForm):
-    motorista_titulo_eleitoral = forms.RegexField(r'\d{12}', max_length=12, help_text='Ex.:123456789876')
+    motorista_titulo_eleitoral = forms.RegexField(r'\d{12}', label=u'Título Eleitoral do Motorista',max_length=12, help_text='Ex.:123456789876')
     
     class Meta:
         model = Veiculo

@@ -9,17 +9,19 @@ from django.shortcuts import render, redirect, get_object_or_404
 from forms import VeiculoForm, MotoristaForm
 from models import Veiculo
 from acesso.models import OrgaoPublico
-from utils.Response import NotifyResponse
 from django.core.exceptions import PermissionDenied
 # Create your views here.
+
 
 @login_required(login_url='acesso:login-veiculos')
 def index(request):
     return render(request, 'veiculos/index.html')
 
+@login_required(login_url='acesso:login-veiculos')
 def info(request):
     return render(request, 'veiculos/info.html')
 
+@permission_required('veiculos.add_veiculo', raise_exception=True)
 @login_required(login_url='acesso:login-veiculos')
 def veiculo_cadastrar(request):
     if request.method == 'POST':
@@ -52,6 +54,7 @@ def veiculo_cadastrar(request):
         form_motorista = MotoristaForm()
     return render(request,'veiculos/veiculo/form.html', locals())
 
+@permission_required('veiculos.change_veiculo', raise_exception=True)
 @login_required(login_url='acesso:login-veiculos')
 def veiculo_editar(request, id_veiculo):
     veiculo = get_object_or_404(Veiculo, pk=int(id_veiculo))
@@ -92,10 +95,11 @@ def veiculo_editar(request, id_veiculo):
         form_motorista = MotoristaForm(instance=veiculo)
     return render(request,'veiculos/veiculo/form.html', locals())
 
+@permission_required('veiculos.view_veiculo', raise_exception=True)
 @login_required(login_url='acesso:login-veiculos')
 def veiculo_index(request):
     if isinstance(request.user, OrgaoPublico):
-        veiculos = Veiculo.objects.filter(orgao= request.user, eleicao = request.eleicao_atual)
+        veiculos = Veiculo.objects.filter(orgao= request.user, eleicao = request.eleicao_atual).order_by('marca__nome', 'modelo__nome')
     else:
         veiculos = Veiculo.objects.all()
     return render(request, 'veiculos/veiculo/index.html', locals())
@@ -105,6 +109,7 @@ def veiculo_ajax_get_modelo(request, id_marca):
     json = serializers.serialize('json', modelos)
     return HttpResponse(json, mimetype="application/json")
 
+@permission_required('veiculos.delete_veiculo', raise_exception=True)
 @login_required(login_url='acesso:login-veiculos')
 def veiculo_excluir(request, id_veiculo):
     if request.is_ajax():

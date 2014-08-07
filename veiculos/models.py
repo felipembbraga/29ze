@@ -12,7 +12,7 @@ estado_choices = enumerate((u'Ótimo','Bom','Regular',u'Sem condições de uso')
 ano_choices = [(i,i) for i in range(1990, datetime.date.today().year + 1)]
 
 class Veiculo(models.Model):
-    placa = models.CharField('Placa', max_length=7)
+    placa = models.CharField('Placa', max_length=8)
     marca = models.ForeignKey(Marca, verbose_name='Marca', related_name='veiculo_marca')
     modelo = models.ForeignKey(Modelo, verbose_name='Modelo', related_name='veiculo_modelo')
     tipo = models.IntegerField(u'Tipo de veículo', choices = tipo_veiculo_choices)
@@ -22,11 +22,11 @@ class Veiculo(models.Model):
     observacao = models.TextField('Observação', null=True, blank=True)
     orgao = models.ForeignKey(OrgaoPublico, related_name='veiculo_orgao')
     eleicao = models.ForeignKey(Eleicao, related_name='veiculo_eleicao')
-    motorista_titulo_eleitoral = models.CharField(u'Título Eleitoral', max_length=12, null=True)
-    motorista_nome = models.CharField('Nome do eleitor', max_length=100, null=True)
+    motorista_titulo_eleitoral = models.CharField(u'Título Eleitoral do Motorista', max_length=12, null=True)
+    motorista_nome = models.CharField('Nome do motorista', max_length=100, null=True)
     endereco = models.CharField(u'Endereço Residencial', max_length=150, null=True)
-    tel_residencial = models.CharField('Telefone', max_length=14, null=True)
-    tel_celular = models.CharField('Telefone', max_length=14, null=True)
+    tel_residencial = models.CharField('Telefone residencial', max_length=14, null=True)
+    tel_celular = models.CharField('Telefone celular', max_length=14, null=True)
     
     class Meta:
         verbose_name = u'Veículo'

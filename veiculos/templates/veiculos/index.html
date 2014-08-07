@@ -21,6 +21,7 @@
 {% endblock %}
 
 {% block container %}
+
 <div class="row placeholders">
     <div class="col-md-3 placeholder">
     <a href="{% url 'veiculo:cadastrar' %}">
@@ -35,7 +36,7 @@
     <h4>Gerenciar Veículos</h4>
     </div>
     <div class="col-md-3 placeholder">
-    <a href="#">
+    <a href="{% url 'report-veiculos:veiculos' %}">
     <img src="{% static 'veiculos/img/report.png' %}"  height="100" width="100" alt="Adicionar Veículo" class="img-rounded"></img>
     </a>
     <h4>Gerar Relatório</h4>

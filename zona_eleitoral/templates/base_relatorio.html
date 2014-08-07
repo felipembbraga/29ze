@@ -69,6 +69,8 @@ body {
     {% endblock %}
     </div>
 </div>
+
+{% block cabecalho %}
 <div class="cabecalho print" align="center">
 <div align="center">
 <img src="{% static 'zona_eleitoral/img/brasao.png' %}">
@@ -89,6 +91,7 @@ body {
     </strong>
 </div>
 </div>
+{% endblock %}
 <div class="report">
 {% block report %}
 {% endblock %}

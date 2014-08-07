@@ -1,5 +1,10 @@
 $(document).ready(function(){
 	var veiculo = new Veiculo();
+	
+	$.mask.definitions['Z'] = "[a-zA-Z]";
+	$('#id_placa').mask('ZZZ-9999');
+	$('#id_motorista_titulo_eleitoral').mask('999999999999');
+	
 	$('#form-motorista').hide();
 	if($('#id_marca').val()=='') {
 		$('#id_modelo').prop('disabled', true);
@@ -9,6 +14,7 @@ $(document).ready(function(){
 			$('#id_marca').trigger('change');
 		}
 	}
+	
 	$('#id_marca').change(function() {
 		$('#id_modelo option:gt(0)').remove();
 		if($(this).val()=='') {
