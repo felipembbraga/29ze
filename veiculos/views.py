@@ -94,6 +94,7 @@ def veiculo_editar(request, id_veiculo):
                 return redirect('veiculo:index')
     else:
         if veiculo.motorista_titulo_eleitoral:
+            
             VeiculoForm.base_fields['cadastrar_motorista'].initial=True
         form = VeiculoForm(instance=veiculo)
         form_motorista = MotoristaForm(instance=veiculo)
