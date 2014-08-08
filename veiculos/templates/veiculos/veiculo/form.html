@@ -24,7 +24,7 @@
                 <div class="form-group{% if form.placa.errors %} has-error{% endif %}">
                     <label for="{{form.placa.id_for_label}}">{{ form.placa.label }}{% if form.placa.field.required %}*{% endif %}</label>
                     {% if form.placa.is_hidden %} <p class="form-control-static">{{ form.placa.value|upper }}<p>{% endif %}{{ form.placa }}
-                    <p class="help-block">{{ form.placa.help_text }}</p>
+                    {% if not form.placa.is_hidden %}<p class="help-block">{{ form.placa.help_text }}</p> {% endif %}
                     {% if form.placa.errors %}
                         <label class="control-label"
                             for="{{form.placa.id_for_label}}">{{form.placa.errors.as_text}}</label><br />
