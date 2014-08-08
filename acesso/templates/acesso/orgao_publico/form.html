@@ -1,0 +1,119 @@
+{% extends 'veiculos/base.html' %}
+ {% load static from staticfiles %}
+{% block container %}
+    <form role="form" method="post"> {% csrf_token %}
+		{{ form.nome_secretaria }}
+		<div class="row">
+            <div class="col-md-2 campo"></div>
+            <div class="col-md-8 campo">
+                <div class="form-group{% if form.endereco.errors %} has-error{% endif %}">
+                    <label for="{{form.endereco.id_for_label}}">{{ form.endereco.label }}{% if form.endereco.field.required %}*{% endif %}</label>
+                    {% if form.endereco.is_hidden %} <p class="form-control-static">{{ form.endereco.value }}<p>{% endif %}{{ form.endereco }}
+                    <p class="help-block">{{ form.endereco.help_text }}</p>
+                    {% if form.endereco.errors %}
+                        <label class="control-label"
+                            for="{{form.endereco.id_for_label}}">{{form.endereco.errors.as_text}}</label><br />
+                    {% endif %}
+                </div>
+            </div>
+		</div>
+		<div class="row">
+		    <div class="col-md-2 campo"></div>
+		    <div class="col-md-8 campo">
+                <div class="form-group{% if form.responsavel.errors %} has-error{% endif %}">
+                    <label for="{{form.responsavel.id_for_label}}">{{ form.responsavel.label }}{% if form.responsavel.field.required %}*{% endif %}</label>
+                    {% if form.responsavel.is_hidden %} <p class="form-control-static">{{ form.responsavel.value }}<p>{% endif %}{{ form.responsavel }}
+                    <p class="help-block">{{ form.responsavel.help_text }}</p>
+                    {% if form.responsavel.errors %}
+                        <label class="control-label"
+                            for="{{form.responsavel.id_for_label}}">{{form.responsavel.errors.as_text}}</label><br />
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1 campo"></div>
+            <div class="col-md-10 campo">
+                <div class="titulo">
+                    <h3>Informante</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 campo"></div>
+            <div class="col-md-4 campo">
+                <div class="form-group{% if form.responsavel_info.errors %} has-error{% endif %}">
+                    <label for="{{form.responsavel_info.id_for_label}}">{{ form.responsavel_info.label }}{% if form.responsavel_info.field.required %}*{% endif %}</label>
+                    {% if form.responsavel_info.is_hidden %} <p class="form-control-static">{{ form.responsavel_info.value }}<p>{% endif %}{{ form.responsavel_info }}
+                    <p class="help-block">{{ form.responsavel_info.help_text }}</p>
+                    {% if form.responsavel_info.errors %}
+                        <label class="control-label"
+                            for="{{form.responsavel_info.id_for_label}}">{{form.responsavel_info.errors.as_text}}</label><br />
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4 campo">
+                <div class="form-group{% if form.email.errors %} has-error{% endif %}">
+                    <label for="{{form.email.id_for_label}}">{{ form.email.label }}{% if form.email.field.required %}*{% endif %}</label>
+                    {% if form.email.is_hidden %} <p class="form-control-static">{{ form.email.value }}<p>{% endif %}{{ form.email }}
+                    <p class="help-block">{{ form.email.help_text }}</p>
+                    {% if form.email.errors %}
+                        <label class="control-label"
+                            for="{{form.email.id_for_label}}">{{form.email.errors.as_text}}</label><br />
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 campo"></div>
+            <div class="col-md-2 campo">
+                <div class="form-group{% if form.tel_residencial.errors %} has-error{% endif %}">
+                    <label for="{{form.tel_residencial.id_for_label}}">{{ form.tel_residencial.label }}{% if form.tel_residencial.field.required %}*{% endif %}</label>
+                    {% if form.tel_residencial.is_hidden %} <p class="form-control-static">{{ form.tel_residencial.value }}<p>{% endif %}{{ form.tel_residencial }}
+                    <p class="help-block">{{ form.tel_residencial.help_text }}</p>
+                    {% if form.tel_residencial.errors %}
+                        <label class="control-label"
+                            for="{{form.tel_residencial.id_for_label}}">{{form.tel_residencial.errors.as_text}}</label><br />
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-1 campo"></div>
+            <div class="col-md-2 campo">
+                <div class="form-group{% if form.tel_celular.errors %} has-error{% endif %}">
+                    <label for="{{form.tel_celular.id_for_label}}">{{ form.tel_celular.label }}{% if form.tel_celular.field.required %}*{% endif %}</label>
+                    {% if form.tel_celular.is_hidden %} <p class="form-control-static">{{ form.tel_celular.value }}<p>{% endif %}{{ form.tel_celular }}
+                    <p class="help-block">{{ form.tel_celular.help_text }}</p>
+                    {% if form.tel_celular.errors %}
+                        <label class="control-label"
+                            for="{{form.tel_celular.id_for_label}}">{{form.tel_celular.errors.as_text}}</label><br />
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-1 campo"></div>
+            <div class="col-md-2 campo">
+                <div class="form-group{% if form.tel_comercial.errors %} has-error{% endif %}">
+                    <label for="{{form.tel_comercial.id_for_label}}">{{ form.tel_comercial.label }}{% if form.tel_comercial.field.required %}*{% endif %}</label>
+                    {% if form.tel_comercial.is_hidden %} <p class="form-control-static">{{ form.tel_comercial.value }}<p>{% endif %}{{ form.tel_comercial }}
+                    <p class="help-block">{{ form.tel_comercial.help_text }}</p>
+                    {% if form.tel_comercial.errors %}
+                        <label class="control-label"
+                            for="{{form.tel_comercial.id_for_label}}">{{form.tel_comercial.errors.as_text}}</label><br />
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+		
+		
+		<div class="divisor"></div>
+		<p class="botao-grupo">
+		  <button type="submit" class="btn btn-primary botao">Gravar</button>
+		  <button type="button" class="btn btn-default botao" onclick="window.location = '{% url 'veiculos_index' %}';">Cancelar</button>
+		</p>
+	</form>
+    
+{% endblock %}
+
+{%block extrascripts %}
+    <script src="{% static 'zona_eleitoral/js/misc/jquery_meio_mask.js' %}"></script>
+    <script src="{% static 'zona_eleitoral/js/misc/glDatePicker/glDatePicker.js' %}"></script>
+{% endblock %}

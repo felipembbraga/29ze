@@ -10,17 +10,20 @@ from forms import VeiculoForm, MotoristaForm
 from models import Veiculo
 from acesso.models import OrgaoPublico
 from django.core.exceptions import PermissionDenied
+from acesso.decorators import orgao_atualizar
 # Create your views here.
 
-
+@orgao_atualizar
 @login_required(login_url='acesso:login-veiculos')
 def index(request):
     return render(request, 'veiculos/index.html')
 
+@orgao_atualizar
 @login_required(login_url='acesso:login-veiculos')
 def info(request):
     return render(request, 'veiculos/info.html')
 
+@orgao_atualizar
 @permission_required('veiculos.add_veiculo', raise_exception=True)
 @login_required(login_url='acesso:login-veiculos')
 def veiculo_cadastrar(request):
@@ -54,6 +57,7 @@ def veiculo_cadastrar(request):
         form_motorista = MotoristaForm()
     return render(request,'veiculos/veiculo/form.html', locals())
 
+@orgao_atualizar
 @permission_required('veiculos.change_veiculo', raise_exception=True)
 @login_required(login_url='acesso:login-veiculos')
 def veiculo_editar(request, id_veiculo):
@@ -95,6 +99,7 @@ def veiculo_editar(request, id_veiculo):
         form_motorista = MotoristaForm(instance=veiculo)
     return render(request,'veiculos/veiculo/form.html', locals())
 
+@orgao_atualizar
 @permission_required('veiculos.view_veiculo', raise_exception=True)
 @login_required(login_url='acesso:login-veiculos')
 def veiculo_index(request):
@@ -109,6 +114,7 @@ def veiculo_ajax_get_modelo(request, id_marca):
     json = serializers.serialize('json', modelos)
     return HttpResponse(json, mimetype="application/json")
 
+@orgao_atualizar
 @permission_required('veiculos.delete_veiculo', raise_exception=True)
 @login_required(login_url='acesso:login-veiculos')
 def veiculo_excluir(request, id_veiculo):

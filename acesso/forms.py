@@ -12,7 +12,26 @@ from models import OrgaoPublico
 import datetime
 import warnings
 
-
+class OrgaoPublicoForm(forms.ModelForm):
+    class Meta:
+        model = OrgaoPublico
+        fields = ("nome_secretaria", "endereco", "responsavel", "responsavel_info", "tel_residencial", "tel_celular", "tel_comercial", "email")
+        widgets = {
+            'nome_secretaria' : forms.HiddenInput()
+        }
+        
+    def __init__(self, *args, **kwargs):
+        super(OrgaoPublicoForm, self).__init__(*args, **kwargs)
+        for key in self.fields:
+            
+            if not isinstance(self.fields[key].widget, forms.CheckboxInput):
+                self.fields[key].widget.attrs.update({'class': 'form-control'})
+            if key in ('email', 'tel_comercial', 'tel_celular'):
+                continue
+            if 'tel' in key:
+                self.fields[key].widget.attrs['class'] += ' telefone'
+            self.fields[key].required=True
+        
 class AddOrgaoPublicoForm(forms.ModelForm):
     error_messages = {
         'duplicate_username': u'Um órgão público já foi cadastrado com esse nome',

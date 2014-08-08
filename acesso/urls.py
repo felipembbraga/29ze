@@ -2,6 +2,7 @@
 from django.conf.urls import url, patterns
 from django.contrib.auth.views import login, logout_then_login
 from forms import LoginForm, LoginVeiculosForm
+from views import orgao_atualizar
 
 urlpatterns = patterns('',
     url(r'^login/$',login, {
@@ -19,6 +20,7 @@ urlpatterns = patterns('',
                                      }, name='login-veiculos'),
     url(r'^logout/$',logout_then_login, {'current_app':'eleicao'}, name='logout'),
     url(r'^logout-veiculos/$',logout_then_login, {'login_url':'acesso:login-veiculos'}, name='logout-veiculos'),
+    url(r'^orgao/atualizar/$',orgao_atualizar, name='orgao-atualizar'),
     
     
 )

@@ -6,10 +6,11 @@
 
 {% if user.is_orgao %}
 <div class="row">
-    <strong>Órgão:</strong> {{user.nome_secretaria}} <br />
-    <strong>Responsável:</strong> {{user.responsavel}} <br />
-    {% if user.responsavel_info %}<strong>Responsável pela Informação:</strong> {{user.responsavel_info}} <br />{% endif %}
-    {% if user.endereco %}<strong>Endereco:</strong> {{user.endereco}} <br />{% endif %}
+    <strong>Órgão:</strong> {{user.nome_secretaria|upper}} <br />
+    {% if user.endereco %}<strong>Endereco do Órgão:</strong> {{user.endereco|upper}} <br />{% endif %}
+    <strong>Responsável:</strong> {{user.responsavel|upper}} <br />
+    {% if user.responsavel_info %}<strong>Responsável pela Informação:</strong> {{user.responsavel_info|upper}} <br />{% endif %}
+    {% if user.email %}<strong>Responsável pela Informação:</strong> {{user.email}} <br />{% endif %}
     {% if user.tel_comercial %}<strong>Telefone comercial:</strong> {{user.tel_comercial}}{% endif %}
     {% if user.tel_residencial %}<strong>Telefone residencial:</strong> {{user.tel_residencial}}{% endif %}
     {% if user.tel_celular %}<strong>Telefone celular:</strong> {{user.tel_celular}}{% endif %}<br />

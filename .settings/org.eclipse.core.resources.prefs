@@ -1,7 +1,9 @@
 eclipse.preferences.version=1
 encoding//acesso/admin.py=utf-8
+encoding//acesso/decorators.py=utf-8
 encoding//acesso/forms.py=utf-8
 encoding//acesso/urls.py=utf-8
+encoding//acesso/views.py=utf-8
 encoding//core/models.py=utf-8
 encoding//eleicao/decorators.py=utf-8
 encoding//eleicao/forms.py=utf-8
