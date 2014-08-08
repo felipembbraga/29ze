@@ -25,8 +25,8 @@ class Veiculo(models.Model):
     motorista_titulo_eleitoral = models.CharField(u'Título Eleitoral do Motorista', max_length=12, null=True)
     motorista_nome = models.CharField('Nome do Motorista', max_length=100, null=True)
     endereco = models.CharField(u'Endereço Residencial', max_length=150, null=True)
-    tel_residencial = models.CharField('Telefone Residencial', max_length=14, null=True)
-    tel_celular = models.CharField('Telefone Celular', max_length=14, null=True, blank = True)
+    tel_residencial = models.CharField('Telefone Residencial', max_length=14, null=True, blank=True)
+    tel_celular = models.CharField('Telefone Celular', max_length=14, null=True)
     
     class Meta:
         verbose_name = u'Veículo'

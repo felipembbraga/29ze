@@ -35,7 +35,7 @@ class VeiculoForm(forms.ModelForm):
     
     
 class MotoristaForm(forms.ModelForm):
-    motorista_titulo_eleitoral = forms.RegexField(r'\d{12}', label=u'Título Eleitoral do Motorista',max_length=12, help_text='Ex.:123456789876')
+    motorista_titulo_eleitoral = forms.RegexField(r'\d{12}', label=u'Título Eleitoral do Motorista',max_length=12, help_text=u'Entre 11 e 12 dígitos.')
     
     class Meta:
         model = Veiculo

@@ -169,6 +169,18 @@
 	                {% endif %}
 	                </div>
 	            </div>
+                <div class="col-md-2 campo">
+                    <div class="form-group{% if form_motorista.tel_celular.errors %} has-error{% endif %}">
+                    
+                        <label for="{{form_motorista.tel_celular.id_for_label}}">{{ form_motorista.tel_celular.label }}{% if form_motorista.tel_celular.field.required %}*{% endif %}</label>
+                        {% if form_motorista.tel_celular.is_hidden %} <br />{{ form_motorista.tel_celular.value }}{% endif %}{{ form_motorista.tel_celular }}
+                        <p class="help-block">{{ form_motorista.tel_celular.help_text }}</p>
+                        {% if form_motorista.tel_celular.errors %}
+                        <label class="control-label"
+                            for="{{form_motorista.tel_celular.id_for_label}}">{{form_motorista.tel_celular.errors.as_text}}</label><br />
+                    {% endif %}
+                    </div>
+                </div>
 	            <div class="col-md-2 campo">
 	                <div class="form-group{% if form_motorista.tel_residencial.errors %} has-error{% endif %}">
 	                
@@ -181,18 +193,6 @@
 	                {% endif %}
 	                </div>
 	            </div>
-	            <div class="col-md-2 campo">
-                    <div class="form-group{% if form_motorista.tel_celular.errors %} has-error{% endif %}">
-                    
-                        <label for="{{form_motorista.tel_celular.id_for_label}}">{{ form_motorista.tel_celular.label }}{% if form_motorista.tel_celular.field.required %}*{% endif %}</label>
-                        {% if form_motorista.tel_celular.is_hidden %} <br />{{ form_motorista.tel_celular.value }}{% endif %}{{ form_motorista.tel_celular }}
-                        <p class="help-block">{{ form_motorista.tel_celular.help_text }}</p>
-                        {% if form_motorista.tel_celular.errors %}
-                        <label class="control-label"
-                            for="{{form_motorista.tel_celular.id_for_label}}">{{form_motorista.tel_celular.errors.as_text}}</label><br />
-                    {% endif %}
-                    </div>
-                </div>
 	        </div>
 	    </div>
         <p class="botao-grupo">
