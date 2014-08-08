@@ -2,6 +2,10 @@
  {% load static from staticfiles %}
 {% block container %}
     <form role="form" method="post"> {% csrf_token %}
+        <div class="row" style="margin-bottom:5px;">
+           <div class="col-md-2"></div>
+           <div class="col-md-4"><small>(*) Campo obrigatório</small></div>
+        </div>
 		{{ form.nome_secretaria }}
 		<div class="row">
             <div class="col-md-2 campo"></div>
@@ -35,7 +39,7 @@
             <div class="col-md-1 campo"></div>
             <div class="col-md-10 campo">
                 <div class="titulo">
-                    <h3>Informante</h3>
+                    <h3>Responsável pelas informações</h3>
                 </div>
             </div>
         </div>
@@ -43,7 +47,7 @@
             <div class="col-md-2 campo"></div>
             <div class="col-md-4 campo">
                 <div class="form-group{% if form.responsavel_info.errors %} has-error{% endif %}">
-                    <label for="{{form.responsavel_info.id_for_label}}">{{ form.responsavel_info.label }}{% if form.responsavel_info.field.required %}*{% endif %}</label>
+                    <label for="{{form.responsavel_info.id_for_label}}">Nome{% if form.responsavel_info.field.required %}*{% endif %}</label>
                     {% if form.responsavel_info.is_hidden %} <p class="form-control-static">{{ form.responsavel_info.value }}<p>{% endif %}{{ form.responsavel_info }}
                     <p class="help-block">{{ form.responsavel_info.help_text }}</p>
                     {% if form.responsavel_info.errors %}
@@ -67,18 +71,6 @@
         <div class="row">
             <div class="col-md-2 campo"></div>
             <div class="col-md-2 campo">
-                <div class="form-group{% if form.tel_residencial.errors %} has-error{% endif %}">
-                    <label for="{{form.tel_residencial.id_for_label}}">{{ form.tel_residencial.label }}{% if form.tel_residencial.field.required %}*{% endif %}</label>
-                    {% if form.tel_residencial.is_hidden %} <p class="form-control-static">{{ form.tel_residencial.value }}<p>{% endif %}{{ form.tel_residencial }}
-                    <p class="help-block">{{ form.tel_residencial.help_text }}</p>
-                    {% if form.tel_residencial.errors %}
-                        <label class="control-label"
-                            for="{{form.tel_residencial.id_for_label}}">{{form.tel_residencial.errors.as_text}}</label><br />
-                    {% endif %}
-                </div>
-            </div>
-            <div class="col-md-1 campo"></div>
-            <div class="col-md-2 campo">
                 <div class="form-group{% if form.tel_celular.errors %} has-error{% endif %}">
                     <label for="{{form.tel_celular.id_for_label}}">{{ form.tel_celular.label }}{% if form.tel_celular.field.required %}*{% endif %}</label>
                     {% if form.tel_celular.is_hidden %} <p class="form-control-static">{{ form.tel_celular.value }}<p>{% endif %}{{ form.tel_celular }}
@@ -98,6 +90,18 @@
                     {% if form.tel_comercial.errors %}
                         <label class="control-label"
                             for="{{form.tel_comercial.id_for_label}}">{{form.tel_comercial.errors.as_text}}</label><br />
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-1 campo"></div>
+            <div class="col-md-2 campo">
+                <div class="form-group{% if form.tel_residencial.errors %} has-error{% endif %}">
+                    <label for="{{form.tel_residencial.id_for_label}}">{{ form.tel_residencial.label }}{% if form.tel_residencial.field.required %}*{% endif %}</label>
+                    {% if form.tel_residencial.is_hidden %} <p class="form-control-static">{{ form.tel_residencial.value }}<p>{% endif %}{{ form.tel_residencial }}
+                    <p class="help-block">{{ form.tel_residencial.help_text }}</p>
+                    {% if form.tel_residencial.errors %}
+                        <label class="control-label"
+                            for="{{form.tel_residencial.id_for_label}}">{{form.tel_residencial.errors.as_text}}</label><br />
                     {% endif %}
                 </div>
             </div>

@@ -26,7 +26,7 @@ class OrgaoPublicoForm(forms.ModelForm):
             
             if not isinstance(self.fields[key].widget, forms.CheckboxInput):
                 self.fields[key].widget.attrs.update({'class': 'form-control'})
-            if key in ('email', 'tel_comercial', 'tel_celular'):
+            if key in ('tel_residencial',):
                 continue
             if 'tel' in key:
                 self.fields[key].widget.attrs['class'] += ' telefone'

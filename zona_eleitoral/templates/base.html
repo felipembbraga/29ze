@@ -55,6 +55,26 @@
     
 
         <div class="container">
+        <div id="cabecalho" class="center-block">
+            <div align="center">
+				<img src="{% static 'zona_eleitoral/img/brasao.png' %}">
+			</div>
+			<div align="center">
+			    <small><strong>
+			        PODER JUDICIÁRIO
+			    </strong></small>
+			</div>
+			<div align="center">
+			    <small><strong>
+			        TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
+			    </strong></small>
+			</div>
+			<div align="center">
+			    <small><strong>
+			        29ª ZONA ELEITORAL - PALMAS - TO
+			    </strong></small>
+			</div>
+        </div>
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">

@@ -53,7 +53,7 @@ body {
 
         {% endif %}
     <form class="form-signin" role="form" method="post">{% csrf_token %}
-        <h2 class="form-signin-heading" style="text-align:center">Acesso - {{titulo}}</h2>
+        <h2 class="form-signin-heading" style="text-align:center">{{titulo}}</h2>
         {% for field in form %}
 	        <div class="form-group{% if field.errors %} has-error{% endif %}">
 	             {% if field.errors %}<label class="control-label" for="{{field.id_for_label}}">{{field.errors.as_text}}</label><br />{% endif %}

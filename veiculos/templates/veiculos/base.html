@@ -18,7 +18,8 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="{% url 'acesso:orgao-atualizar' %}">Alterar Dados</a></li>
+                            <li><a href="{% url 'veiculos_index' %}"><span class="glyphicon glyphicon-home"></span>Página Inicial</a></li>
+                            <li><a href="{% url 'acesso:orgao-atualizar' %}">Alterar Dados do Órgão</a></li>
                             <li><a href="{% if user.is_orgao %}{% url 'acesso:logout-veiculos' %}{% else %}{% url 'acesso:logout' %}{%endif%}">Sair</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->

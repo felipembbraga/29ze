@@ -12,6 +12,10 @@
         <div class="col-md-2"></div>
         <div class="col-md-6"><h2>{% if id_veiculo %}Editar{% else %}Cadastrar{% endif %} Veículo</h2> </div>
     </div>
+    <div class="row" style="margin-bottom:5px;">
+           <div class="col-md-2"></div>
+           <div class="col-md-4"><small>(*) Campo obrigatório</small></div>
+    </div>
     <form role="form" method="post" class="form-horizontal">
     {% csrf_token %}
         <div class="row">
@@ -19,7 +23,7 @@
             <div class="col-md-1 campo">
                 <div class="form-group{% if form.placa.errors %} has-error{% endif %}">
                     <label for="{{form.placa.id_for_label}}">{{ form.placa.label }}{% if form.placa.field.required %}*{% endif %}</label>
-                    {% if form.placa.is_hidden %} <p class="form-control-static">{{ form.placa.value }}<p>{% endif %}{{ form.placa }}
+                    {% if form.placa.is_hidden %} <p class="form-control-static">{{ form.placa.value|upper }}<p>{% endif %}{{ form.placa }}
                     <p class="help-block">{{ form.placa.help_text }}</p>
                     {% if form.placa.errors %}
                         <label class="control-label"
@@ -190,10 +194,6 @@
                     </div>
                 </div>
 	        </div>
-	    </div>
-	    <div class="row">
-	       <div class="col-md-2"></div>
-	       <div class="col-md-4"><small>(*) Campo obrigatório</small></div>
 	    </div>
         <p class="botao-grupo">
             <button type="submit" class="btn btn-primary botao">{% if id_veiculo %}Editar{% else %}Cadastrar{% endif %}</button>

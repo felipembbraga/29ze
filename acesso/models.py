@@ -25,8 +25,8 @@ class Permissao(Permission):
 
 class OrgaoPublico(User):
     nome_secretaria = models.CharField(u'Nome do órgão', max_length=100)
-    endereco = models.CharField(u'Endereço', max_length=100, null=True, blank=True)
-    responsavel = models.CharField(u'Responsável', max_length=100, help_text='Ex.: Secretário, Superintendente')
+    endereco = models.CharField(u'Endereço do Órgão', max_length=100, null=True, blank=True)
+    responsavel = models.CharField(u'Responsável do Órgão', max_length=100, help_text='Ex.: Secretário, Superintendente, Presidente')
     responsavel_info = models.CharField(u'Responsável pela informação', max_length=100, null=True, blank=True, help_text='Ex.: Chefe do Transporte')
     tel_residencial = models.CharField(u'Telefone Residencial', max_length=15, null=True, blank=True)
     tel_celular = models.CharField(u'Telefone Celular', max_length=15, null=True, blank=True)
