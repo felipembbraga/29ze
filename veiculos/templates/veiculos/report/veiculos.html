@@ -8,7 +8,7 @@
 <div class="row">
     <strong>Órgão:</strong> {{user.nome_secretaria|upper}} <br />
     {% if user.endereco %}<strong>Endereco do Órgão:</strong> {{user.endereco|upper}} <br />{% endif %}
-    <strong>Responsável:</strong> {{user.responsavel|upper}} <br />
+    <strong>Responsável do Órgão:</strong> {{user.responsavel|upper}} <br />
     {% if user.responsavel_info %}<strong>Responsável pela Informação:</strong> {{user.responsavel_info|upper}} <br />{% endif %}
     {% if user.email %}<strong>E-mail:</strong> {{user.email}} <br />{% endif %}
     {% if user.tel_celular %}<strong>Telefone celular:</strong> {{user.tel_celular}}{% endif %}
@@ -57,6 +57,14 @@
 	                    <p class="form-control-static" style="padding:0;">{{ veiculo.get_estado|upper }}</p>
 	                </td>
 	            </tr>
+	            {% if veiculo.observacao %}
+	            <tr>
+                    <td colspan="4">
+                        <label style="margin-bottom:3px;"><small>Observação</small></label>
+                        <p class="form-control-static" style="padding:0;">{{ veiculo.observacao|upper }}</p>
+                    </td>
+                </tr>
+                {% endif %}
 	            <tr style="background-color:#EEE">
 	                <td colspan="4">
 	                    <p class="form-control-static text-center" style="padding:0;"><strong>DADOS DO MOTORISTA</strong></p>
