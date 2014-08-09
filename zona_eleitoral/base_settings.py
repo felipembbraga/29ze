@@ -47,7 +47,7 @@ MIDDLEWARE_CLASSES = (
     'eleicao.middleware.EleicaoMiddleware',
     'eleicao.middleware.FormAgregarSecaoMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
