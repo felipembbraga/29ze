@@ -9,3 +9,6 @@ def home(request):
         return redirect('veiculos_index')
     titulo = u'Seja Bem Vindo'
     return render(request, 'home.html', locals())
+
+def index(request):
+    return render(request, 'index.html')

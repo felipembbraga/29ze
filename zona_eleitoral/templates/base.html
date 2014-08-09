@@ -4,7 +4,7 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>{% block title %}Zona Eleitoral{% endblock %}</title>
+        <title>{% block title %}29ª Zona Eleitoral{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/bootstrap.min.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/bootstrap-theme.min.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/base.css' %}" />
@@ -55,9 +55,10 @@
     
 
         <div class="container">
+        {% block cabecalho %}
         <div id="cabecalho" class="center-block">
             <div align="center">
-				<img src="{% static 'zona_eleitoral/img/brasao.png' %}">
+				<img src="{% static 'zona_eleitoral/img/brasao2.png' %}" width="110" height="110">
 			</div>
 			<div align="center">
 			    <small><strong>
@@ -75,6 +76,7 @@
 			    </strong></small>
 			</div>
         </div>
+        {% endblock %}
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
@@ -94,6 +96,8 @@
         
         {% block container %}{% endblock %}
         </div>
+        {% block footer %}{% endblock %}
+        
         <script src="{% static 'zona_eleitoral/js/misc/jquery-1.10.2.js' %}"></script>
         <script src="{% static 'zona_eleitoral/js/misc/jquery.maskedinput.min.js' %}"></script>
         <script src="{% static 'zona_eleitoral/js/misc/bootstrap.min.js' %}"></script>

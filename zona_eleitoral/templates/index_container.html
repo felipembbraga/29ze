@@ -1,0 +1,74 @@
+{% load static from staticfiles %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="menu-conteudo">
+        <h1 class="text-center">Publicações</h1>
+        </div>
+        <div class="conteudo">
+            <h3>
+                Edital Nº 18/2014 Nomeação de Mesários e Auxiliares
+            </h3>
+            <p>
+                <a class="btn btn-warning" target="_blank" role="button" href="{% static 'zona_eleitoral/pdf/edital/Edital_018_2014.pdf' %}">
+                <span class="glyphicon glyphicon-floppy-save"></span>&nbsp;Baixar o edital »
+                </a>
+            </p>
+            <div class="separador"></div>
+            <h3>
+                Edital Nº 17/2014 - Locais de Votação
+            </h3>
+            <p>
+                <a class="btn btn-warning" target="_blank" role="button" href="{% static 'zona_eleitoral/pdf/edital/Edital_017_2014.pdf' %}">
+                <span class="glyphicon glyphicon-floppy-save"></span>&nbsp;Baixar o manual »
+                </a>
+            </p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="menu-conteudo">
+        <h1 class="text-center">Sistemas</h1>
+        </div>
+        <div class="conteudo">
+	        <h3>
+			    Cadastro de Veículos
+			</h3>
+			<p>
+			Sistema para cadastramento de veículos de órgãos públicos.
+			</p>
+			<p>
+			    <a class="btn btn-primary" target="_blank" role="button" href="{% url 'veiculos_index'%}">
+			        Acessar »
+			    </a>
+			    <a class="btn btn-warning" target="_blank" role="button" href="{% static 'zona_eleitoral/pdf/manual/MANUAL_SCV_2014_SITE.pdf' %}">
+			    <span class="glyphicon glyphicon-floppy-save"></span>&nbsp;Baixar o manual »
+			    </a>
+			</p>
+			<div class="separador"></div>
+			
+			<h3>
+                Eleições 2012 - Declaração/certificado de Mesários
+            </h3>
+            <p>
+                <a class="btn btn-primary" target="_blank" role="button" href="http://200.169.134.27/site/index.php/declaracao">
+                    Acessar Declaração »
+                </a>
+                <a class="btn btn-primary" target="_blank" role="button" href="http://200.169.134.27/site/index.php/certificado">
+                    Acessar Certificado »
+                </a>
+            </p>
+		</div>
+		
+    </div>
+    
+</div>
+
+<div class="footer">
+
+    <div class="container">
+        <p class="text-muted text-center"><strong>Tribunal Regional Eleitoral do Tocantins - Fórum Eleitoral de Palmas</strong></p>
+        <p class="text-muted text-center">104 Sul, Av. LO 01, Nº 10 Palmas - TO CEP 77.021-021</p>
+        <p class="text-muted text-center"><strong>Fone:</strong> (63)3233-9845 <strong>Email:</strong> zon029@tre-to.jus.br</p>
+    </div>
+
+</div>

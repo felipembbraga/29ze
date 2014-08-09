@@ -6,8 +6,10 @@ Created on 05/08/2014
 '''
 from django import forms
 from models import Veiculo
+from core.models import Marca
 
 class VeiculoForm(forms.ModelForm):
+    marca = forms.ModelChoiceField(queryset=Marca.objects.all().order_by('nome'))
     placa = forms.RegexField(
                         r'[A-Za-z]{3}-\d{4}',max_length=8, help_text='Ex.:ABC-1234', error_messages={'invalid' : u'Insira uma placa válida.'})
     cadastrar_motorista = forms.BooleanField(initial=False,label = 'Cadastrar Motorista para o Veículo',required=False)
