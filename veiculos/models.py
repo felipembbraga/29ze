@@ -33,8 +33,9 @@ class Veiculo(models.Model):
         verbose_name_plural = u'Veículos'
         unique_together = ('placa', 'eleicao') 
         permissions = (
-                       ('view_veiculo', u'Visualizar Veículos'),
-                       )
+            ('view_veiculo', u'Visualizar Veículos'),
+            ('view_all_veiculo', u'Visualizar Todos os Veículos'),
+        )
         
     @models.permalink
     def get_absolute_url(self):

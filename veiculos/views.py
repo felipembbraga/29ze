@@ -4,6 +4,7 @@ from core.models import Modelo
 from django.core import serializers
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.forms.models import modelform_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from forms import VeiculoForm, MotoristaForm
@@ -11,6 +12,7 @@ from models import Veiculo
 from acesso.models import OrgaoPublico
 from django.core.exceptions import PermissionDenied
 from acesso.decorators import orgao_atualizar
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 # Create your views here.
 
 @orgao_atualizar
@@ -133,3 +135,24 @@ def veiculo_excluir(request, id_veiculo):
                 messages.error(request, u'Erro ao deletar o veículo')
         messages.error(request, u'Comando errado')
     return render(request, 'veiculos/veiculo/excluir.html', locals())
+
+def veiculo_listar(request, id_orgao=None):
+    if id_orgao:
+        orgao = OrgaoPublico.objects.get(pk=int(id_orgao))
+        queryset = Veiculo.objects.filter(eleicao = request.eleicao_atual, orgao=orgao)
+    else:
+        queryset = Veiculo.objects.filter(eleicao = request.eleicao_atual)
+        
+    lista_veiculos = queryset.order_by('orgao__nome_secretaria', 'marca__nome', 'modelo__nome').select_related()
+    paginator = Paginator(lista_veiculos, 15)
+    pagina = request.GET.get('pagina')
+    try:
+        veiculos = paginator.page(pagina)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        veiculos = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        veiculos = paginator.page(paginator.num_pages)
+    form = modelform_factory(Veiculo, fields=('orgao',), labels={'orgao':u'Filtrar por Órgão: '})({'orgao':id_orgao})
+    return render(request, 'veiculos/veiculo/listar.html', locals())

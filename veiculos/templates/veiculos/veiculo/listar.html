@@ -1,0 +1,77 @@
+{% extends 'veiculos/base.html' %}
+ {% load static from staticfiles %}
+  {% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
+ {% endblock %}
+ 
+{% block container %}
+<div class="row">
+    <div class="col-md-3"><strong>Total de veículos: </strong>{{ veiculos|length }}</div>
+    <div class="col-md-3">
+        <div class="form-group">
+                    <label for="{{form.orgao.id_for_label}}">{{ form.orgao.label }}</label>
+                    {{ form.orgao }}
+                </div>
+    </div>
+</div>
+
+  <table class="table table-striped" id="tabela-veiculo">
+  <thead>
+  <tr>
+    <th width="11%">Placa</th>
+    <th>Veículo</th>
+    <th width="6%">Ano</th>
+    <th>Motorista</th>
+    <th>Órgão Público</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for veiculo in veiculos %}
+  <tr>
+    <td>{{ veiculo.placa|upper }}</td>
+    <td>{{ veiculo.marca }} {{ veiculo.modelo }}</td>
+    <td>{{veiculo.get_ano}}</td>
+    <td>{% firstof veiculo.motorista_nome 'Não cadastrado' %}</td>
+    <td>
+    {{veiculo.orgao}}
+    </td>
+    
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<ul class="pager">
+    {% if veiculos.has_previous %}
+  <li class="previous"><a href="?pagina={{ veiculos.previous_page_number }}">&larr; Anterior</a></li>
+  {% endif %}
+  
+  <li>
+    Página <input type="number" value="{{veiculos.number}}" style="width:40px;" min="1" max="{{veiculos.paginator.num_pages}}"  
+    onchange="window.location='?pagina=' + this.value"/> de {{veiculos.paginator.num_pages}}
+  </li>
+    
+  
+  {% if veiculos.has_next %}
+  <li class="next"><a href="?pagina={{ veiculos.next_page_number }}">Próxima &rarr;</a></li>
+  {% endif %}
+</ul>
+
+
+    
+{% endblock %}
+
+{%block extrascripts %}
+    <script>
+    $(document).ready(function(){
+        $('#id_orgao').change(function(){
+            if($(this).val()=='')
+                location.href = '/veiculos/veiculo/listar/';
+            else
+                location.href = '/veiculos/veiculo/listar/' + $(this).val() + '/';
+        });
+    });
+    
+    </script>	
+
+{% endblock %}
