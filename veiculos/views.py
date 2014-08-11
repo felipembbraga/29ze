@@ -136,6 +136,7 @@ def veiculo_excluir(request, id_veiculo):
         messages.error(request, u'Comando errado')
     return render(request, 'veiculos/veiculo/excluir.html', locals())
 
+@login_required
 def veiculo_listar(request, id_orgao=None):
     if id_orgao:
         orgao = OrgaoPublico.objects.get(pk=int(id_orgao))
