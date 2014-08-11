@@ -1,10 +1,12 @@
 #-*- coding: utf-8 -*-
 
 from core.models import Modelo
+from django import forms
 from django.core import serializers
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.forms.models import modelform_factory
+
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from forms import VeiculoForm, MotoristaForm
@@ -155,5 +157,11 @@ def veiculo_listar(request, id_orgao=None):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         veiculos = paginator.page(paginator.num_pages)
-    form = modelform_factory(Veiculo, fields=('orgao',), labels={'orgao':u'Filtrar por Órgão: '})({'orgao':id_orgao})
+    orgaos = OrgaoPublico.objects.all().order_by('nome_secretaria')
+    Form = modelform_factory(
+                Veiculo,
+                fields=('orgao',),
+                labels={'orgao':u'Filtrar por Órgão: '})
+    Form.base_fields['orgao'].queryset = orgaos
+    form = Form({'orgao':id_orgao})
     return render(request, 'veiculos/veiculo/listar.html', locals())
