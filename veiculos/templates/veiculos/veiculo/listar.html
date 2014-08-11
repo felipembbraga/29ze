@@ -21,6 +21,7 @@
     <th width="11%">Placa</th>
     <th>Veículo</th>
     <th width="6%">Ano</th>
+    <th width="6%">Estado</th>
     <th>Motorista</th>
     <th>Órgão Público</th>
   </tr>
@@ -29,9 +30,10 @@
   {% for veiculo in veiculos %}
   <tr>
     <td>{{ veiculo.placa|upper }}</td>
-    <td>{{ veiculo.marca }} {{ veiculo.modelo }}</td>
+    <td>{{ veiculo.marca|upper }} {{ veiculo.modelo|upper }}</td>
     <td>{{veiculo.get_ano}}</td>
-    <td>{% firstof veiculo.motorista_nome 'Não cadastrado' %}</td>
+    <td>{{veiculo.get_estado}}</td>
+    <td>{% firstof veiculo.motorista_nome 'Não Cadastrado' %}</td>
     <td>
     {{veiculo.orgao}}
     </td>
