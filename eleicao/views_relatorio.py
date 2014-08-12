@@ -19,7 +19,7 @@ def relatorio_local_equipe(request):
 @permission_required('eleicao.view_equipe', raise_exception=True)
 def relatorio_local_mala_direta(request):
     locais = LocalVotacao.objects.filter(eleicao=request.eleicao_atual).order_by('local__nome').select_related()
-    cabecalho = ['equipe', 'num_local', 'nome_local', 'endereco', 'bairro', 'total_eleitores', 'secoes']
+    cabecalho = ['equipe', 'num_local', 'nome_local', 'endereco', 'bairro', 'total_eleitores', 'secoes', 'total_secoes']
     data = [cabecalho,]
     max_secoes = 0
     for local in locais:
@@ -32,9 +32,9 @@ def relatorio_local_mala_direta(request):
         bairro = local.local.bairro
         total_eleitores = local.get_total_eleitores()
         secoes = local.get_secoes(delimitador='/')
-        lista = [equipe, num_local, nome_local, endereco, bairro, total_eleitores, secoes]
+        num_secoes = local.secao_set.secao_pai().count()
+        lista = [equipe, num_local, nome_local, endereco, bairro, total_eleitores, secoes, num_secoes]
         total_secoes = local.secao_set.secao_pai()
-        total_secoes
         for secao in total_secoes:
             lista.append(secao.unicode_agregadas(especial=False))
         data.append(lista)
