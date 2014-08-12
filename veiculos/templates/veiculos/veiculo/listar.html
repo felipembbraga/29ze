@@ -6,7 +6,7 @@
  
 {% block container %}
 <div class="row">
-    <div class="col-md-3"><strong>Total de veículos: </strong>{{ veiculos|length }}</div>
+    <div class="col-md-3"><strong>Total de veículos: </strong>{{ veiculos.paginator.count }}</div>
     <div class="col-md-3">
         <div class="form-group">
                     <label for="{{form.orgao.id_for_label}}">{{ form.orgao.label }}</label>
