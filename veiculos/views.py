@@ -146,7 +146,9 @@ def veiculo_listar(request, id_orgao=None):
     else:
         queryset = Veiculo.objects.filter(eleicao = request.eleicao_atual)
         
-    lista_veiculos = queryset.order_by('orgao__nome_secretaria', 'marca__nome', 'modelo__nome').select_related()
+    lista_veiculos = queryset.exclude(estado=3).order_by('orgao__nome_secretaria', 'marca__nome', 'modelo__nome')
+    total_com_motorista = lista_veiculos.exclude(motorista_titulo_eleitoral=None).count()
+    total_sem_motorista = lista_veiculos.filter(motorista_titulo_eleitoral=None).count()
     paginator = Paginator(lista_veiculos, 15)
     pagina = request.GET.get('pagina')
     try:

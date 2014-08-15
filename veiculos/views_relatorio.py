@@ -16,3 +16,6 @@ def relatorio_veiculos(request):
     else:
         veiculos = Veiculo.objects.all().order_by('marca__nome', 'modelo__nome')
     return render(request, 'veiculos/report/veiculos.html', locals())
+
+def relatorio_admin_veiculos_geral(request):
+    veiculos = Veiculo.objects.filter(eleicao = request.eleicao_atual).exclude(estado = 3).order_by('marca__nome', 'modelo__nome')
