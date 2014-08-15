@@ -6,7 +6,7 @@ Created on 05/08/2014
 from django.conf.urls import include, url, patterns
 from views import index, veiculo_index, veiculo_cadastrar, veiculo_editar, veiculo_ajax_get_modelo, info
 from veiculos.views import veiculo_excluir, veiculo_listar
-from views_relatorio import relatorio_veiculos
+from views_relatorio import *
 
 veiculo_patterns = [
     url(r'^cadastrar/$', veiculo_cadastrar, name='cadastrar'),
@@ -20,6 +20,7 @@ veiculo_patterns = [
 
 report_patterns = [
     url(r'^veiculos/$', relatorio_veiculos, name='veiculos'),
+    url(r'^orgaos-sem-veiculos/$', relatorio_admin_orgao_sem_veiculo, name='orgaos-sem-veiculos'),
 ]
 
 

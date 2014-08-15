@@ -38,6 +38,8 @@
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Veículos<span class="caret"></span></a>
   <ul class="dropdown-menu" role="menu">
     <li><a href="{% url 'veiculo:listar' %}">Listar</a></li>
+    <li class="dropdown-header">Relatorios</li>
+    <li><a href="{% url 'report-veiculos:orgaos-sem-veiculos' %}">Órgãos sem veículos cadastrados</a></li>
   </ul>
 </li>
 {% endif %}
