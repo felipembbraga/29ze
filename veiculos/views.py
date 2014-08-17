@@ -14,6 +14,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from filters import VeiculoFilter
 from forms import VeiculoForm, MotoristaForm
 from models import Veiculo
+from utils.forms import NumPorPaginaForm
 
 # Create your views here.
 
@@ -145,12 +146,15 @@ def veiculo_listar(request, id_orgao=None):
         queryset = Veiculo.objects.filter(eleicao = request.eleicao_atual, orgao=orgao)
     else:
         queryset = Veiculo.objects.filter(eleicao = request.eleicao_atual)
-        
     lista_veiculos = queryset.exclude(estado=3).order_by('orgao__nome_secretaria', 'marca__nome', 'modelo__nome')
+    
     filtro = VeiculoFilter(request.GET, queryset = lista_veiculos)
     total_com_motorista = filtro.qs.exclude(motorista_titulo_eleitoral=None).count()
     total_sem_motorista = filtro.qs.filter(motorista_titulo_eleitoral=None).count()
-    paginator = Paginator(filtro.qs, 15)
+    
+    form_pagina = NumPorPaginaForm(request.GET)
+    num_por_pagina = form_pagina.is_valid() and int(form_pagina.cleaned_data['num_por_pagina']) or 10
+    paginator = Paginator(filtro.qs, num_por_pagina)
     pagina = request.GET.get('pagina')
     try:
         veiculos = paginator.page(pagina)
@@ -167,4 +171,5 @@ def veiculo_listar(request, id_orgao=None):
                 labels={'orgao':u'Selecionar Órgão: '})
     Form.base_fields['orgao'].queryset = orgaos
     form = Form({'orgao':id_orgao})
+    form.fields['orgao'].widget.attrs.update({'class':'form-control'})
     return render(request, 'veiculos/veiculo/listar.html', locals())

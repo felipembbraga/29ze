@@ -1,5 +1,16 @@
+#-*- coding: utf-8 -*-
 from django import forms
 from django.forms.util import ErrorList
+
+class NumPorPaginaForm(forms.Form):
+    num_por_pagina = forms.ChoiceField(
+                                       choices=[[i, i] for i in range(10, 51, 10)],
+                                       label=u"Nº elementos p/ página"
+                     )
+    
+    def __init__(self, *args, **kwargs):
+        super(NumPorPaginaForm, self).__init__(*args, **kwargs)
+        self.fields['num_por_pagina'].widget.attrs.update({'class': 'form-control'})
 
 class BootstrapForm(forms.Form):
     def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None,

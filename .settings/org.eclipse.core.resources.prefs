@@ -11,6 +11,7 @@ encoding//eleicao/forms.py=utf-8
 encoding//eleicao/models.py=utf-8
 encoding//eleicao/views.py=utf-8
 encoding//eleicao/views_relatorio.py=utf-8
+encoding//utils/forms.py=utf-8
 encoding//utils/importar_fipe.py=utf-8
 encoding//veiculos/filters.py=utf-8
 encoding//veiculos/forms.py=utf-8

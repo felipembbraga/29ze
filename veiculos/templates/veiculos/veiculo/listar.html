@@ -13,10 +13,16 @@
         <strong>Total de veículos sem motorista: </strong>{{ total_sem_motorista }} <br />
         
     </div>
-    <div class="col-md-3">
+    <div class="col-md-5">
         <div class="form-group">
             <label for="{{form.orgao.id_for_label}}">{{ form.orgao.label }}</label>
             {{ form.orgao }}
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label for="{{form_pagina.num_por_pagina.id_for_label}}">{{ form_pagina.num_por_pagina.label }}</label>
+            {{ form_pagina.num_por_pagina }}
         </div>
     </div>
 </div>
@@ -96,7 +102,7 @@
             $('#pagina').val(1);
             location.href = url + '?' + $('#form-filtro').serialize();
         });
-        $('#id_estado, #id_ano, #id_tipo, #id_motorista').change(function(){
+        $('#id_estado, #id_ano, #id_tipo, #id_motorista, #id_num_por_pagina').change(function(){
             $('#pagina').val(1);
             $('#form-filtro').submit();
         });
