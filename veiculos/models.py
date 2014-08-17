@@ -37,6 +37,9 @@ class Veiculo(models.Model):
             ('view_all_veiculo', u'Visualizar Todos os Veículos'),
         )
         
+    def __unicode__(self):
+        return u'%s %s'%(self.marca.nome, self.modelo.nome)
+    
     @models.permalink
     def get_absolute_url(self):
         return ('veiculo:editar', [str(self.pk)])

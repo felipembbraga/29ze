@@ -5,66 +5,82 @@
  {% endblock %}
  
 {% block container %}
+<form id="form-filtro" method="GET">
 <div class="row">
     <div class="col-md-3">
-        <strong>Total de veículos: </strong>{{ veiculos.paginator.count }} <br />
+        <strong>Total de veículos: </strong>{{ filtro.qs.count }} <br />
         <strong>Total de veículos com motorista: </strong>{{ total_com_motorista }} <br />
         <strong>Total de veículos sem motorista: </strong>{{ total_sem_motorista }} <br />
         
     </div>
     <div class="col-md-3">
         <div class="form-group">
-                    <label for="{{form.orgao.id_for_label}}">{{ form.orgao.label }}</label>
-                    {{ form.orgao }}
-                </div>
+            <label for="{{form.orgao.id_for_label}}">{{ form.orgao.label }}</label>
+            {{ form.orgao }}
+        </div>
     </div>
 </div>
-
-  <table class="table table-striped" id="tabela-veiculo">
-  <thead>
-  <tr>
-    <th width="11%">Placa</th>
-    <th>Veículo</th>
-    <th width="6%">Ano</th>
-    <th width="6%">Estado</th>
-    <th>Motorista</th>
-    <th>Órgão Público</th>
-  </tr>
-  </thead>
-  <tbody>
-  {% for veiculo in veiculos %}
-  <tr>
-    <td>{{ veiculo.placa|upper }}</td>
-    <td>{{ veiculo.marca|upper }} {{ veiculo.modelo|upper }}</td>
-    <td>{{veiculo.get_ano}}</td>
-    <td>{{veiculo.get_estado}}</td>
-    <td>{% firstof veiculo.motorista_nome 'Não Cadastrado' %}</td>
-    <td>
-    {{veiculo.orgao}}
-    </td>
-    
-  </tr>
-  {% endfor %}
-  </tbody>
-</table>
-
-<ul class="pager">
-    {% if veiculos.has_previous %}
-  <li class="previous"><a href="?pagina={{ veiculos.previous_page_number }}">&larr; Anterior</a></li>
-  {% endif %}
-  
-  <li>
-    Página <input type="number" value="{{veiculos.number}}" style="width:40px;" min="1" max="{{veiculos.paginator.num_pages}}"  
-    onchange="window.location='?pagina=' + this.value"/> de {{veiculos.paginator.num_pages}}
-  </li>
-    
-  
-  {% if veiculos.has_next %}
-  <li class="next"><a href="?pagina={{ veiculos.next_page_number }}">Próxima &rarr;</a></li>
-  {% endif %}
-</ul>
-
-
+<div class="row">
+    <div class="col-md-10">
+	    <table class="table table-striped" id="tabela-veiculo">
+	        <thead>
+	            <tr>
+	                <th width="10%">Placa</th>
+	                <th width="33%">Veículo</th>
+	                <th width="6%">Ano</th>
+	                <th width="10%">Tipo</th>
+	                <th width="6%">Estado</th>
+	                <th width="10%">Motorista</th>
+	                <th width="25%">Órgão Público</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	        {% for veiculo in veiculos %}
+	            <tr>
+	                <td>{{veiculo.placa|upper }}</td>
+	                <td>{{veiculo.marca|upper }} {{ veiculo.modelo|upper }}</td>
+	                <td>{{veiculo.get_ano}}</td>
+	                <td>{{veiculo.get_tipo}}</td>
+	                <td>{{veiculo.get_estado}}</td>
+	                <td class="text-center"><span class="glyphicon 
+	                   glyphicon-{% if veiculo.motorista_titulo_eleitoral  %}ok color-green{% else %}remove color-red{% endif %}"></span>
+	                </td>
+	                <td>
+	                    {{veiculo.orgao}}
+	                </td>
+	            </tr>
+	        {% endfor %}
+	        </tbody>
+	    </table>
+		
+		<ul class="pager">
+	    {% if veiculos.has_previous %}
+	        <li class="previous"><a href="javascript:void(0);">&larr; Anterior</a></li>
+	    {% endif %}
+	        <li>
+	            Página <input type="number" value="{{veiculos.number}}"
+	                style="width:40px;" min="1" max="{{veiculos.paginator.num_pages}}"
+	                name="pagina" id="pagina"
+	                onchange="form.submit();"/> de {{veiculos.paginator.num_pages}}
+	        </li>
+	    {% if veiculos.has_next %}
+	        <li class="next"><a href="javascript:void(0);">Próxima &rarr;</a></li>
+	    {% endif %}
+	    </ul>
+    </div>
+    <div class="col-md-2 col-filtro">
+        <h3>Filtrar por:</h3>
+         
+        <div class="form-group">
+        {% for field in filtro.form %}
+            <label for="{{field.id_for_label}}">{{ field.label }}</label>
+            {{ field }}
+        {% endfor %}
+        </div>
+        
+    </div>
+</div>
+</form>
     
 {% endblock %}
 
@@ -72,12 +88,32 @@
     <script>
     $(document).ready(function(){
         $('#id_orgao').change(function(){
+            var url;
             if($(this).val()=='')
-                location.href = '/veiculos/veiculo/listar/';
+                url = '/veiculos/veiculo/listar/';
             else
-                location.href = '/veiculos/veiculo/listar/' + $(this).val() + '/';
+                url = '/veiculos/veiculo/listar/' + $(this).val() + '/';
+            $('#pagina').val(1);
+            location.href = url + '?' + $('#form-filtro').serialize();
+        });
+        $('#id_estado, #id_ano, #id_tipo, #id_motorista').change(function(){
+            $('#pagina').val(1);
+            $('#form-filtro').submit();
+        });
+        $(".previous").click(function(){
+            {% if veiculos.has_previous %}
+            $('#pagina').val({{ veiculos.previous_page_number }});
+            {% endif %}
+            $('#form-filtro').submit();
+        });
+        $(".next").click(function(){
+            {% if veiculos.has_next %}
+            $('#pagina').val({{ veiculos.next_page_number }});
+            {% endif %}
+            $('#form-filtro').submit();
         });
     });
+    
     
     </script>	
 

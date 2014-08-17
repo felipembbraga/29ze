@@ -1,20 +1,20 @@
 #-*- coding: utf-8 -*-
-
+from acesso.decorators import orgao_atualizar
+from acesso.models import OrgaoPublico
 from core.models import Modelo
 from django import forms
-from django.core import serializers
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core import serializers
+from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.forms.models import modelform_factory
-
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from filters import VeiculoFilter
 from forms import VeiculoForm, MotoristaForm
 from models import Veiculo
-from acesso.models import OrgaoPublico
-from django.core.exceptions import PermissionDenied
-from acesso.decorators import orgao_atualizar
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
 # Create your views here.
 
 @orgao_atualizar
@@ -147,9 +147,10 @@ def veiculo_listar(request, id_orgao=None):
         queryset = Veiculo.objects.filter(eleicao = request.eleicao_atual)
         
     lista_veiculos = queryset.exclude(estado=3).order_by('orgao__nome_secretaria', 'marca__nome', 'modelo__nome')
-    total_com_motorista = lista_veiculos.exclude(motorista_titulo_eleitoral=None).count()
-    total_sem_motorista = lista_veiculos.filter(motorista_titulo_eleitoral=None).count()
-    paginator = Paginator(lista_veiculos, 15)
+    filtro = VeiculoFilter(request.GET, queryset = lista_veiculos)
+    total_com_motorista = filtro.qs.exclude(motorista_titulo_eleitoral=None).count()
+    total_sem_motorista = filtro.qs.filter(motorista_titulo_eleitoral=None).count()
+    paginator = Paginator(filtro.qs, 15)
     pagina = request.GET.get('pagina')
     try:
         veiculos = paginator.page(pagina)
@@ -163,7 +164,7 @@ def veiculo_listar(request, id_orgao=None):
     Form = modelform_factory(
                 Veiculo,
                 fields=('orgao',),
-                labels={'orgao':u'Filtrar por Órgão: '})
+                labels={'orgao':u'Selecionar Órgão: '})
     Form.base_fields['orgao'].queryset = orgaos
     form = Form({'orgao':id_orgao})
     return render(request, 'veiculos/veiculo/listar.html', locals())
