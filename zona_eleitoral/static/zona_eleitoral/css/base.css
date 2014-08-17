@@ -42,3 +42,18 @@ div.titulo>h1 {
 .navbar {
 	padding:8px;
 }
+
+.col-filtro {
+	background-color: #eee;
+	border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+	
+}
+
+.color-green {
+	color:green;
+}
+
+.color-red {
+	color:red;
+}
