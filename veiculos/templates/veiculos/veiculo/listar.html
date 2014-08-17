@@ -44,7 +44,7 @@
 	        {% for veiculo in veiculos %}
 	            <tr>
 	                <td>{{veiculo.placa|upper }}</td>
-	                <td>{{veiculo.marca|upper }} {{ veiculo.modelo|upper }}</td>
+	                <td>{{veiculo.veiculo_with_popover|safe}}</td>
 	                <td>{{veiculo.get_ano}}</td>
 	                <td>{{veiculo.get_tipo}}</td>
 	                <td>{{veiculo.get_estado}}</td>

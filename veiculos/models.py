@@ -52,3 +52,13 @@ class Veiculo(models.Model):
     def get_ano(self):
         return unicode(self.ano)
     
+    def veiculo_with_popover(self):
+        if self.observacao:
+            html = u'''<span  class="tooltip-iniciar"
+                href="#" data-toggle="tooltip" title="<label>Observação:&nbsp;</label>%(observacao)s">
+                %(veiculo)s
+                </span>'''
+            
+            return html%{'veiculo':unicode(self), 'observacao': self.observacao}
+        return self.__unicode__()
+    
