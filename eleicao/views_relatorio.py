@@ -47,7 +47,7 @@ def relatorio_local_mala_direta(request):
     return ExcelResponse(data, 'locais_mala_direta')
 
 def relatorio_local_mala_direta_por_secao(request):
-    secoes = Secao.objects.filter(eleicao=request.eleicao_atual).order_by('num_secao').select_related()
+    secoes = Secao.objects.secao_pai().filter(eleicao=request.eleicao_atual).order_by('num_secao').select_related()
     cabecalho = ['secao', 'equipe', 'num_local', 'nome_local', 'endereco', 'bairro', 'total_eleitores', 'secoes', 'total_secoes']
     data = [cabecalho,]
     for secao in secoes:
@@ -61,7 +61,7 @@ def relatorio_local_mala_direta_por_secao(request):
         total_eleitores = secao.local_votacao.get_total_eleitores()
         secoes = secao.local_votacao.get_secoes(delimitador='/')
         num_secoes = secao.local_votacao.secao_set.secao_pai().count()
-        lista = [unicode(secao), equipe, num_local, nome_local, endereco, bairro, total_eleitores, secoes, num_secoes]
+        lista = [secao.unicode_agregadas(), equipe, num_local, nome_local, endereco, bairro, total_eleitores, secoes, num_secoes]
         data.append(lista)
         
             
