@@ -36,13 +36,34 @@ def relatorio_local_mala_direta(request):
         lista = [equipe, num_local, nome_local, endereco, bairro, total_eleitores, secoes, num_secoes]
         total_secoes = local.secao_set.secao_pai()
         for secao in total_secoes:
-            lista.append(secao.unicode_agregadas(especial=False))
+            lista.append(secao.unicode_agregadas())
         data.append(lista)
         if len(total_secoes) > max_secoes:
             for i in range(1,len(total_secoes) + 1):
                 if data[0].count('secao_' + str(i)) == 0:
                     data[0].append('secao_' + str(i))
             max_secoes = len(total_secoes)
+            
+    return ExcelResponse(data, 'locais_mala_direta')
+
+def relatorio_local_mala_direta_por_secao(request):
+    secoes = Secao.objects.filter(eleicao=request.eleicao_atual).order_by('num_secao').select_related()
+    cabecalho = ['secao', 'equipe', 'num_local', 'nome_local', 'endereco', 'bairro', 'total_eleitores', 'secoes', 'total_secoes']
+    data = [cabecalho,]
+    for secao in secoes:
+        if secao.local_votacao.get_total_eleitores() == 0:
+            continue
+        equipe = secao.local_votacao.equipe and secao.local_votacao.equipe.nome or 'Sem equipe'
+        num_local = secao.local_votacao.local.id_local
+        nome_local = secao.local_votacao.local.nome
+        endereco = secao.local_votacao.local.endereco
+        bairro = secao.local_votacao.local.bairro
+        total_eleitores = secao.local_votacao.get_total_eleitores()
+        secoes = secao.local_votacao.get_secoes(delimitador='/')
+        num_secoes = secao.local_votacao.secao_set.secao_pai().count()
+        lista = [unicode(secao), equipe, num_local, nome_local, endereco, bairro, total_eleitores, secoes, num_secoes]
+        data.append(lista)
+        
             
     return ExcelResponse(data, 'locais_mala_direta')
 
