@@ -9,9 +9,9 @@
 		  <h2>{{ secao.unicode_agregadas }}</h2>
 		</div>
         <div class="row" style="margin-bottom:10px;">
-            
+            <div class="col-md-2"><strong>Código: </strong> {{ secao.local_votacao.local.get_id_local }} </div>
             <div class="col-md-6"><strong>Local: </strong> {{ secao.local_votacao.local.nome }} </div>
-            <div class="col-md-6"><strong>Quantidade de eleitores: </strong> {{ secao.get_total_eleitores }} </div>
+            <div class="col-md-4"><strong>Quantidade de eleitores: </strong> {{ secao.get_total_eleitores }} </div>
         </div>
         
         <table class="table table-bordered tabela-impressao">
