@@ -5,7 +5,7 @@ Created on 05/08/2014
 '''
 from django.conf.urls import include, url, patterns
 from views import index, veiculo_index, veiculo_cadastrar, veiculo_editar, veiculo_ajax_get_modelo, info
-from veiculos.views import veiculo_excluir, veiculo_listar, veiculo_requisitar, veiculo_liberar
+from veiculos.views import veiculo_excluir, veiculo_listar, veiculo_requisitar, veiculo_liberar, veiculo_detalhar
 from views_relatorio import *
 
 veiculo_patterns = [
@@ -14,7 +14,7 @@ veiculo_patterns = [
     url(r'^get-modelos/(\d+)/$', veiculo_ajax_get_modelo, name='ajax_get_modelo'),
     url(r'^excluir/(\d+)/$', veiculo_excluir, name='excluir'),
     url(r'^listar/$', veiculo_listar, name='listar'),
-    url(r'^listar/(\d+)/$', veiculo_listar),
+    url(r'^detalhar/(\d+)/$', veiculo_detalhar, name='detalhar'),
     url(r'^requisitar/(\d+)/$', veiculo_requisitar, name='requisitar'),
     url(r'^liberar/(\d+)/$', veiculo_liberar, name='liberar'),
     url(r'^index/$', veiculo_index, name='index'),

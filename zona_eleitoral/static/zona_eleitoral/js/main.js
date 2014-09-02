@@ -56,3 +56,7 @@ $(document).ready(function(){
 	$('.tooltip-iniciar').tooltip({html:true,placement:'top'});
 	
 });
+
+function abrirModal(url) {
+	$.bsmodal({url:url});
+}

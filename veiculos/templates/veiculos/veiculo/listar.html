@@ -44,7 +44,8 @@
 	               
 	                <td>
 		                {% if veiculo.veiculo_selecionado %}<b>{% endif %}
-		                {{veiculo.placa|upper }}
+		                
+		                <a href="#" onclick="abrirModal('{% url 'veiculo:detalhar' veiculo.pk %}');">{{veiculo.placa|upper }}
 		                {% if veiculo.veiculo_selecionado %}</b>{% endif %}
 	                </td>
 	                <td>

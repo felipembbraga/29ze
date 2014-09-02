@@ -191,3 +191,9 @@ def veiculo_liberar(request, id_veiculo):
     if hasattr(veiculo, 'veiculo_selecionado'):
         veiculo.veiculo_selecionado.delete()
     return NotifyResponse('Sucesso', theme='sucesso')
+
+@login_required
+def veiculo_detalhar(request, id_veiculo):
+    titulo = 'Detalhar veículo'
+    veiculo = get_object_or_404(Veiculo, pk=int(id_veiculo))
+    return render(request, 'veiculos/veiculo/detalhar.html', locals())
