@@ -4,7 +4,19 @@ from django import forms
 import datetime
 import django_filters
 
+class FilterNullBooleanSelect(forms.NullBooleanSelect):
+    def __init__(self, *args, **kwargs):
+        super(FilterNullBooleanSelect, self).__init__(*args, **kwargs)
+        self.choices = (('1', 'Selecione'),
+                   ('2', 'Sim'),
+                   ('3', u'Não'))
+        
+class FilterBooleanField(forms.NullBooleanField):
+    widget = FilterNullBooleanSelect
 
+class MyBooleanFilter(django_filters.BooleanFilter):
+    field_class = FilterBooleanField
+    
 class FiltroForm(forms.ModelForm):
     class Meta:
         model = Veiculo
@@ -39,10 +51,15 @@ def filter_motorista(queryset, value):
         return queryset.exclude(motorista_titulo_eleitoral=None)
     else:
         return queryset.filter(motorista_titulo_eleitoral=None)
-
+    
+def filter_selecionado(queryset, value):
+    if value:
+        return queryset.exclude(veiculo_selecionado=None)
+    return queryset.filter(veiculo_selecionado=None)
 class VeiculoFilter(django_filters.FilterSet):
     ano = django_filters.ChoiceFilter(choices=get_ano_choices(), action=filter_ano)
-    motorista = django_filters.BooleanFilter(action=filter_motorista)
+    motorista = MyBooleanFilter(action=filter_motorista)
+    requisitado = MyBooleanFilter(action=filter_selecionado)
     class Meta:
         model = Veiculo
         fields = ['tipo', 'estado']

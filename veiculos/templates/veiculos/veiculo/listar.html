@@ -1,8 +1,5 @@
 {% extends 'base.html' %}
  {% load static from staticfiles %}
-  {% block extrastyle %}
-    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
- {% endblock %}
  
 {% block container %}
 <form id="form-filtro" method="GET">
@@ -38,21 +35,63 @@
 	                <th width="6%">Estado</th>
 	                <th width="10%">Motorista</th>
 	                <th width="25%">Órgão Público</th>
+	                <th></th>
 	            </tr>
 	        </thead>
 	        <tbody>
 	        {% for veiculo in veiculos %}
 	            <tr>
-	                <td>{{veiculo.placa|upper }}</td>
-	                <td>{{veiculo.veiculo_with_popover|safe}}</td>
-	                <td>{{veiculo.get_ano}}</td>
-	                <td>{{veiculo.get_tipo}}</td>
-	                <td>{{veiculo.get_estado}}</td>
+	               
+	                <td>
+		                {% if veiculo.veiculo_selecionado %}<b>{% endif %}
+		                {{veiculo.placa|upper }}
+		                {% if veiculo.veiculo_selecionado %}</b>{% endif %}
+	                </td>
+	                <td>
+	                    {% if veiculo.veiculo_selecionado %}<b>{% endif %}
+	                    {{veiculo.veiculo_with_popover|safe}}
+	                    {% if veiculo.veiculo_selecionado %}</b>{% endif %}
+	                </td>
+	                <td>
+                        {% if veiculo.veiculo_selecionado %}<b>{% endif %}
+                        {{veiculo.get_ano}}
+                        {% if veiculo.veiculo_selecionado %}</b>{% endif %}
+                    </td>
+	                <td>
+                        {% if veiculo.veiculo_selecionado %}<b>{% endif %}
+                        {{veiculo.get_tipo}}
+                        {% if veiculo.veiculo_selecionado %}</b>{% endif %}
+                    </td>
+	                <td>
+                        {% if veiculo.veiculo_selecionado %}<b>{% endif %}
+                        {{veiculo.get_estado}}
+                        {% if veiculo.veiculo_selecionado %}</b>{% endif %}
+                    </td>
 	                <td class="text-center"><span class="glyphicon 
 	                   glyphicon-{% if veiculo.motorista_titulo_eleitoral  %}ok color-green{% else %}remove color-red{% endif %}"></span>
 	                </td>
 	                <td>
-	                    {{veiculo.orgao}}
+                        {% if veiculo.veiculo_selecionado %}<b>{% endif %}
+                        {{veiculo.orgao}}
+                        {% if veiculo.veiculo_selecionado %}</b>{% endif %}
+                    </td>
+	                
+	                <td>
+	                   <div class="btn-group btn-group-xs"  style="float:right;">
+	                   {% if veiculo.veiculo_selecionado %}
+	                   <a data-id="{{veiculo.pk}}" href="javascript:void(0);"
+                        class="btn btn-danger btn-xs bt-liberar">
+                            <span class="glyphicon glyphicon-check"></span>
+                            Liberar
+                        </a>
+	                   {% else %}
+				        <a data-id="{{veiculo.pk}}" href="javascript:void(0);"
+				        class="btn btn-primary btn-xs bt-requisitar">
+				            <span class="glyphicon glyphicon-check"></span>
+				            Requisitar
+				        </a>
+				        {% endif %}
+				    </div>
 	                </td>
 	            </tr>
 	        {% endfor %}
@@ -91,22 +130,25 @@
 {% endblock %}
 
 {%block extrascripts %}
+    <script src="{% static 'veiculos/js/classes/Veiculo.js' %}"></script>
     <script>
     $(document).ready(function(){
-        $('#id_orgao').change(function(){
-            var url;
-            if($(this).val()=='')
-                url = '/veiculos/veiculo/listar/';
-            else
-                url = '/veiculos/veiculo/listar/' + $(this).val() + '/';
-            $('#pagina').val(1);
-            location.href = url + '?' + $('#form-filtro').serialize();
-        });
-        $('#id_estado, #id_ano, #id_tipo, #id_motorista, #id_num_por_pagina').change(function(){
-            $('#pagina').val(1);
-            $('#form-filtro').submit();
-        });
-        $(".previous").click(function(){
+        var veiculo = new Veiculo()
+	    $('#id_orgao').change(function(){
+	        var url;
+	        if($(this).val()=='')
+	            url = '/veiculos/veiculo/listar/';
+	        else
+	            url = '/veiculos/veiculo/listar/' + $(this).val() + '/';
+	        $('#pagina').val(1);
+	        location.href = url + '?' + $('#form-filtro').serialize();
+	    });
+	    $('#id_estado, #id_ano, #id_tipo, #id_motorista, #id_num_por_pagina, #id_requisitado').change(function(){
+	        $('#pagina').val(1);
+	        $('#form-filtro').submit();
+	    });
+	    
+	    $(".previous").click(function(){
             {% if veiculos.has_previous %}
             $('#pagina').val({{ veiculos.previous_page_number }});
             {% endif %}
@@ -118,9 +160,28 @@
             {% endif %}
             $('#form-filtro').submit();
         });
+	    
+	    $('.bt-requisitar').click(function(event){
+	        $(this).confirmar({
+	            message: "Você deseja requisitar este veículo?",
+	            onConfirm: function() {
+	                veiculo.setIdVeiculo($(this).data('id'));
+	                veiculo.requisitarVeiculo();
+	            }
+	        })
+	    });
+	    
+	    $('.bt-liberar').click(function(event){
+            $(this).confirmar({
+                message: "Você deseja liberar este veículo?",
+                onConfirm: function() {
+                    veiculo.setIdVeiculo($(this).data('id'));
+                    veiculo.liberarVeiculo();
+                }
+            })
+        });
     });
-    
-    
-    </script>	
+	    
+    </script>
 
 {% endblock %}

@@ -13,8 +13,9 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from filters import VeiculoFilter
 from forms import VeiculoForm, MotoristaForm
-from models import Veiculo
+from models import Veiculo, VeiculoSelecionado, Motorista
 from utils.forms import NumPorPaginaForm
+from utils.Response import NotifyResponse
 
 # Create your views here.
 
@@ -173,3 +174,20 @@ def veiculo_listar(request, id_orgao=None):
     form = Form({'orgao':id_orgao})
     form.fields['orgao'].widget.attrs.update({'class':'form-control'})
     return render(request, 'veiculos/veiculo/listar.html', locals())
+
+@login_required
+def veiculo_requisitar(request, id_veiculo):
+    if not request.is_ajax():
+        raise PermissionDenied
+    veiculo = get_object_or_404(Veiculo, pk=int(id_veiculo))
+    VeiculoSelecionado.objects.get_or_create(veiculo=veiculo)
+    return NotifyResponse('Sucesso', theme='sucesso')
+
+@login_required
+def veiculo_liberar(request, id_veiculo):
+    if not request.is_ajax():
+        raise PermissionDenied
+    veiculo = get_object_or_404(Veiculo, pk=int(id_veiculo))
+    if hasattr(veiculo, 'veiculo_selecionado'):
+        veiculo.veiculo_selecionado.delete()
+    return NotifyResponse('Sucesso', theme='sucesso')

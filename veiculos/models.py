@@ -3,8 +3,8 @@ from django.db import models
 
 # Create your models here.
 from acesso.models import OrgaoPublico
-from eleicao.models import Eleicao
-from core.models import Marca, Modelo
+from eleicao.models import Eleicao, LocalVotacao
+from core.models import Marca, Modelo, Pessoa
 import datetime
 
 tipo_veiculo_choices = list(enumerate(('Passeio', 'Caminhonete', u'Caminhão', u'Micro-ônibus', 'Moto' )))
@@ -61,4 +61,20 @@ class Veiculo(models.Model):
             
             return html%{'veiculo':unicode(self), 'observacao': self.observacao}
         return self.__unicode__()
+
+class VeiculoSelecionado(models.Model):
+    veiculo = models.OneToOneField(Veiculo, related_name = 'veiculo_selecionado')
+    local = models.ForeignKey(LocalVotacao, related_name='local_veiculo',null=True, blank=True)
+    administrador = models.BooleanField(default=False, blank=True)
+    
+    def __unicode__(self):
+        return unicode(self.veiculo)
+
+class Motorista(Pessoa):
+    tel_residencial = models.CharField('Telefone Residencial', max_length=14, null=True, blank=True)
+    veiculo = models.ForeignKey(VeiculoSelecionado, related_name = 'motorista_veiculo')
+    inativo = models.BooleanField(default=False)
+    
+    def __unicode__(self):
+        return unicode(self.nome)
     

@@ -42,4 +42,38 @@ Veiculo = function() {
 			}
 		});
 	};
+	
+	this.requisitarVeiculo = function(){
+		var url = this.url_root + '/requisitar/' + this.idVeiculo + '/';
+		$.ajax({
+			type: 'POST',
+		    url: url,
+		    success: function(resultado) {
+		    	$.notify(resultado);
+		    	if(resultado.theme=='sucesso')
+		    		location.href = location.href;
+		    	
+			},
+			error: function(elemento, status, erro){
+				$.notify({theme:'erro', title:status, list: new Array(erro)});
+			}
+		});
+	};
+	
+	this.liberarVeiculo = function(){
+		var url = this.url_root + '/liberar/' + this.idVeiculo + '/';
+		$.ajax({
+			type: 'POST',
+		    url: url,
+		    success: function(resultado) {
+		    	$.notify(resultado);
+		    	if(resultado.theme=='sucesso')
+		    		location.href = location.href;
+		    	
+			},
+			error: function(elemento, status, erro){
+				$.notify({theme:'erro', title:status, list: new Array(erro)});
+			}
+		});
+	};
 };

@@ -35,7 +35,7 @@ body {
 	    
     }
 
-    .botoes {
+    .botoes, .no-print {
         display: none;
     }    
     
@@ -83,12 +83,17 @@ body {
 {% block div_titulo %}
 {% endblock %}
 {% block container %}
-<div class="row botoes">
-    <div class="btn-group">
-    {% block botoes %}
-    <button type="button" onclick="history.back()" class="btn btn-default btn-xs">Voltar</button>
-    <button type="button" onclick="window.print()" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-print"></span>Imprimir</button>
-    {% endblock %}
+<div class="row no-print">
+    <div class="col-md-3">
+	    <div class="btn-group">
+	    {% block botoes %}
+		    <button type="button" onclick="history.back()" class="btn btn-default btn-xs">Voltar</button>
+		    <button type="button" onclick="window.print()" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-print"></span>Imprimir</button>
+	    {% endblock %}
+	    </div>
+    </div>
+    <div class="col-md-9">
+        {% block checkbox %}{% endblock %}
     </div>
 </div>
 
