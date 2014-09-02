@@ -14,6 +14,7 @@ veiculo_patterns = [
     url(r'^get-modelos/(\d+)/$', veiculo_ajax_get_modelo, name='ajax_get_modelo'),
     url(r'^excluir/(\d+)/$', veiculo_excluir, name='excluir'),
     url(r'^listar/$', veiculo_listar, name='listar'),
+    url(r'^listar/(\d+)/$', veiculo_listar, name='listar'),
     url(r'^detalhar/(\d+)/$', veiculo_detalhar, name='detalhar'),
     url(r'^requisitar/(\d+)/$', veiculo_requisitar, name='requisitar'),
     url(r'^liberar/(\d+)/$', veiculo_liberar, name='liberar'),
