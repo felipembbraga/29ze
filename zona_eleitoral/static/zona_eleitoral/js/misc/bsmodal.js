@@ -34,11 +34,14 @@
 	 * @param event event the initial event
 	 * @return void
 	 */
-	$.bsmodal = function(target, event)
+	$.bsmodal = function(options)
 	{
-
-		// Show confirmation
-		$(target).bsmodal();
+		montador = $('<div class="modal" id="meuModal"></div>');
+		modal = $('<div class="modal-dialog modal-lg"></div>');
+		content = $('<div class="modal-content"></div>'); 
+		modal.append(content);
+		montador.append(modal);
+		montador.bsmodal(options);
 	};
 
 	/**
@@ -51,17 +54,12 @@
 			var target = $(this),
 
 			// Options
-			settings = $.extend({}, $.bsmodal.defaults, options),
+			settings = $.extend({}, $.bsmodal.defaults, options);
 
 			//modal
-			montador = $('<div class="modal" id="meuModal"></div>');
-			modal = $('<div class="modal-dialog modal-lg"></div>');
-			content = $('<div class="modal-content"></div>'); 
-			modal.append(content);
-			montador.append(modal);
-			console.log(montador);
+			
 			// Open modal
-			montador.modal({remote:settings.url, keyboard:settings.keyboard, show: settings.show, backdrop: settings.backdrop});
+			target.modal({remote:settings.remote, keyboard:settings.keyboard});
 		});
 
 	};
@@ -70,7 +68,7 @@
 		 * @var object
 		 */
 		$.bsmodal.defaults = $.fn.bsmodal.defaults = {
-				url: false,
+				remote: false,
 				keyboard:true,
 				show:true,
 				backdrop:true

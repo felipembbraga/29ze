@@ -58,5 +58,5 @@ $(document).ready(function(){
 });
 
 function abrirModal(url) {
-	$.bsmodal({url:url});
+	$.bsmodal({remote:url});
 }
