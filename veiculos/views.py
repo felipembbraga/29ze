@@ -145,8 +145,10 @@ def veiculo_listar(request, id_orgao=None):
     if id_orgao:
         orgao = OrgaoPublico.objects.get(pk=int(id_orgao))
         queryset = Veiculo.objects.filter(eleicao = request.eleicao_atual, orgao=orgao)
+        
     else:
         queryset = Veiculo.objects.filter(eleicao = request.eleicao_atual)
+    total_requisitados = queryset.exclude(veiculo_selecionado=None).count()
     lista_veiculos = queryset.exclude(estado=3).order_by('orgao__nome_secretaria', 'marca__nome', 'modelo__nome')
     
     filtro = VeiculoFilter(request.GET, queryset = lista_veiculos)
