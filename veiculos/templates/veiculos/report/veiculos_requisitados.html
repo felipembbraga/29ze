@@ -1,0 +1,132 @@
+{% extends 'base_relatorio.html' %}
+{% block botoes %}
+            <a href="{% url 'veiculo:listar' %}" class="btn btn-default btn-xs">Voltar</a>
+            <button type="button" onclick="window.print()" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-print"></span>Imprimir</button>
+        {% endblock %}
+{% block dropdown %}
+    <div class="form-group">
+        <label for="{{form.orgao.id_for_label}}">{{ form.orgao.label }}</label>
+        {{ form.orgao }}
+    </div>
+{% endblock %}
+
+{% block report %}
+    {% if orgao %}
+	<div class="row">
+	    <strong>Órgão:</strong> {{orgao.nome_secretaria|upper}} <br />
+	    {% if orgao.endereco %}<strong>Endereco do Órgão:</strong> {{orgao.endereco|upper}} <br />{% endif %}
+	    <strong>Responsável do Órgão:</strong> {{orgao.responsavel|upper}} <br />
+	    {% if orgao.responsavel_info %}<strong>Responsável pela Informação:</strong> {{orgao.responsavel_info|upper}} <br />{% endif %}
+	    {% if orgao.email %}<strong>E-mail:</strong> {{orgao.email}} <br />{% endif %}
+	    {% if orgao.tel_celular %}<strong>Telefone celular:</strong> {{orgao.tel_celular}}{% endif %}
+	    {% if orgao.tel_comercial %}<strong>Telefone comercial:</strong> {{orgao.tel_comercial}}{% endif %}
+	    {% if orgao.tel_residencial %}<strong>Telefone residencial:</strong> {{orgao.tel_residencial}}{% endif %}<br />
+	</div>
+	{% for veiculo in veiculos %}
+	    <div class="pagina">
+	        <div class="titulo">
+	            <h3>Veículo {{ forloop.counter }}</h3>
+	        </div>
+	
+	        <table class="table table-bordered" >
+	            <tbody>
+	                <tr>
+	                    <td>
+	                            <label style="margin-bottom:3px;"><small>Placa</small></label>
+	                            <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.placa|upper }}</p>
+	                    </td>
+	                    <td>
+	                            <label style="margin-bottom:3px;"><small>Marca</small></label>
+	                            <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.marca|upper }}</p>
+	                    </td>
+	                    <td colspan="2">
+	                            <label style="margin-bottom:3px;"><small>Modelo</small></label>
+	                            <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.modelo|upper }}</p>
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <td width="10%">
+	                            <label style="margin-bottom:3px;"><small>Ano</small></label>
+	                            <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.get_ano }}</p>
+	                    </td>
+	                    <td width="30%">
+	                            <label style="margin-bottom:3px;"><small>Tipo de Veículo</small></label>
+	                            <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.get_tipo|upper }}</p>
+	                    </td>
+	                    <td width="20%">
+	                        <label style="margin-bottom:3px;"><small>Lotação</small></label>
+	                        <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.lotacao }}</p>
+	                    </td>
+	                    <td width="40%">
+	                        <label style="margin-bottom:3px;"><small>Estado</small></label>
+	                        <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.get_estado|upper }}</p>
+	                    </td>
+	                </tr>
+	                {% if veiculo.veiculo.observacao %}
+	                <tr>
+	                    <td colspan="4">
+	                        <label style="margin-bottom:3px;"><small>Observação</small></label>
+	                        <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.observacao|upper }}</p>
+	                    </td>
+	                </tr>
+	                {% endif %}
+	                <tr style="background-color:#EEE">
+	                    <td colspan="4">
+	                        <p class="form-control-static text-center" style="padding:0;"><strong>DADOS DO MOTORISTA</strong></p>
+	                    </td>
+	                </tr>
+	                {% if veiculo.veiculo.motorista_titulo_eleitoral %}
+	                <tr>
+	                    <td colspan="2">
+	                        <label style="margin-bottom:3px;"><small>Nº Título Eleitoral</small></label>
+	                        <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.motorista_titulo_eleitoral }}</p>
+	                    </td>
+	                    <td colspan="2">
+	                        <label style="margin-bottom:3px;"><small>Nome</small></label>
+	                        <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.motorista_nome }}</p>
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <td colspan="2">
+	                        <label style="margin-bottom:3px;"><small>Endereço</small></label>
+	                        <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.endereco }}</p>
+	                    </td>
+	                    <td>
+	                        <label style="margin-bottom:3px;"><small>Telefone Residencial</small></label>
+	                        <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.tel_residencial }}</p>
+	                    </td>
+	                    <td>
+	                        <label style="margin-bottom:3px;"><small>Telefone Celular</small></label>
+	                        <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.tel_celular }}</p>
+	                    </td>
+	                </tr>
+	                {% else %}
+	                <tr>
+	                    <td colspan="4">
+	                        <p class="form-control-static text-center" style="padding:0;">SEM MOTORISTA CADASTRADO</p>
+	                    </td>
+	                </tr>
+	                {% endif %}
+	            </tbody>
+	        </table>
+	    </div>
+	{% endfor %}
+	{% endif %}
+{% endblock %}
+
+{%block extrascripts %}
+    <script>
+    $(document).ready(function(){
+        $('#id_orgao').change(function(){
+            var url;
+            if($(this).val()=='')
+                url = '/veiculos/report/veiculos-requisitados/';
+            else
+                url = '/veiculos/report/veiculos-requisitados/' + $(this).val() + '/';
+            location.href = url;
+        });
+    });
+        
+    </script>
+
+{% endblock %}

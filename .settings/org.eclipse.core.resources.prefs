@@ -17,3 +17,4 @@ encoding//veiculos/filters.py=utf-8
 encoding//veiculos/forms.py=utf-8
 encoding//veiculos/models.py=utf-8
 encoding//veiculos/views.py=utf-8
+encoding//veiculos/views_relatorio.py=utf-8

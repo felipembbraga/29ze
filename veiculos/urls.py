@@ -24,6 +24,8 @@ veiculo_patterns = [
 report_patterns = [
     url(r'^veiculos/$', relatorio_veiculos, name='veiculos'),
     url(r'^orgaos-sem-veiculos/$', relatorio_admin_orgao_sem_veiculo, name='orgaos-sem-veiculos'),
+    url(r'^veiculos-requisitados/$', relatorio_veiculos_requisitados, name='veiculos-requisitados'),
+    url(r'^veiculos-requisitados/(\d+)/$', relatorio_veiculos_requisitados, name='veiculos-requisitados'),
 ]
 
 
