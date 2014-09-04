@@ -1,4 +1,4 @@
-from django.conf.urls import include, url, patterns
+from django.conf.urls import url, patterns
 from views import carro_importar, caminhao_importar
 
 urlpatterns = patterns('',
