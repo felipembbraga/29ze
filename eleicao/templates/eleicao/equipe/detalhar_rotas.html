@@ -13,7 +13,7 @@
     <ul id="matutino-sortable" class="list-group" style="margin-bottom:10px">
     {% for local in equipe.get_locais_matutinos %}
         <li class="list-group-item" data-id="{{ local.pk }}" data-num-secoes="{{ local.get_count_secao_agregadas }}" data-ordem="{{local.local_montagem.ordem}}">
-            <div class="row"><div class ="col-md-12">{{ local }}</div> </div>
+            <div class="row"><div class ="col-md-12">{{local.local_montagem.ordem}}º {{ local }}</div> </div>
             <div class="row">
                 <div class ="col-md-5">
                     <strong>Nº de Seções: </strong> {{ local.get_count_secao_agregadas }}
@@ -25,7 +25,7 @@
         </li>
     {% endfor %}
     </ul>
-    <small><strong>Total de seções: </strong> <span id="secoes-matutino">{{ equipe.get_total_secoes_matutino }}</span></small>
+    <h4><strong>Total de seções: </strong> <span id="secoes-matutino">{{ equipe.get_total_secoes_matutino }}</span></h4>
 </div>
 
 <h3>Período Vespertino</h3>
@@ -33,7 +33,7 @@
     <ul id="vespertino-sortable" class="list-group" style="margin-bottom:10px">
     {% for local in equipe.get_locais_vespertinos %}
         <li class="list-group-item" data-id="{{ local.pk }}" data-num-secoes="{{ local.get_count_secao_agregadas }}" data-ordem="{{local.local_montagem.ordem}}">
-            <div class="row"><div class ="col-md-12">{{ local }}</div> </div>
+            <div class="row"><div class ="col-md-12">{{local.local_montagem.ordem}}º {{ local }}</div> </div>
             <div class="row">
                 <div class ="col-md-5">
                     <strong>Nº de Seções: </strong> {{ local.get_count_secao_agregadas }}
@@ -45,5 +45,5 @@
         </li>
     {% endfor %}
     </ul>
-    <small><strong>Total de seções: </strong> <span id="secoes-vespertino">{{ equipe.get_total_secoes_vespertino }}</span></small>
+    <h4><strong>Total de seções: </strong> <span id="secoes-vespertino">{{ equipe.get_total_secoes_vespertino }}</span></h4>
 </div>
