@@ -94,3 +94,7 @@ def relatorio_secoes_agregadas(request):
 def relatorio_equipe(request, id_equipe):
     equipe = get_object_or_404(Equipe, pk=int(id_equipe))
     return render(request, 'eleicao/reports/equipe.html', locals())
+
+def relatorio_equipe_rotas(request, id_equipe):
+    equipe = get_object_or_404(Equipe, pk=int(id_equipe))
+    return render(request, 'eleicao/reports/equipe_rotas.html', locals())

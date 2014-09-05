@@ -1,4 +1,5 @@
 #-*- coding: utf-8 -*-
+import ast
 import csv
 from core.models import Local
 from decorators import eleicao_required
@@ -15,6 +16,7 @@ from models import Eleicao, LocalVotacao, Secao, Equipe
 from middleware import definir_eleicao_padrao
 from utils.Response import NotifyResponse
 from django.contrib import messages
+from eleicao.models import Montagem
 
 
 def ler_csv(request, f):
@@ -358,6 +360,50 @@ def equipe_excluir(request, id_equipe):
 
 @login_required
 @permission_required('eleicao.change_localvotacao', raise_exception=True)
-def equipe_selecionar_locais(request, id_equipe):
-    pass
+def equipe_montar_rotas(request, id_equipe):
+    if request.method == 'POST':
+        locais = request.POST.get('locais')
+    equipe = get_object_or_404(Equipe, pk=int(id_equipe))
+    titulo = u'Montar rota da %s' % equipe.nome 
+    return render(request, 'eleicao/equipe/montar_rota.html', locals())
+
+@login_required
+def equipe_salvar_rotas(request, id_equipe):
+    if not request.is_ajax():
+        raise PermissionDenied
+    equipe = get_object_or_404(Equipe, pk=int(id_equipe))
+    lista_matutino = request.POST.getlist('matutino[]') and [ast.literal_eval(i) for i in request.POST.getlist('matutino[]')] or []
+    lista_vespertino = request.POST.getlist('vespertino[]') and [ast.literal_eval(i) for i in request.POST.getlist('vespertino[]')] or []
     
+    for local in equipe.local_equipe.all():
+        matutino = False 
+        vespertino = False
+        for i, j in lista_matutino:
+            if local.pk == i:
+                
+                if hasattr(local, 'local_montagem'):
+                    local.local_montagem.turno = 'm'
+                    local.local_montagem.ordem = int(j)
+                    local.local_montagem.save()
+                else:
+                    montagem = Montagem(local=local, turno = 'm', ordem=int(j))
+                    montagem.save()
+                    
+                matutino = True
+        if matutino:
+            continue
+        for i, j in lista_vespertino:
+            if local.pk == i:
+                if hasattr(local, 'local_montagem'):
+                    local.local_montagem.turno = 'v'
+                    local.local_montagem.ordem = int(j)
+                    local.local_montagem.save()
+                else:
+                    montagem = Montagem(local=local, turno = 'v', ordem=int(j))
+                    montagem.save()
+                vespertino = True
+        if vespertino:
+            continue
+        if hasattr(local, 'local_montagem'):
+            local.local_montagem.delete()
+    return NotifyResponse('Salvo com sucesso', theme='sucesso')

@@ -1,0 +1,32 @@
+<div class="row">
+
+    <a href="{% url 'eleicao-report:equipe' equipe.pk %}" class="btn btn-primary botao pull-right">
+        Relatório
+    </a>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th width="30%">Local</th>
+            <th width="25%">Endereço</th>
+            <th width="20%">Bairro</th>
+            <th width="5%">Nº Seções</th>
+            <th width="15%">Nº Seções c/ Agregação</th>
+            <th width="5%">Nº Eleitores</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for local in equipe.local_equipe.all %}
+            {% if local.get_total_eleitores > 0 %}
+                <tr>
+                    <td><a href="{{ local.get_absolute_url }}">{{ local.local.nome }}</td>
+                    <td>{{ local.local.endereco }}</td>
+                    <td>{{ local.local.bairro }}</td>
+                    <td>{{ local.secao_set.count }}</td>
+                    <td>{{ local.get_count_secao_agregadas }}</td>
+                    <td>{{ local.get_total_eleitores }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>

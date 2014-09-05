@@ -2,6 +2,7 @@ from django.conf.urls import include, url, patterns
 from views import *
 
 from views_relatorio import *
+
 eleicao_patterns = [
     url(r'^cadastrar/$', eleicao_cadastrar, name='cadastrar'),
     url(r'^editar/(\d+)/$', eleicao_editar, name='editar'),
@@ -28,7 +29,8 @@ equipe_patterns = [
     url(r'^editar/(\d+)/$', equipe_editar, name='editar'),
     url(r'^excluir/(\d+)/$', equipe_excluir, name='excluir'),
     url(r'^detalhar/(\d+)/$', equipe_detalhar, name='detalhar'),
-    url(r'^selecionar-locais/(\d+)/$', equipe_selecionar_locais, name='selecionar-locais'),
+    url(r'^montar-rota/(\d+)/$', equipe_montar_rotas, name='montar-rota'),
+    url(r'^rota/salvar/(\d+)/$', equipe_salvar_rotas, name='salvar-rota'),
 ]
 
 reports_patterns = [
@@ -40,6 +42,7 @@ reports_patterns = [
     url(r'^secoes-agregadas/$', relatorio_secoes_agregadas, name='secoes-agregadas'),
     url(r'^secao-ordenado-xls/$', relatorio_secao_ordenado_xls, name='secao-ordenado-xls'),
     url(r'^equipe/(\d+)/$', relatorio_equipe, name='equipe'),
+    url(r'^equipe-rotas/(\d+)/$', relatorio_equipe_rotas, name='equipe-rotas'),
 ]
 
 

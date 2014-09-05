@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+
+{% block extrastyle %}
+<style>
+.list-group {
+	min-height: 42px;
+}
+
+.list-group li:hover{
+    cursor:move;
+}
+
+.sortable-content {
+	background-color: #eee;
+	padding: 5px;
+	background-color: #eee;
+	border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+}
+</style>
+{% endblock %}
+
+{% block container %}
+<div class="row">
+    <div class="col-md-6">
+		<h3>Locais</h3>
+		<div class="sortable-content">
+			<ul id="locais-sortable" class="list-group">
+			{% for local in equipe.get_locais_ordenado %}
+			{% if local.get_total_eleitores > 0 and not local.local_montagem %}
+			    <li class="list-group-item" data-id="{{ local.pk }}" data-num-secoes="{{ local.get_count_secao_agregadas }}">
+			        <div class="row">{{ local }} </div>
+			        <div class="row">
+			            <div class ="col-md-5">
+			                <strong>Nº de Seções: </strong> {{ local.get_count_secao_agregadas }}
+			            </div>
+			            <div class ="col-md-7">
+			                <strong>Nº de Eleitores: </strong> {{ local.get_total_eleitores }}
+			            </div>
+			        </div>
+			    </li>
+			{% endif %}
+			{% endfor %}
+			</ul>
+		</div>
+        
+    </div>
+    <div class="col-md-6">
+        
+	    <h3>Período Matutino</h3>
+	    <div class="sortable-content">
+		    <ul id="matutino-sortable" class="list-group">
+		    {% for local in equipe.get_locais_matutinos %}
+		        <li class="list-group-item" data-id="{{ local.pk }}" data-num-secoes="{{ local.get_count_secao_agregadas }}" data-ordem="{{local.local_montagem.ordem}}">
+                    <div class="row">{{ local }} </div>
+                    <div class="row">
+                        <div class ="col-md-5">
+                            <strong>Nº de Seções: </strong> {{ local.get_count_secao_agregadas }}
+                        </div>
+                        <div class ="col-md-7">
+                            <strong>Nº de Eleitores: </strong> {{ local.get_total_eleitores }}
+                        </div>
+                    </div>
+                </li>
+		    {% endfor %}
+		    </ul>
+		    <small><strong>Total de seções: </strong> <span id="secoes-matutino"></span></small>
+	    </div>
+	
+	    <h3>Período Vespertino</h3>
+	    <div class="sortable-content">
+		    <ul id="vespertino-sortable" class="list-group">
+            {% for local in equipe.get_locais_vespertinos %}
+		        <li class="list-group-item" data-id="{{ local.pk }}" data-num-secoes="{{ local.get_count_secao_agregadas }}" data-ordem="{{local.local_montagem.ordem}}">
+                    <div class="row">{{ local }} </div>
+                    <div class="row">
+                        <div class ="col-md-5">
+                            <strong>Nº de Seções: </strong> {{ local.get_count_secao_agregadas }}
+                        </div>
+                        <div class ="col-md-7">
+                            <strong>Nº de Eleitores: </strong> {{ local.get_total_eleitores }}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+		    </ul>
+		    <small><strong>Total de seções: </strong> <span id="secoes-vespertino"></span></small>
+	    </div>
+    </div>
+</div>
+<div class="divisor"></div>
+        <p class="botao-grupo">
+            <a href="javascript:void(0);" class="btn btn-primary botao" id="salvar-rota">Salvar</a>
+            <a href="{% url 'equipe:detalhar' equipe.pk %}#rotas" class="btn btn-default botao">Voltar</a>
+        </p>
+{% endblock %}
+
+{% block extrascripts %}
+    <script src="{% static 'zona_eleitoral/js/misc/jquery-ui.js' %}"></script>
+    
+    <script>
+    function gerarOrdem(ul) {
+    	var ordem = 1;
+    	lista_li = ul.children('li');
+        lista_li.each( function(){
+            $(this).attr('data-ordem', ordem);
+            $(this).data('ordem', ordem);
+            ordem++;
+        });
+    }
+    
+    function getTotalSecoes(ul, out) {
+    	var total = 0,
+    	lista_li = ul.children('li');
+    	lista_li.each( function(){
+    		total+= $(this).data('num-secoes');
+    	});
+    	out.text(total);
+    	
+    }
+    
+    function getData(ul){
+        var lista = [];
+        lista_li = ul.children('li');
+        lista_li.each( function(){
+            lista.push(JSON.stringify([$(this).data('id'), $(this).attr('data-ordem')]));
+        });
+        return lista;
+    }
+    
+    $(document).ready(function(){
+    	
+    	$('ul.list-group').sortable({
+    		connectWith: 'ul.list-group',
+    		cursor:'move',
+    		update: function(event, ui) {
+                if($(this).attr('id') == 'matutino-sortable'){
+                    gerarOrdem($('#matutino-sortable'));
+                }
+
+                if($(this).attr('id') == 'vespertino-sortable'){
+                    gerarOrdem($('#vespertino-sortable'));
+                }
+
+            },
+    		receive: function(event, ui) {
+    			if($(this).attr('id') == 'matutino-sortable'){
+    				getTotalSecoes($('#matutino-sortable'), $('#secoes-matutino'));
+    				gerarOrdem($('#matutino-sortable'));
+    			}
+
+                if($(this).attr('id') == 'vespertino-sortable'){
+                    getTotalSecoes($('#vespertino-sortable'), $('#secoes-vespertino'));
+                    gerarOrdem($('#vespertino-sortable'));
+                }
+
+    		},
+    		remove: function(event, ui) {
+                if($(this).attr('id') == 'matutino-sortable'){
+                    getTotalSecoes($('#matutino-sortable'), $('#secoes-matutino'));
+                    gerarOrdem($('#matutino-sortable'));
+                }
+                
+                if($(this).attr('id') == 'vespertino-sortable'){
+                    getTotalSecoes($('#vespertino-sortable'), $('#secoes-vespertino'));
+                    gerarOrdem($('#vespertino-sortable'));
+                }
+
+            }
+    	}).disableSelection();
+    	
+    	getTotalSecoes($('#matutino-sortable'), $('#secoes-matutino'));
+        gerarOrdem($('#matutino-sortable'));
+        getTotalSecoes($('#vespertino-sortable'), $('#secoes-vespertino'));
+        gerarOrdem($('#vespertino-sortable'));
+        
+        $('#salvar-rota').click(function(){
+        	lista_matutino = getData($('#matutino-sortable'));
+        	lista_vespertino = getData($('#vespertino-sortable'));
+        	data = {
+                    'matutino': lista_matutino,
+                    'vespertino': lista_vespertino
+            }
+        	url = BASE_URL + '/eleicao/equipe/rota/salvar/{{ equipe.pk }}/';
+        	
+        	console.log(data);
+        	$.ajax({
+        			type:'POST',
+        			url: url,
+        			data : data,
+        			success: function(resultado) {
+        				$.notify(resultado);
+        			}
+        	});
+        });
+    });
+    </script>
+{% endblock %}

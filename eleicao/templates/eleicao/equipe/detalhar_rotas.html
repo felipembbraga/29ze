@@ -1,0 +1,49 @@
+<div class="row">
+    <div class="btn-group pull-right">
+    <a href="{% url 'equipe:montar-rota' equipe.pk %}" class="btn btn-default botao">
+        Montagem de rota
+    </a>
+    <a href="{% url 'eleicao-report:equipe-rotas' equipe.pk %}" class="btn btn-primary botao">
+        Relatório
+    </a>
+    </div>
+</div>
+<h3>Período Matutino</h3>
+<div class="sortable-content">
+    <ul id="matutino-sortable" class="list-group" style="margin-bottom:10px">
+    {% for local in equipe.get_locais_matutinos %}
+        <li class="list-group-item" data-id="{{ local.pk }}" data-num-secoes="{{ local.get_count_secao_agregadas }}" data-ordem="{{local.local_montagem.ordem}}">
+            <div class="row"><div class ="col-md-12">{{ local }}</div> </div>
+            <div class="row">
+                <div class ="col-md-5">
+                    <strong>Nº de Seções: </strong> {{ local.get_count_secao_agregadas }}
+                </div>
+                <div class ="col-md-7">
+                    <strong>Nº de Eleitores: </strong> {{ local.get_total_eleitores }}
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+    <small><strong>Total de seções: </strong> <span id="secoes-matutino">{{ equipe.get_total_secoes_matutino }}</span></small>
+</div>
+
+<h3>Período Vespertino</h3>
+<div class="sortable-content">
+    <ul id="vespertino-sortable" class="list-group" style="margin-bottom:10px">
+    {% for local in equipe.get_locais_vespertinos %}
+        <li class="list-group-item" data-id="{{ local.pk }}" data-num-secoes="{{ local.get_count_secao_agregadas }}" data-ordem="{{local.local_montagem.ordem}}">
+            <div class="row"><div class ="col-md-12">{{ local }}</div> </div>
+            <div class="row">
+                <div class ="col-md-5">
+                    <strong>Nº de Seções: </strong> {{ local.get_count_secao_agregadas }}
+                </div>
+                <div class ="col-md-7">
+                    <strong>Nº de Eleitores: </strong> {{ local.get_total_eleitores }}
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+    <small><strong>Total de seções: </strong> <span id="secoes-vespertino">{{ equipe.get_total_secoes_vespertino }}</span></small>
+</div>

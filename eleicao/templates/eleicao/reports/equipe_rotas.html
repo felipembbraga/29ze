@@ -1,0 +1,106 @@
+{% extends 'base_relatorio.html' %}
+{% block report %}
+<div class="page-header">
+  <h2>Rota de Montagem de Seções - {{ equipe }}</h2>
+</div>
+
+<h2>Período Matutino</h2>
+<div class="row" style="margin-bottom:15px;">
+    <div class="col-md-6">
+        <h4><Strong>Total de Seções: </strong> {{ equipe.get_total_secoes_matutino }}</h4>
+    </div>
+</div>
+{% for local in equipe.get_locais_matutinos %}
+<table class="table table-bordered tabela-impressao">
+<tbody>
+<tr>
+<td><div class="row">
+    <div class="col-md-2">
+        <label>Código: </label> {{ local.local.get_id_local }}
+    </div>
+    <div class="col-md-6">
+        <label>Local: </label> {{ local.local.nome }}
+    </div>
+    <div class="col-md-4">
+        <label>Seções: </label> {{ local.get_secoes }}
+    </div>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<table class="table table-striped tabela-impressao" style="margin-bottom:0;">
+    <thead>
+        <tr>
+            <th width = "35%">Endereço</th>
+            <th width = "20%">Bairro</th>
+            <th width="11%">Nº Seções</th>
+            <th width="12%">Nº Eleitores</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ local.local.endereco }}</td>
+            <td>{{ local.local.bairro }}</td>
+            <td>{{ local.get_count_secao_agregadas }}</td>
+            <td>{{ local.get_total_eleitores }}</td>
+        </tr>
+    </tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+
+{% endfor %}
+
+<h2>Período Vespertino</h2>
+<div class="row" style="margin-bottom:15px;">
+    <div class="col-md-6">
+        <h4><Strong>Total de Seções: </strong> {{ equipe.get_total_secoes_matutino }}</h4>
+    </div>
+</div>
+{% for local in equipe.get_locais_vespertinos %}
+<table class="table table-bordered tabela-impressao">
+<tbody>
+<tr>
+<td><div class="row">
+    <div class="col-md-2">
+        <label>Código: </label> {{ local.local.get_id_local }}
+    </div>
+    <div class="col-md-6">
+        <label>Local: </label> {{ local.local.nome }}
+    </div>
+    <div class="col-md-4">
+        <label>Seções: </label> {{ local.get_secoes }}
+    </div>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+<table class="table table-striped tabela-impressao" style="margin-bottom:0;">
+    <thead>
+        <tr>
+            <th width = "35%">Endereço</th>
+            <th width = "20%">Bairro</th>
+            <th width="11%">Nº Seções</th>
+            <th width="12%">Nº Eleitores</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ local.local.endereco }}</td>
+            <td>{{ local.local.bairro }}</td>
+            <td>{{ local.get_count_secao_agregadas }}</td>
+            <td>{{ local.get_total_eleitores }}</td>
+        </tr>
+    </tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+
+{% endfor %}
+{% endblock %}

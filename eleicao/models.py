@@ -207,12 +207,37 @@ class Equipe(models.Model):
             soma += local.secao_set.secao_pai().count()
         return soma
     
+    def get_locais_ordenado(self):
+        return self.local_equipe.filter(local_montagem=None).order_by('local__nome')
+    
+    def get_locais_matutinos(self):
+        return self.local_equipe.filter(local_montagem__turno='m').order_by('local_montagem__ordem')
+    
+    def get_total_secoes_matutino(self):
+        total = 0
+        for local in self.local_equipe.filter(local_montagem__turno='m'):
+            total += local.get_count_secao_agregadas()
+        return total
+    
+    def get_locais_vespertinos(self):
+        return self.local_equipe.filter(local_montagem__turno='v').order_by('local_montagem__ordem')
+    
+    def get_total_secoes_vespertino(self):
+        total = 0
+        for local in self.local_equipe.filter(local_montagem__turno='v'):
+            total += local.get_count_secao_agregadas()
+        return total
+    
     def get_total_eleitores(self):
         soma = 0
         for local in self.local_equipe.all():
             soma += local.secao_set.secao_pai().aggregate(soma_agregados=models.Sum('num_eleitores')).get('soma_agregados')
         return soma
     
+class Montagem(models.Model):
+    local = models.OneToOneField(LocalVotacao, related_name='local_montagem')
+    turno = models.CharField(max_length=1, choices=(('m', 'matutino'),('v', 'vespertino')))
+    ordem = models.IntegerField()
     
 class Cargo(models.Model):
     nome = models.CharField(max_length=50)
