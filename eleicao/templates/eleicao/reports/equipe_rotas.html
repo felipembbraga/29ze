@@ -12,7 +12,8 @@
     </div>
 </div>
 {% for local in equipe.get_locais_matutinos %}
-<div class="row">
+
+<div class="row pagina">
     <div class="col-md-1">
         <h3>{{ local.local_montagem.ordem }}º</h3>
     </div>
@@ -71,7 +72,7 @@
     </div>
 </div>
 {% for local in equipe.get_locais_vespertinos %}
-<div class="row">
+<div class="row pagina">
     <div class="col-md-1">
         <h3>{{ local.local_montagem.ordem }}º</h3>
     </div>
