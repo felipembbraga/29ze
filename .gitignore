@@ -2,3 +2,6 @@
 *.zip
 .project
 .pydevproject
+.idea
+.settings
+.gitignore
