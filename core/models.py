@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 from django.db import models
 import datetime
-
 # Create your models here.
 
 class Pessoa(models.Model):
@@ -28,6 +27,7 @@ class Local(models.Model):
     
     def get_id_local(self):
         return unicode(self.id_local)
+    
 
 #classes referente a veículos
 class Marca(models.Model):

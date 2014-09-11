@@ -91,5 +91,6 @@ class PerfilVeiculo(models.Model):
 class CronogramaVeiculo(models.Model):
     perfil = models.ForeignKey(PerfilVeiculo, related_name="cronograma_perfil")
     local = models.ForeignKey(Local, null=True, blank=True)
+    eleicao = models.ForeignKey(Eleicao)
     dt_apresentacao = models.DateTimeField()
 
