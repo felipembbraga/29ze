@@ -4,7 +4,8 @@ MY_APPS = (
     'core',
     'eleicao',
     'acesso',
-    'veiculos'
+    'veiculos',
+    'django_extensions'
 )
 
 INSTALLED_APPS = INSTALLED_APPS + MY_APPS

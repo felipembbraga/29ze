@@ -7,6 +7,8 @@ Created on 05/08/2014
 from django import forms
 from models import Veiculo
 from core.models import Marca
+from veiculos.models import PerfilVeiculo
+
 
 class VeiculoForm(forms.ModelForm):
     marca = forms.ModelChoiceField(queryset=Marca.objects.all().order_by('nome'))
@@ -53,4 +55,14 @@ class MotoristaForm(forms.ModelForm):
             if not isinstance(self.fields[key].widget, forms.CheckboxInput):
                 self.fields[key].widget.attrs.update({'class': self.fields[key].widget.attrs.get('class') and self.fields[key].widget.attrs.get('class') + ' form-control' or 'form-control'})
     
-    
+
+class PerfilVeiculoForm(forms.ModelForm):
+    class Meta:
+        model = PerfilVeiculo
+
+    def __init__(self, *args, **kwargs):
+        super(PerfilVeiculoForm, self).__init__(*args, **kwargs)
+        for key in self.fields:
+            if not isinstance(self.fields[key].widget, forms.CheckboxInput):
+                self.fields[key].widget.attrs.update({'class': 'form-control'})
+

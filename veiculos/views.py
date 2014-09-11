@@ -11,6 +11,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.forms.models import modelform_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from eleicao.models import Equipe
 from filters import VeiculoFilter
 from forms import VeiculoForm, MotoristaForm
 from models import Veiculo, VeiculoSelecionado, Motorista
@@ -18,6 +19,9 @@ from utils.forms import NumPorPaginaForm
 from utils.Response import NotifyResponse
 
 # Create your views here.
+from veiculos.forms import PerfilVeiculoForm
+from veiculos.models import PerfilVeiculo
+
 
 @orgao_atualizar
 @login_required(login_url='acesso:login-veiculos')
@@ -199,3 +203,49 @@ def veiculo_detalhar(request, id_veiculo):
     titulo = 'Detalhar veículo'
     veiculo = get_object_or_404(Veiculo, pk=int(id_veiculo))
     return render(request, 'veiculos/veiculo/detalhar.html', locals())
+
+def perfil_veiculo_cadastrar(request):
+    titulo = u'Cadastrar Perfil de Veículo'
+    if request.method == 'POST':
+        form = PerfilVeiculoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil-veiculo:listar')
+    else:
+        form = PerfilVeiculoForm()
+    return render(request, 'veiculos/perfil_veiculo/form.html', locals())
+
+def perfil_veiculo_listar(request):
+    titulo = u'Perfís de Veículo'
+    pesquisar = request.GET.get('pesquisar') and request.GET.get('pesquisar') or ''
+    if pesquisar != '':
+        lista_perfis = PerfilVeiculo.objects.filter(nome__icontains=pesquisar)
+    else:
+        lista_perfis = PerfilVeiculo.objects.all().order_by('nome')
+    paginator = Paginator(lista_perfis, 15)
+    pagina = request.GET.get('pagina')
+    try:
+        perfis = paginator.page(pagina)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        perfis = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        perfis = paginator.page(paginator.num_pages)
+    return render(request, 'veiculos/perfil_veiculo/listar.html', locals())
+
+def perfil_veiculo_editar(request, id_perfil):
+    titulo = u'Editar Perfil de Veículo'
+    perfil = get_object_or_404(PerfilVeiculo, pk=int(id_perfil))
+    if request.method == 'POST':
+        form = PerfilVeiculoForm(request.POST, instance=perfil)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil-veiculo:listar')
+    else:
+        form = PerfilVeiculoForm(instance=perfil)
+    return render(request, 'veiculos/perfil_veiculo/form.html', locals())
+
+def perfil_veiculo_detalhar(request, id_perfil):
+    perfil = get_object_or_404(PerfilVeiculo, pk=int(id_perfil))
+    return render(request, 'veiculos/perfil_veiculo/detalhar.html', locals())

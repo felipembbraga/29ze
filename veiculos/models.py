@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models here.
 from acesso.models import OrgaoPublico
-from eleicao.models import Eleicao, LocalVotacao
+from eleicao.models import Eleicao, LocalVotacao, Equipe
 from core.models import Marca, Modelo, Pessoa, Local
 import datetime
 
@@ -86,11 +86,19 @@ class Motorista(Pessoa):
 class PerfilVeiculo(models.Model):
     nome = models.CharField(max_length=50)
     perfil_equipe = models.BooleanField(default=False)
+    equipes = models.ManyToManyField(Equipe)
 
 
 class CronogramaVeiculo(models.Model):
     perfil = models.ForeignKey(PerfilVeiculo, related_name="cronograma_perfil")
     local = models.ForeignKey(Local, null=True, blank=True)
-    eleicao = models.ForeignKey(Eleicao)
     dt_apresentacao = models.DateTimeField()
+    eleicao = models.ForeignKey(Eleicao)
+
+
+class Alocacao(models.Model):
+    perfil_veiculo = models.ForeignKey(PerfilVeiculo)
+    equipe = models.ForeignKey(Equipe)
+    local_votacao = models.ForeignKey(LocalVotacao, null=True, blank=True)
+    quantidade = models.PositiveIntegerField()
 
