@@ -1,111 +1,111 @@
 {% load static from staticfiles %}
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>{% block title %}29ª Zona Eleitoral{% endblock %}</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/bootstrap.min.css' %}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/bootstrap-theme.min.css' %}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/base.css' %}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/notify.css' %}" />
-        <style>
-      body {
-        padding-top: 70px; /* 60px to make the container go all the way to the bottom of the topbar */
-      x}
-      
-      input[type="text"], textarea{
-        text-transform : uppercase;
-      }
-       </style>
-        {% block extrastyle %}{% endblock %}
-        {% block extrahead %}{% endblock %}
-    </head>
-    <body data-base-url="{{ base_url }}">
-      <!-- Fixed navbar -->
-        {% block navbar %}
-            <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-                <div class="container">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="{% url 'home' %}">
-                            {% block branding %}
-                                {% firstof eleicao_atual.nome 'Zona Eleitoral'%}
-                            {% endblock %}
-                        </a>
-                    </div>
-                    <div class="navbar-collapse collapse">
-                        <ul class="nav navbar-nav">
-                            {% include 'menu.html' %}
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li><span class="navbar-brand">Olá, {{ user }}</span></li>
-                            <li><a href="{% if user.is_orgao %}{% url 'acesso:logout-veiculos' %}{% else %}{% url 'acesso:logout' %}{%endif%}">Sair</a></li>
-                        </ul>
-        
-                    </div><!--/.nav-collapse -->
-                </div>
-            </div>
-        {% endblock %}
-    
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block title %}29ª Zona Eleitoral{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/bootstrap-theme.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/base.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/notify.css' %}" />
+    <style>
+        body {
+            padding-top: 70px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
 
+        input[type="text"], textarea{
+            text-transform : uppercase;
+        }
+    </style>
+    {% block extrastyle %}{% endblock %}
+    {% block extrahead %}{% endblock %}
+</head>
+<body data-base-url="{{ base_url }}">
+<!-- Fixed navbar -->
+{% block navbar %}
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
-        {% block cabecalho %}
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    {% block branding %}
+                        {% firstof eleicao_atual.nome 'Zona Eleitoral'%}
+                    {% endblock %}
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    {% include 'menu.html' %}
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><span class="navbar-brand">Olá, {{ user }}</span></li>
+                    <li><a href="{% if user.is_orgao %}{% url 'acesso:logout-veiculos' %}{% else %}{% url 'acesso:logout' %}{%endif%}">Sair</a></li>
+                </ul>
+
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+{% endblock %}
+
+
+<div class="container">
+    {% block cabecalho %}
         <div id="cabecalho" class="center-block">
             <div align="center">
-				<img src="{% static 'zona_eleitoral/img/brasao2.png' %}" width="80" height="80">
-			</div>
-			<div align="center">
-			    <small><strong>
-			        PODER JUDICIÁRIO
-			    </strong></small>
-			</div>
-			<div align="center">
-			    <small><strong>
-			        TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
-			    </strong></small>
-			</div>
-			<div align="center">
-			    <small><strong>
-			        29ª ZONA ELEITORAL - PALMAS - TO
-			    </strong></small>
-			</div>
-        </div>
-        {% endblock %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-                    </button>
-                    {{message}}
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        {% block div_titulo %}
-            <div class="titulo">
-                <h1>{% block titulo %}{{ titulo|upper }} {% endblock %}</h1>
+                <img src="{% static 'zona_eleitoral/img/brasao2.png' %}" width="80" height="80">
             </div>
-        {% endblock %}
-        
-        {% block container %}{% endblock %}
+            <div align="center">
+                <small><strong>
+                    PODER JUDICIÁRIO
+                </strong></small>
+            </div>
+            <div align="center">
+                <small><strong>
+                    TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
+                </strong></small>
+            </div>
+            <div align="center">
+                <small><strong>
+                    29ª ZONA ELEITORAL - PALMAS - TO
+                </strong></small>
+            </div>
         </div>
-        {% block footer %}{% endblock %}
-        
-        <script src="{% static 'zona_eleitoral/js/misc/jquery-1.10.2.js' %}"></script>
-        <script src="{% static 'zona_eleitoral/js/misc/jquery.maskedinput.min.js' %}"></script>
-        <script src="{% static 'zona_eleitoral/js/misc/bootstrap.min.js' %}"></script>
-        <script src="{% static 'zona_eleitoral/js/misc/confirm.js' %}"></script>
-        <script src="{% static 'zona_eleitoral/js/misc/bsmodal.js' %}"></script>
-        <script src="{% static 'zona_eleitoral/js/misc/notify.js' %}"></script>
-	   <script src="{% static 'zona_eleitoral/js/main.js' %}"></script>
-        {% block extrascripts %}{% endblock %}
-        {% include 'modal.html' %}
-    </body>
+    {% endblock %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                </button>
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block div_titulo %}
+        <div class="titulo">
+            <h1>{% block titulo %}{{ titulo|upper }} {% endblock %}</h1>
+        </div>
+    {% endblock %}
+
+    {% block container %}{% endblock %}
+</div>
+{% block footer %}{% endblock %}
+
+<script src="{% static 'zona_eleitoral/js/misc/jquery-1.10.2.js' %}"></script>
+<script src="{% static 'zona_eleitoral/js/misc/jquery.maskedinput.min.js' %}"></script>
+<script src="{% static 'zona_eleitoral/js/misc/bootstrap.min.js' %}"></script>
+<script src="{% static 'zona_eleitoral/js/misc/confirm.js' %}"></script>
+<script src="{% static 'zona_eleitoral/js/misc/bsmodal.js' %}"></script>
+<script src="{% static 'zona_eleitoral/js/misc/notify.js' %}"></script>
+<script src="{% static 'zona_eleitoral/js/main.js' %}"></script>
+{% block extrascripts %}{% endblock %}
+{% include 'modal.html' %}
+</body>
 </html> 
