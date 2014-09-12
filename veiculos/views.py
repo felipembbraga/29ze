@@ -249,3 +249,6 @@ def perfil_veiculo_editar(request, id_perfil):
 def perfil_veiculo_detalhar(request, id_perfil):
     perfil = get_object_or_404(PerfilVeiculo, pk=int(id_perfil))
     return render(request, 'veiculos/perfil_veiculo/detalhar.html', locals())
+
+def cronograma_cadastrar(request):
+    titulo = u'Cadastrar Cronograma de Veículo'
