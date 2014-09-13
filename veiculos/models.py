@@ -88,11 +88,14 @@ class PerfilVeiculo(models.Model):
     perfil_equipe = models.BooleanField(default=False)
     equipes = models.ManyToManyField(Equipe)
 
+    def __unicode__(self):
+        return unicode(self.nome)
+
 
 class CronogramaVeiculo(models.Model):
     perfil = models.ForeignKey(PerfilVeiculo, related_name="cronograma_perfil")
-    local = models.ForeignKey(Local, null=True, blank=True)
-    dt_apresentacao = models.DateTimeField()
+    local = models.ForeignKey(Local, null=True, blank=True, verbose_name=u'Local de Apresentação')
+    dt_apresentacao = models.DateTimeField(u'Data da apresentação')
     eleicao = models.ForeignKey(Eleicao)
 
 

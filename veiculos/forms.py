@@ -4,10 +4,13 @@ Created on 05/08/2014
 
 @author: felipe
 '''
+import datetime
+
 from django import forms
+
 from models import Veiculo
-from core.models import Marca
-from veiculos.models import PerfilVeiculo
+from core.models import Marca, Local
+from veiculos.models import PerfilVeiculo, CronogramaVeiculo
 
 
 class VeiculoForm(forms.ModelForm):
@@ -39,7 +42,12 @@ class VeiculoForm(forms.ModelForm):
     
     
 class MotoristaForm(forms.ModelForm):
-    motorista_titulo_eleitoral = forms.RegexField(r'\d{12}', label=u'Título Eleitoral do Motorista',max_length=12, help_text=u'Entre 11 e 12 dígitos.')
+    motorista_titulo_eleitoral = forms.RegexField(
+        r'\d{12}',
+        label=u'Título Eleitoral do Motorista',
+        max_length=12,
+        help_text=u'Entre 11 e 12 dígitos.'
+    )
     
     class Meta:
         model = Veiculo
@@ -53,7 +61,11 @@ class MotoristaForm(forms.ModelForm):
         super(MotoristaForm, self).__init__(*args, **kwargs)
         for key in self.fields:
             if not isinstance(self.fields[key].widget, forms.CheckboxInput):
-                self.fields[key].widget.attrs.update({'class': self.fields[key].widget.attrs.get('class') and self.fields[key].widget.attrs.get('class') + ' form-control' or 'form-control'})
+                self.fields[key].widget.attrs.update({
+                    'class': self.fields[key].widget.attrs.get('class') and
+                             self.fields[key].widget.attrs.get('class') + ' form-control' or
+                             'form-control'
+                })
     
 
 class PerfilVeiculoForm(forms.ModelForm):
@@ -66,3 +78,46 @@ class PerfilVeiculoForm(forms.ModelForm):
             if not isinstance(self.fields[key].widget, forms.CheckboxInput):
                 self.fields[key].widget.attrs.update({'class': 'form-control'})
 
+
+class CronogramaForm(forms.ModelForm):
+    local = forms.ModelChoiceField(
+        queryset=Local.objects.filter(localvotacao=None).order_by('id_local'),
+        empty_label=u'NO PRÓPRIO LOCAL',
+        required=False
+    )
+    data = forms.DateField()
+    hora = forms.TimeField()
+    class Meta:
+        model = CronogramaVeiculo
+        fields= ('local', 'data', 'hora')
+
+    def __init__(self, data=None, instance=None, *args, **kwargs):
+        if instance.pk and not data:
+            data = {}
+            data.update({
+                'data': '{:%d/%m/%Y}'.format(instance.dt_apresentacao),
+                'hora': '{:%H:%M:%S}'.format(instance.dt_apresentacao),
+                'local': instance.local
+            })
+        super(CronogramaForm, self).__init__(data=data, instance=instance, *args, **kwargs)
+        for key in self.fields:
+            if not isinstance(self.fields[key].widget, forms.CheckboxInput) or not isinstance(self.fields[key].widget, forms.SplitDateTimeWidget):
+                self.fields[key].widget.attrs.update({
+                    'class': ' '.join([i for i in ['form-control', self.fields[key].widget.attrs.get('class')] if i])
+                })
+            if isinstance(self.fields[key].widget, forms.DateInput):
+
+                self.fields[key].widget.attrs.update({
+                    'class': ' '.join([i for i in ['date', self.fields[key].widget.attrs.get('class')] if i])
+                })
+
+            if isinstance(self.fields[key].widget, forms.TimeInput):
+                self.fields[key].widget.attrs.update({
+                    'class': ' '.join([i for i in ['time', self.fields[key].widget.attrs.get('class')] if i])
+                })
+
+    def clean_local(self):
+        if not self.cleaned_data.get('local'):
+            if self.instance.perfil.perfil_equipe:
+                raise forms.ValidationError(u'O perfil está ligada à equipe, não possui local.')
+        return self.cleaned_data.get('local')

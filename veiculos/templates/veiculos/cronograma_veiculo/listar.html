@@ -28,7 +28,7 @@
   <tbody>
   {% for perfil in perfis %}
   <tr>
-    <td><a href="{% url 'perfil-veiculo:detalhar' perfil.pk %}">{{perfil.nome}}</a></td>
+    <td>{{perfil.nome}}</td>
     <td>{% if perfil.perfil_equipe %}Veículo de Equipe{% else %} Veículo de Local {% endif %}</td>
     <td>{{perfil.equipes.all|join:', '}}</td>
     <td class="botoes" >

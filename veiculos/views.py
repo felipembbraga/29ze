@@ -1,8 +1,4 @@
 #-*- coding: utf-8 -*-
-from acesso.decorators import orgao_atualizar
-from acesso.models import OrgaoPublico
-from core.models import Modelo
-from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core import serializers
@@ -11,17 +7,18 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.forms.models import modelform_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from eleicao.models import Equipe
+
+from acesso.decorators import orgao_atualizar
+from acesso.models import OrgaoPublico
+from core.models import Modelo
 from filters import VeiculoFilter
 from forms import VeiculoForm, MotoristaForm
-from models import Veiculo, VeiculoSelecionado, Motorista
+from models import Veiculo, VeiculoSelecionado
 from utils.forms import NumPorPaginaForm
 from utils.Response import NotifyResponse
-
-# Create your views here.
-from veiculos.forms import PerfilVeiculoForm
-from veiculos.models import PerfilVeiculo
-
+from veiculos.forms import PerfilVeiculoForm, CronogramaForm
+from veiculos.models import PerfilVeiculo, CronogramaVeiculo
+import datetime
 
 @orgao_atualizar
 @login_required(login_url='acesso:login-veiculos')
@@ -210,7 +207,7 @@ def perfil_veiculo_cadastrar(request):
         form = PerfilVeiculoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('perfil-veiculo:listar')
+            return redirect('perfil-veiculo:detalhar', form.instance.pk)
     else:
         form = PerfilVeiculoForm()
     return render(request, 'veiculos/perfil_veiculo/form.html', locals())
@@ -241,14 +238,77 @@ def perfil_veiculo_editar(request, id_perfil):
         form = PerfilVeiculoForm(request.POST, instance=perfil)
         if form.is_valid():
             form.save()
-            return redirect('perfil-veiculo:listar')
+            return redirect('perfil-veiculo:detalhar', form.instance.pk)
     else:
         form = PerfilVeiculoForm(instance=perfil)
     return render(request, 'veiculos/perfil_veiculo/form.html', locals())
 
 def perfil_veiculo_detalhar(request, id_perfil):
+
+    """
+
+    :param request:
+    :param id_perfil:
+    :return:
+    """
     perfil = get_object_or_404(PerfilVeiculo, pk=int(id_perfil))
+    cronogramas = perfil.cronograma_perfil.filter(eleicao = request.eleicao_atual)
+    titulo = u'Detalhar Perfil de Veículo'
     return render(request, 'veiculos/perfil_veiculo/detalhar.html', locals())
 
-def cronograma_cadastrar(request):
+def cronograma_cadastrar(request, id_perfil):
+
+    """
+
+    :param request:
+    :param id_perfil:
+    :return:
+    """
     titulo = u'Cadastrar Cronograma de Veículo'
+    perfil = get_object_or_404(PerfilVeiculo, pk=int(id_perfil))
+    cronograma = CronogramaVeiculo(perfil=perfil, eleicao=request.eleicao_atual)
+    if request.method == 'POST':
+        form = CronogramaForm(request.POST, instance=cronograma)
+        if form.is_valid():
+            cronograma.local = form.cleaned_data['local']
+            parametros_datetime = [form.cleaned_data['data'].year, form.cleaned_data['data'].month, form.cleaned_data['data'].day, form.cleaned_data['hora'].hour, form.cleaned_data['hora'].minute]
+            cronograma.dt_apresentacao = datetime.datetime(*parametros_datetime)
+            cronograma.save()
+            return redirect('perfil-veiculo:detalhar', perfil.pk)
+    else:
+        form = CronogramaForm(instance=cronograma)
+    return render(request, 'veiculos/cronograma_veiculo/form.html', locals())
+
+def cronograma_editar(request, id_cronograma):
+
+    """
+
+    :param request:
+    :param id_perfil:
+    :return:
+    """
+    titulo = u'Editar Cronograma de Veículo'
+    cronograma = get_object_or_404(CronogramaVeiculo, pk=int(id_cronograma))
+    perfil = cronograma.perfil
+    if request.method == 'POST':
+        form = CronogramaForm(request.POST, instance=cronograma)
+        if form.is_valid():
+            cronograma.local = form.cleaned_data['local']
+            parametros_datetime = [form.cleaned_data['data'].year, form.cleaned_data['data'].month, form.cleaned_data['data'].day, form.cleaned_data['hora'].hour, form.cleaned_data['hora'].minute]
+            cronograma.dt_apresentacao = datetime.datetime(*parametros_datetime)
+            cronograma.save()
+            return redirect('perfil-veiculo:detalhar', perfil.pk)
+    else:
+        form = CronogramaForm(instance=cronograma)
+    return render(request, 'veiculos/cronograma_veiculo/form.html', locals())
+
+def cronograma_excluir(request, id_cronograma):
+    cronograma = get_object_or_404(CronogramaVeiculo, pk=int(id_cronograma))
+    perfil = cronograma.perfil
+    try:
+        cronograma.delete()
+        messages.success(request, u'Cronograma removido com sucesso')
+        return redirect('perfil-veiculo:detalhar', perfil.pk)
+    except:
+        messages.error(request, u'Erro ao remover o cronograma')
+        return redirect('perfil-veiculo:detalhar', perfil.pk)
