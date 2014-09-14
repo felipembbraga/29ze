@@ -6,3 +6,4 @@
 .settings
 .idea/
 /venv_zona_eleitoral/
+zona_eleitoral/settings/development_local.py
