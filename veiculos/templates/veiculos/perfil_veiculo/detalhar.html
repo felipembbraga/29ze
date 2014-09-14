@@ -56,7 +56,7 @@
                 <tbody>
                 {% for cronograma in cronogramas %}
                     <tr>
-                        <td>{{ cronograma.local }}</td>
+                        <td>{% firstof cronograma.local 'NO MESMO LOCAL' %}</td>
                         <td>{{ cronograma.dt_apresentacao }}</td>
                         <td class="botoes" >
                             <div class="btn-group btn-group-xs"  style="float:right;">
