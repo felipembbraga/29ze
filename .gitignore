@@ -2,7 +2,7 @@
 *.zip
 .project
 .pydevproject
-.idea
 *.pyc
 .settings
-.gitignore
+.idea/
+/venv_zona_eleitoral/
