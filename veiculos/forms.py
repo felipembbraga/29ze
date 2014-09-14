@@ -83,10 +83,11 @@ class CronogramaForm(forms.ModelForm):
     local = forms.ModelChoiceField(
         queryset=Local.objects.filter(localvotacao=None).order_by('id_local'),
         empty_label=u'NO PRÓPRIO LOCAL',
-        required=False
+        required=False,
+        label=u'Local de apresentação'
     )
     data = forms.DateField(label='Data da apresentação')
-    hora = forms.TimeField(label='Horário de apresentaçãoo')
+    hora = forms.TimeField(label='Horário de apresentação')
     class Meta:
         model = CronogramaVeiculo
         fields= ('local', 'data', 'hora')
