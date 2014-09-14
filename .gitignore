@@ -2,3 +2,6 @@
 *.zip
 .project
 .pydevproject
+*.pyc
+.idea/
+/venv_zona_eleitoral/
