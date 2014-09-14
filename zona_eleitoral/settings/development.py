@@ -34,3 +34,8 @@ AUTHENTICATION_BACKENDS = ('acesso.backends.OrgaoBackend',
                            )
 
 WSGI_APPLICATION = 'zona_eleitoral.deploy.wsgi-dev.application'
+
+try:
+    from development_local import *
+except:
+    pass
