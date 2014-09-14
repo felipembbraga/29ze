@@ -85,7 +85,7 @@ class Motorista(Pessoa):
 
 class PerfilVeiculo(models.Model):
     nome = models.CharField(max_length=50)
-    perfil_equipe = models.BooleanField('Perfil para suporte de equipe', default=False)
+    perfil_equipe = models.BooleanField(u'É perfil para equipe?', default=False)
     equipes = models.ManyToManyField(Equipe)
 
     def __unicode__(self):
