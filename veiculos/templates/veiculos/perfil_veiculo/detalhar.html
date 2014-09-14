@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block container %}
+    <div class="row" style="margin-bottom: 10px">
+
+        <div class="col-md-4">
+            <strong>Nome:</strong> {{ perfil.nome }}
+        </div>
+        <div class="col-md-4">
+            <strong>Tipo de perfil:</strong> {% if perfil.perfil_equipe %}Veículo de Equipe{% else %} Veículo de Local {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <a href="{% url 'perfil-veiculo:editar' perfil.pk %}" class="btn btn-default">
+                Editar Perfil
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="{% url 'cronograma-veiculo:cadastrar' perfil.pk %}" class="btn btn-primary">
+                Cadastrar Cronograma
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Equipes</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="56%">Nome</th>
+                    <th width="22%">Qtde. Locais</th>
+                    <th width="22%">Qtde. Seções</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for equipe in perfil.equipes.all %}
+                    <tr>
+                        <td><a href="{{ equipe.get_absolute_url }}">{{ equipe.nome }}</a></td>
+                        <td>{{ equipe.local_equipe.count }}</td>
+                        <td>{{ equipe.get_total_secoes }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Cronogramas</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="30%">Local</th>
+                    <th width="40%">Data de Apresentação</th>
+                    <th width="30%"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for cronograma in cronogramas %}
+                    <tr>
+                        <td>{{ cronograma.local }}</td>
+                        <td>{{ cronograma.dt_apresentacao }}</td>
+                        <td class="botoes" >
+                            <div class="btn-group btn-group-xs"  style="float:right;">
+                                <a href="{% url 'cronograma-veiculo:editar' cronograma.pk %}" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span>Editar</a>
+                                <button class="btn btn-danger btn-xs delete" data-url="{% url 'cronograma-veiculo:excluir' cronograma.pk %}"><span class="glyphicon glyphicon-trash"></span>Excluir</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block extrascripts %}
+    <script>
+        $(document).ready(function(){
+            $('.delete').click(function(){
+                var url = $(this).data('url')
+                $(this).confirmar({
+                  message: 'Deseja excluir este cronograma?',
+                    onConfirm:function() {
+                        location.href = url;
+                    }
+                })
+            })
+        });
+
+    </script>
+{% endblock %}

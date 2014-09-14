@@ -3,5 +3,6 @@
 .project
 .pydevproject
 *.pyc
+.settings
 .idea/
 /venv_zona_eleitoral/

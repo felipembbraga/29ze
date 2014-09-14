@@ -52,6 +52,7 @@ $(document).ready(function(){
 	});
 
 	$('.date').mask('99/99/9999');
+    $('.time').mask('99:99');
 	$('.telefone').mask('(99)9999-9999');
 	$('.tooltip-iniciar').tooltip({html:true,placement:'top'});
 	
