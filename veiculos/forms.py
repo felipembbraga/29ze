@@ -85,8 +85,8 @@ class CronogramaForm(forms.ModelForm):
         empty_label=u'NO PRÓPRIO LOCAL',
         required=False
     )
-    data = forms.DateField()
-    hora = forms.TimeField()
+    data = forms.DateField(label='Data da apresentação')
+    hora = forms.TimeField(label='Horário de apresentaçãoo')
     class Meta:
         model = CronogramaVeiculo
         fields= ('local', 'data', 'hora')
