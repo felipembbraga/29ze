@@ -82,7 +82,7 @@ class PerfilVeiculoForm(forms.ModelForm):
 class CronogramaForm(forms.ModelForm):
     local = forms.ModelChoiceField(
         queryset=Local.objects.filter(localvotacao=None).order_by('id_local'),
-        empty_label=u'NO PRÓPRIO LOCAL',
+        empty_label=u'NO LOCAL DE TRABALHO',
         required=False,
         label=u'Local de apresentação'
     )
