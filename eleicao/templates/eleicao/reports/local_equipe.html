@@ -6,6 +6,7 @@
 {% endblock %}
 {% block report %}
 {% for equipe in equipes %}
+    {% if forloop.counter > 1 %}<div class="quebra-pagina"></div>{% endif %}
 <div class="page-header">
   <h2>{{ equipe }}</h2>
 </div>
@@ -15,6 +16,7 @@
     <div class="col-md-3"><strong>Quantidade de eleitores: </strong>{{ equipe.get_total_eleitores }}</div>
 </div>
 {% for local in equipe.local_equipe.all %}
+
 {% if local.get_total_eleitores > 0 %}
 <table class="table table-bordered tabela-impressao">
 <tbody>
