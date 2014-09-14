@@ -231,7 +231,9 @@ class Equipe(models.Model):
     def get_total_eleitores(self):
         soma = 0
         for local in self.local_equipe.all():
-            soma += local.secao_set.secao_pai().aggregate(soma_agregados=models.Sum('num_eleitores')).get('soma_agregados')
+            somatorio = local.secao_set.secao_pai().aggregate(soma_agregados=models.Sum('num_eleitores')).get('soma_agregados')
+            if isinstance(somatorio, int):
+                soma += somatorio
         return soma
     
 class Montagem(models.Model):
