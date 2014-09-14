@@ -74,4 +74,4 @@ class EquipeAlocacaoForm(forms.ModelForm):
         if instance:
             self.fields['quantidade'].label = instance.perfil_veiculo.nome
 
-EquipeAlocacaoFormSet = forms.inlineformset_factory(Equipe, Alocacao, form=EquipeAlocacaoForm, extra=0)
+#EquipeAlocacaoFormSet = forms.inlineformset_factory(Equipe, Alocacao, form=EquipeAlocacaoForm, extra=0)
