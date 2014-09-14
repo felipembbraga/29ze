@@ -5,7 +5,8 @@ MY_APPS = (
     'eleicao',
     'acesso',
     'veiculos',
-    'django_extensions'
+    'django_extensions',
+    'south'
 )
 
 INSTALLED_APPS = INSTALLED_APPS + MY_APPS

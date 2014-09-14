@@ -188,6 +188,8 @@ class Partido(models.Model):
 class Equipe(models.Model):
     nome = models.CharField(max_length=100)
     eleicao = models.ForeignKey(Eleicao, related_name='equipe_eleicao')
+    automatico = models.BooleanField(default=False)
+
     
     class Meta:
         permissions=[

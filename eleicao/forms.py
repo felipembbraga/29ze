@@ -3,6 +3,8 @@ from django import forms
 from models import Eleicao, Equipe
 from utils.forms import BootstrapModelForm, BootstrapForm
 from eleicao.models import LocalVotacao
+from veiculos.models import Alocacao
+
 
 class EleicaoForm(BootstrapModelForm):
     
@@ -53,4 +55,23 @@ class EquipeLocaisForm(forms.Form):
     def __init__(self, queryset = None, *args, **kwargs):
         super(EquipeLocaisForm, self).__init__(*args, **kwargs)
         self.fields['local'].choices = list(queryset)
-    
+
+class EquipeAlocacaoForm(forms.ModelForm):
+    class Meta:
+        model = Alocacao
+        widgets = {
+            'perfil_veiculo' : forms.HiddenInput,
+            'equipe' : forms.HiddenInput,
+            'local_votacao' : forms.HiddenInput
+        }
+
+    def __init__(self, instance=None, *args, **kwargs):
+        super(EquipeAlocacaoForm, self).__init__(instance=instance, *args, **kwargs)
+        for key in self.fields:
+            self.fields[key].widget.attrs.update({
+                'class': ' '.join([i for i in ['form-control', self.fields[key].widget.attrs.get('class')] if i])
+            })
+        if instance:
+            self.fields['quantidade'].label = instance.perfil_veiculo.nome
+
+EquipeAlocacaoFormSet = forms.inlineformset_factory(Equipe, Alocacao, form=EquipeAlocacaoForm, extra=0)

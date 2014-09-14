@@ -17,6 +17,7 @@ from middleware import definir_eleicao_padrao
 from utils.Response import NotifyResponse
 from django.contrib import messages
 from eleicao.models import Montagem
+from veiculos.models import Alocacao
 
 
 def ler_csv(request, f):
@@ -59,11 +60,11 @@ def ler_csv(request, f):
             especial = False
             if tipo_secao.lower() == 'especial':
                 especial = True
-            secao = Secao.objects.create(\
-                                         num_secao = int(secao),\
-                                         eleicao = request.eleicao_atual,\
-                                         local_votacao = local_votacao,\
-                                         num_eleitores = num_eleitores,\
+            secao = Secao.objects.create(
+                                         num_secao = int(secao),
+                                         eleicao = request.eleicao_atual,
+                                         local_votacao = local_votacao,
+                                         num_eleitores = num_eleitores,
                                          especial = especial)
     return True
 
@@ -407,3 +408,15 @@ def equipe_salvar_rotas(request, id_equipe):
         if hasattr(local, 'local_montagem'):
             local.local_montagem.delete()
     return NotifyResponse('Salvo com sucesso', theme='sucesso')
+
+def montar_form_alocacao(equipe):
+    pass
+
+def equipe_alocacao(request, id_equipe):
+    equipe = get_object_or_404(Equipe, pk=int(id_equipe))
+    perfis_equipe = equipe.perfilveiculo_set.filter(perfil_equipe=True)
+    perfis_local = equipe.perfilveiculo_set.filter(perfil_equipe=False)
+    inicial_equipe=[]
+    for perfil in perfis_equipe:
+        alocacao = Alocacao(equipe=equipe, perfil_veiculo=perfil)
+
