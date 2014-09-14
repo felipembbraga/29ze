@@ -1,63 +1,69 @@
 {% if 'eleicao' in perms %}
 
-{% if perms.eleicao.view_local_votacao or perms.eleicao.import_local_votacao or perms.eleicao.view_equipe or perms.eleicao.add_equipe %}
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Eleição<span class="caret"></span></a>
-  <ul class="dropdown-menu" role="menu">
-    {% if perms.eleicao.view_local_votacao or perms.eleicao.import_local_votacao %}
-    <li class="dropdown-header">Locais</li>
-    {% if perms.eleicao.view_local_votacao %}<li><a href="{% url 'local:index' %}">Listar</a></li>{% endif %}
-    {% if perms.eleicao.import_local_votacao %}<li><a href="{% url 'local:importar' %}">Importar locais</a></li>{% endif %}
+    {% if perms.eleicao.view_local_votacao or perms.eleicao.import_local_votacao or perms.eleicao.view_equipe or perms.eleicao.add_equipe %}
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Eleição<span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                {% if perms.eleicao.view_local_votacao or perms.eleicao.import_local_votacao %}
+                    <li class="dropdown-header">Locais de Votação</li>
+                    {% if perms.eleicao.view_local_votacao %}<li><a href="{% url 'local:index' %}">Listar</a></li>{% endif %}
+                    {% if perms.eleicao.import_local_votacao %}<li><a href="{% url 'local:importar' %}">Importar locais</a></li>{% endif %}
+                {% endif %}
+                {% if perms.eleicao.view_equipe or perms.eleicao.add_equipe %}
+                    {% if perms.eleicao.view_local_votacao or perms.eleicao.import_local_votacao %}
+                        <li class="divider"></li>
+                    {% endif %}
+                    <li class="dropdown-header">Equipes</li>
+                    {% if perms.eleicao.view_equipe %}<li><a href="{% url 'equipe:index' %}">Listar</a></li>{% endif %}
+                    {% if perms.eleicao.add_equipe %}<li><a href="{% url 'equipe:cadastrar' %}">Cadastrar</a></li>{% endif %}
+                {% endif %}
+            </ul>
+        </li>
     {% endif %}
-    {% if perms.eleicao.view_equipe or perms.eleicao.add_equipe %}
-    {% if perms.eleicao.view_local_votacao or perms.eleicao.import_local_votacao %}
-    <li class="divider"></li>
-    {% endif %}
-    <li class="dropdown-header">Equipes</li>
-    {% if perms.eleicao.view_equipe %}<li><a href="{% url 'equipe:index' %}">Listar</a></li>{% endif %}
-    {% if perms.eleicao.add_equipe %}<li><a href="{% url 'equipe:cadastrar' %}">Cadastrar</a></li>{% endif %}
-    {% endif %}
-  </ul>
-</li>
-{% endif %}
 
-{% if perms.eleicao.view_local_votacao or perms.eleicao.view_equipe %}
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Relatórios<span class="caret"></span></a>
-  <ul class="dropdown-menu" role="menu">
-    <li class="dropdown-header">Locais</li>
-    <li><a href="{% url 'eleicao-report:local-geral' %}">Geral</a></li>
-    {% if perms.eleicao.view_equipe %}<li><a href="{% url 'eleicao-report:local-equipe' %}">Por equipes</a></li>{% endif %}
-    <li class="divider"></li>
-    <li class="dropdown-header">Seções</li>
-    <li><a href="{% url 'eleicao-report:secao-ordenado' %}">Seções ordenadas</a></li>
-    <li><a href="{% url 'eleicao-report:secoes-agregadas' %}">Seções agregadas</a></li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Veículos<span class="caret"></span></a>
-  <ul class="dropdown-menu" role="menu">
-    <li><a href="{% url 'veiculo:listar' %}">Listar</a></li>
-    <li class="dropdown-header">Relatorios</li>
-    <li><a href="{% url 'report-veiculos:orgaos-sem-veiculos' %}">Órgãos sem veículos cadastrados</a></li>
-    <li><a href="{% url 'report-veiculos:veiculos-requisitados' %}">Veículos requisitados por órgão</a></li>
-  </ul>
-</li>
-{% endif %}
+    {% if perms.eleicao.view_local_votacao or perms.eleicao.view_equipe %}
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Relatórios<span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li class="dropdown-header">Locais</li>
+                <li><a href="{% url 'eleicao-report:local-geral' %}">Geral</a></li>
+                {% if perms.eleicao.view_equipe %}<li><a href="{% url 'eleicao-report:local-equipe' %}">Por equipes</a></li>{% endif %}
+                <li class="divider"></li>
+                <li class="dropdown-header">Seções</li>
+                <li><a href="{% url 'eleicao-report:secao-ordenado' %}">Seções ordenadas</a></li>
+                <li><a href="{% url 'eleicao-report:secoes-agregadas' %}">Seções agregadas</a></li>
+            </ul>
+        </li>
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Veículos<span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="{% url 'veiculo:listar' %}">Listar</a></li>
+                <li class="dropdown-header">Relatorios</li>
+                <li><a href="{% url 'report-veiculos:orgaos-sem-veiculos' %}">Órgãos sem veículos cadastrados</a></li>
+                <li><a href="{% url 'report-veiculos:veiculos-requisitados' %}">Veículos requisitados por órgão</a></li>
+            </ul>
+        </li>
+    {% endif %}
 {% endif %}
 {% if user.is_superuser %}
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administração<span class="caret"></span></a>
-  <ul class="dropdown-menu" role="menu">
-    <li class="dropdown-header">Eleições</li>
-    <li><a href="{% url "eleicao:index" %}">Listar</a></li>
-    <li><a href="{% url "eleicao:cadastrar" %}">Cadastrar</a></li>
-        
-    <li class="divider"></li>
-    <li class="dropdown-header">Acesso</li>
-    <li><a href="{% url 'admin:index' %}">Controle de acesso</a></li>
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administração<span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">
+            <li class="dropdown-header">Eleições</li>
+            <li><a href="{% url "eleicao:index" %}">Listar</a></li>
+            <li><a href="{% url "eleicao:cadastrar" %}">Cadastrar</a></li>
+            <li class="divider"></li>
+            <li class="dropdown-header">Perfis de Veiculo</li>
+            <li><a href="{% url 'perfil-veiculo:listar' %}">Listar</a></li>
+            <li class="divider"></li>
+            <li class="dropdown-header">Locais</li>
+            <li><a href="{% url 'local-core:listar' %}">Listar</a></li>
 
-  </ul>
-</li>
+            <li class="divider"></li>
+            <li class="dropdown-header">Acesso</li>
+            <li><a href="{% url 'admin:index' %}">Controle de acesso</a></li>
+
+        </ul>
+    </li>
 {% endif %}
 
