@@ -36,6 +36,7 @@ class Veiculo(models.Model):
         permissions = (
             ('view_veiculo', u'Visualizar Veículos'),
             ('view_all_veiculo', u'Visualizar Todos os Veículos'),
+            ('inspection_veiculo', u'Virtoria de Veículo'),
         )
 
     def __unicode__(self):
@@ -66,6 +67,10 @@ class Veiculo(models.Model):
 
 
 class VeiculoSelecionado(models.Model):
+    """
+    Veículo que foi requisitado pelo TRE
+    Os campos local e administrador, no momento não estão sendo utilizados devido a mudança na lógica de cadastro
+    """
     veiculo = models.OneToOneField(Veiculo, related_name='veiculo_selecionado')
     local = models.ForeignKey(LocalVotacao, related_name='local_veiculo', null=True, blank=True)
     administrador = models.BooleanField(default=False, blank=True)

@@ -5,6 +5,7 @@ Created on 05/08/2014
 @author: felipe
 '''
 import datetime
+from acesso.models import OrgaoPublico
 
 from django import forms
 
@@ -39,6 +40,13 @@ class VeiculoForm(forms.ModelForm):
         if not self.instance.pk and Veiculo.objects.filter(placa=self.cleaned_data.get('placa'), eleicao=self.instance.eleicao).exists():
             raise forms.ValidationError(u'O veículo com esta placa já está cadastrado')
         return self.cleaned_data.get('placa')
+
+
+class VeiculoVistoriaForm(VeiculoForm):
+    orgao = forms.ModelChoiceField(queryset=OrgaoPublico.objects.all().order_by('nome_secretaria'))
+    placa = forms.RegexField(r'[A-Za-z]{3}-\d{4}', max_length=8, help_text='Ex.:ABC-1234',
+                             error_messages={'invalid': u'Insira uma placa válida.'},
+                             widget=forms.TextInput(attrs={'readonly': ''}))
     
     
 class MotoristaForm(forms.ModelForm):

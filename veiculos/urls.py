@@ -7,11 +7,19 @@ from django.conf.urls import include, url, patterns
 from veiculos.views_relatorio import relatorio_veiculos, relatorio_admin_orgao_sem_veiculo, \
     relatorio_veiculos_requisitados
 
-from views import index, veiculo_index, veiculo_cadastrar, veiculo_editar, veiculo_ajax_get_modelo, info
+from views import index, veiculo_index, veiculo_cadastrar, veiculo_editar, veiculo_ajax_get_modelo, info, \
+    veiculo_vistoria_listagem
 from veiculos.views import veiculo_excluir, veiculo_listar, veiculo_requisitar, veiculo_liberar, veiculo_detalhar, \
     perfil_veiculo_cadastrar, perfil_veiculo_listar, perfil_veiculo_editar, perfil_veiculo_detalhar, \
-    cronograma_cadastrar, cronograma_editar, cronograma_excluir
+    cronograma_cadastrar, cronograma_editar, cronograma_excluir, veiculo_vistoria, index_vistoria
 
+
+vistoria_veiculo_patterns = [
+    url(r'^$', index_vistoria, name='index'),
+    url(r'^cadastrar/$', veiculo_vistoria, name='cadastrar'),
+    url(r'^cadastrar/(\d+)/$', veiculo_vistoria, name='cadastrar'),
+    url(r'^listar/$', veiculo_vistoria_listagem, name='listar'),
+]
 
 veiculo_patterns = [
     url(r'^cadastrar/$', veiculo_cadastrar, name='cadastrar'),
@@ -24,6 +32,7 @@ veiculo_patterns = [
     url(r'^requisitar/(\d+)/$', veiculo_requisitar, name='requisitar'),
     url(r'^liberar/(\d+)/$', veiculo_liberar, name='liberar'),
     url(r'^index/$', veiculo_index, name='index'),
+    url(r'^vistoria/', include(vistoria_veiculo_patterns, namespace='vistoria')),
 ]
 
 perfil_veiculo_patterns = [
@@ -38,7 +47,7 @@ cronograma_veiculo_patterns = [
     url(r'^cadastrar/(\d+)/$', cronograma_cadastrar, name='cadastrar'),
     url(r'^editar/(\d+)/$', cronograma_editar, name='editar'),
     url(r'^excluir/(\d+)/$', cronograma_excluir, name='excluir'),
-    ]
+]
 
 report_patterns = [
     url(r'^veiculos/$', relatorio_veiculos, name='veiculos'),
@@ -54,5 +63,4 @@ urlpatterns = patterns('',
                        url(r'^perfil-veiculo/', include(perfil_veiculo_patterns, namespace='perfil-veiculo')),
                        url(r'^cronograma/', include(cronograma_veiculo_patterns, namespace='cronograma-veiculo')),
                        url(r'^report/', include(report_patterns, namespace='report-veiculos')),
-
 )

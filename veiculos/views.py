@@ -20,15 +20,18 @@ from veiculos.forms import PerfilVeiculoForm, CronogramaForm
 from veiculos.models import PerfilVeiculo, CronogramaVeiculo
 import datetime
 
+
 @orgao_atualizar
 @login_required(login_url='acesso:login-veiculos')
 def index(request):
     return render(request, 'veiculos/index.html')
 
+
 @orgao_atualizar
 @login_required(login_url='acesso:login-veiculos')
 def info(request):
     return render(request, 'veiculos/info.html')
+
 
 @orgao_atualizar
 @permission_required('veiculos.add_veiculo', raise_exception=True)
@@ -63,6 +66,7 @@ def veiculo_cadastrar(request):
         form = VeiculoForm()
         form_motorista = MotoristaForm()
     return render(request,'veiculos/veiculo/form.html', locals())
+
 
 @orgao_atualizar
 @permission_required('veiculos.change_veiculo', raise_exception=True)
@@ -107,6 +111,7 @@ def veiculo_editar(request, id_veiculo):
         form_motorista = MotoristaForm(instance=veiculo)
     return render(request,'veiculos/veiculo/form.html', locals())
 
+
 @orgao_atualizar
 @permission_required('veiculos.view_veiculo', raise_exception=True)
 @login_required(login_url='acesso:login-veiculos')
@@ -117,10 +122,12 @@ def veiculo_index(request):
         veiculos = Veiculo.objects.all()
     return render(request, 'veiculos/veiculo/index.html', locals())
 
+
 def veiculo_ajax_get_modelo(request, id_marca):
     modelos = Modelo.objects.filter(marca__pk=int(id_marca)).order_by('nome')
     json = serializers.serialize('json', modelos)
     return HttpResponse(json, mimetype="application/json")
+
 
 @orgao_atualizar
 @permission_required('veiculos.delete_veiculo', raise_exception=True)
@@ -140,6 +147,7 @@ def veiculo_excluir(request, id_veiculo):
                 messages.error(request, u'Erro ao deletar o veículo')
         messages.error(request, u'Comando errado')
     return render(request, 'veiculos/veiculo/excluir.html', locals())
+
 
 @login_required
 def veiculo_listar(request, id_orgao=None):
@@ -169,14 +177,15 @@ def veiculo_listar(request, id_orgao=None):
         # If page is out of range (e.g. 9999), deliver last page of results.
         veiculos = paginator.page(paginator.num_pages)
     orgaos = OrgaoPublico.objects.all().order_by('nome_secretaria')
-    Form = modelform_factory(
+    form = modelform_factory(
                 Veiculo,
                 fields=('orgao',),
                 labels={'orgao':u'Selecionar Órgão: '})
-    Form.base_fields['orgao'].queryset = orgaos
-    form = Form({'orgao':id_orgao})
+    form.base_fields['orgao'].queryset = orgaos
+    form = form({'orgao':id_orgao})
     form.fields['orgao'].widget.attrs.update({'class':'form-control'})
     return render(request, 'veiculos/veiculo/listar.html', locals())
+
 
 @login_required
 def veiculo_requisitar(request, id_veiculo):
@@ -186,6 +195,7 @@ def veiculo_requisitar(request, id_veiculo):
     VeiculoSelecionado.objects.get_or_create(veiculo=veiculo)
     return NotifyResponse('Sucesso', theme='sucesso')
 
+
 @login_required
 def veiculo_liberar(request, id_veiculo):
     if not request.is_ajax():
@@ -194,6 +204,7 @@ def veiculo_liberar(request, id_veiculo):
     if hasattr(veiculo, 'veiculo_selecionado'):
         veiculo.veiculo_selecionado.delete()
     return NotifyResponse('Sucesso', theme='sucesso')
+
 
 @login_required
 def veiculo_detalhar(request, id_veiculo):
@@ -211,6 +222,7 @@ def perfil_veiculo_cadastrar(request):
     else:
         form = PerfilVeiculoForm()
     return render(request, 'veiculos/perfil_veiculo/form.html', locals())
+
 
 def perfil_veiculo_listar(request):
     titulo = u'Perfís de Veículo'
@@ -231,6 +243,7 @@ def perfil_veiculo_listar(request):
         perfis = paginator.page(paginator.num_pages)
     return render(request, 'veiculos/perfil_veiculo/listar.html', locals())
 
+
 def perfil_veiculo_editar(request, id_perfil):
     titulo = u'Editar Perfil de Veículo'
     perfil = get_object_or_404(PerfilVeiculo, pk=int(id_perfil))
@@ -243,10 +256,9 @@ def perfil_veiculo_editar(request, id_perfil):
         form = PerfilVeiculoForm(instance=perfil)
     return render(request, 'veiculos/perfil_veiculo/form.html', locals())
 
+
 def perfil_veiculo_detalhar(request, id_perfil):
-
     """
-
     :param request:
     :param id_perfil:
     :return:
@@ -256,10 +268,9 @@ def perfil_veiculo_detalhar(request, id_perfil):
     titulo = u'Detalhar Perfil de Veículo'
     return render(request, 'veiculos/perfil_veiculo/detalhar.html', locals())
 
+
 def cronograma_cadastrar(request, id_perfil):
-
     """
-
     :param request:
     :param id_perfil:
     :return:
@@ -279,10 +290,9 @@ def cronograma_cadastrar(request, id_perfil):
         form = CronogramaForm(instance=cronograma)
     return render(request, 'veiculos/cronograma_veiculo/form.html', locals())
 
+
 def cronograma_editar(request, id_cronograma):
-
     """
-
     :param request:
     :param id_perfil:
     :return:
@@ -302,6 +312,7 @@ def cronograma_editar(request, id_cronograma):
         form = CronogramaForm(instance=cronograma)
     return render(request, 'veiculos/cronograma_veiculo/form.html', locals())
 
+
 def cronograma_excluir(request, id_cronograma):
     cronograma = get_object_or_404(CronogramaVeiculo, pk=int(id_cronograma))
     perfil = cronograma.perfil
@@ -312,3 +323,21 @@ def cronograma_excluir(request, id_cronograma):
     except:
         messages.error(request, u'Erro ao remover o cronograma')
         return redirect('perfil-veiculo:detalhar', perfil.pk)
+
+
+@permission_required('veiculos.inspection-veiculo', raise_exception=True)
+@login_required(login_url='acesso:login-veiculos')
+def index_vistoria(request):
+    return render(request, 'veiculos/vistoria/index.html')
+
+
+@permission_required('veiculos.inspection-veiculo', raise_exception=True)
+@login_required(login_url='acesso:login-veiculos')
+def veiculo_vistoria(request):
+    return render(request, 'veiculos/vistoria/cadastrar.html')
+
+
+@permission_required('veiculos.inspection-veiculo', raise_exception=True)
+@login_required(login_url='acesso:login-veiculos')
+def veiculo_vistoria_listagem(request):
+    return render(request, 'veiculos/vistoria/listar.html')
