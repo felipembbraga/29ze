@@ -7,10 +7,11 @@ Created on 05/08/2014
 import datetime
 
 from django import forms
+from eleicao.models import Equipe
 
 from models import Veiculo
 from core.models import Marca, Local
-from veiculos.models import PerfilVeiculo, CronogramaVeiculo
+from veiculos.models import PerfilVeiculo, CronogramaVeiculo, Alocacao
 
 
 class VeiculoForm(forms.ModelForm):
@@ -69,6 +70,7 @@ class MotoristaForm(forms.ModelForm):
     
 
 class PerfilVeiculoForm(forms.ModelForm):
+    equipes = forms.ModelMultipleChoiceField(queryset=Equipe.objects.order_by('nome'))
     class Meta:
         model = PerfilVeiculo
 
@@ -122,3 +124,27 @@ class CronogramaForm(forms.ModelForm):
             if self.instance.perfil.perfil_equipe:
                 raise forms.ValidationError(u'O perfil está ligada à equipe, não possui local.')
         return self.cleaned_data.get('local')
+
+class AlocacaoForm(forms.ModelForm):
+    class Meta:
+        model = Alocacao
+        widgets = {
+            'equipe': forms.HiddenInput,
+            'local_votacao': forms.HiddenInput,
+            'perfil_veiculo': forms.HiddenInput
+        }
+    def __init__(self,  data=None, eleicao=None, *args, **kwargs):
+        super(AlocacaoForm, self).__init__(data, *args, **kwargs)
+        self.eleicao = eleicao
+        for key in self.fields:
+            if not isinstance(self.fields[key].widget, forms.CheckboxInput):
+                self.fields[key].widget.attrs.update({'class': 'form-control'})
+    def clean_quantidade(self):
+        total_veiculos = Veiculo.objects.filter(eleicao = self.eleicao).exclude(veiculo_selecionado=None).count()
+        equipes = Equipe.objects.filter(eleicao=self.eleicao)
+        veiculos_alocados = 0
+        for equipe in equipes:
+            veiculos_alocados += equipe.total_veiculos_estimados()
+        if (veiculos_alocados + self.cleaned_data['quantidade']) - self.instance.quantidade > total_veiculos:
+            raise forms.ValidationError(u'Quantidade de veiculos supera o número total de veículos requisitados')
+        return self.cleaned_data['quantidade']

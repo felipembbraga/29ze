@@ -10,7 +10,7 @@ from veiculos.views_relatorio import relatorio_veiculos, relatorio_admin_orgao_s
 from views import index, veiculo_index, veiculo_cadastrar, veiculo_editar, veiculo_ajax_get_modelo, info
 from veiculos.views import veiculo_excluir, veiculo_listar, veiculo_requisitar, veiculo_liberar, veiculo_detalhar, \
     perfil_veiculo_cadastrar, perfil_veiculo_listar, perfil_veiculo_editar, perfil_veiculo_detalhar, \
-    cronograma_cadastrar, cronograma_editar, cronograma_excluir
+    cronograma_cadastrar, cronograma_editar, cronograma_excluir, alocacao_editar
 
 
 veiculo_patterns = [
@@ -40,6 +40,11 @@ cronograma_veiculo_patterns = [
     url(r'^excluir/(\d+)/$', cronograma_excluir, name='excluir'),
     ]
 
+alocacao_patterns = [
+    url(r'^editar/(\d+)/(\d+)/$', alocacao_editar, name='editar'),
+    url(r'^editar/(\d+)/(\d+)/(\d+)/$', alocacao_editar, name='editar'),
+]
+
 report_patterns = [
     url(r'^veiculos/$', relatorio_veiculos, name='veiculos'),
     url(r'^orgaos-sem-veiculos/$', relatorio_admin_orgao_sem_veiculo, name='orgaos-sem-veiculos'),
@@ -53,6 +58,7 @@ urlpatterns = patterns('',
                        url(r'^veiculo/', include(veiculo_patterns, namespace='veiculo')),
                        url(r'^perfil-veiculo/', include(perfil_veiculo_patterns, namespace='perfil-veiculo')),
                        url(r'^cronograma/', include(cronograma_veiculo_patterns, namespace='cronograma-veiculo')),
+                       url(r'^alocacao/', include(alocacao_patterns, namespace='alocacao-veiculo')),
                        url(r'^report/', include(report_patterns, namespace='report-veiculos')),
 
 )
