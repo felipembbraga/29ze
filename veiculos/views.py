@@ -11,13 +11,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from acesso.decorators import orgao_atualizar
 from acesso.models import OrgaoPublico
 from core.models import Modelo
+from eleicao.models import LocalVotacao, Equipe
 from filters import VeiculoFilter
 from forms import VeiculoForm, MotoristaForm
 from models import Veiculo, VeiculoSelecionado
 from utils.forms import NumPorPaginaForm
 from utils.Response import NotifyResponse
-from veiculos.forms import PerfilVeiculoForm, CronogramaForm
-from veiculos.models import PerfilVeiculo, CronogramaVeiculo
+from veiculos.forms import PerfilVeiculoForm, CronogramaForm, AlocacaoForm
+from veiculos.models import PerfilVeiculo, CronogramaVeiculo, Alocacao
 import datetime
 
 
@@ -323,6 +324,26 @@ def cronograma_excluir(request, id_cronograma):
     except:
         messages.error(request, u'Erro ao remover o cronograma')
         return redirect('perfil-veiculo:detalhar', perfil.pk)
+
+def alocacao_editar(request, id_equipe, id_perfil, id_local=None):
+    total_veiculos = Veiculo.objects.filter(eleicao = request.eleicao_atual).exclude(veiculo_selecionado=None).count()
+    equipes = Equipe.objects.filter(eleicao=request.eleicao_atual)
+    veiculos_alocados = 0
+    for e in equipes:
+        veiculos_alocados += e.total_veiculos_estimados()
+
+    equipe = get_object_or_404(Equipe, pk = int(id_equipe))
+    perfil_veiculo = get_object_or_404(PerfilVeiculo, pk = int(id_perfil))
+    local = id_local and get_object_or_404(LocalVotacao, pk=int(id_local)) or None
+    alocacao = get_object_or_404(Alocacao, perfil_veiculo = perfil_veiculo, equipe=equipe, local_votacao=local)
+    if request.method=='POST':
+        form = AlocacaoForm(request.POST, instance=alocacao, eleicao = request.eleicao_atual)
+        if form.is_valid():
+            form.save()
+            return redirect('equipe:detalhar', equipe.pk)
+    else:
+        form = AlocacaoForm(instance=alocacao, eleicao = request.eleicao_atual)
+    return render(request, 'veiculos/alocacao/form.html', locals())
 
 
 @permission_required('veiculos.inspection-veiculo', raise_exception=True)

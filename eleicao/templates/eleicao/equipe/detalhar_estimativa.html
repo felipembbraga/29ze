@@ -1,0 +1,74 @@
+{% load perfil_veiculo %}
+<div class="row">
+
+    <a href="{% url 'eleicao-report:equipe' equipe.pk %}" class="btn btn-primary botao pull-right">
+        Relatório
+    </a>
+</div>
+<h3>Quantidade de Veículos</h3>
+<table class="table table-bordered">
+    <tbody>
+    {% if equipe.get_perfis_equipe.exists %}
+        <tr>
+            <td class="row-title">VEÍCULOS PARA A EQUIPE</td>
+        </tr>
+        <tr>
+            <td>
+                <ul class="bs-list">
+                    {% for perfil in equipe.get_perfis_equipe %}
+                        <li>
+                            {{ perfil|upper }}<span class="badge pull-right">{% total_veiculos perfil equipe %}</span>
+
+                            <div class="btn-group btn-group-xs pull-right" style="margin-right:5px;">
+                                <a class="btn btn-primary btn-xs" href="{% url 'alocacao-veiculo:editar' equipe.pk perfil.pk %}" data-id="457">
+                                    <span class="glyphicon glyphicon-check"></span>
+                                    Editar
+                                </a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+    {% endif %}
+    {% if equipe.get_perfis_local.exists %}
+        <tr><td class="row-title">VEICULOS POR LOCAL</td></tr>
+
+        {% for local in equipe.local_equipe.all %}
+            {% if local.get_total_eleitores > 0 %}
+                <tr>
+                    <td>
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <a href="{{ local.get_absolute_url }}">{{ local.local.nome }}</a><br />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul class="bs-list">
+                                        {% for perfil in local.get_perfis_local %}
+                                            <li>
+                                                {{ perfil|upper }}<span class="badge pull-right">{% total_veiculos perfil equipe local %}</span>
+
+                                                <div class="btn-group btn-group-xs pull-right" style="margin-right:5px;">
+                                                    <a class="btn btn-primary btn-xs" href="{% url 'alocacao-veiculo:editar' equipe.pk perfil.pk local.pk %}" data-id="457">
+                                                        <span class="glyphicon glyphicon-check"></span>
+                                                        Editar
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    </tbody>
+</table>

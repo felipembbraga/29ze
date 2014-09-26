@@ -76,6 +76,9 @@ class LocalVotacao(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('local:detalhar', [str(self.id)])
+
+    def get_perfis_local(self):
+        return self.equipe.perfilveiculo_set.filter(perfil_equipe=False)
     
 class SecaoManager(models.Manager):
     
@@ -184,11 +187,17 @@ class Partido(models.Model):
     prefixo = models.IntegerField()
     coligacao = models.ForeignKey(Coligacao)
     eleicao = models.ForeignKey(Eleicao, related_name='partido_eleicao')
-    
+
+class EquipeManager(models.Manager):
+    def all(self):
+        qs = super(EquipeManager, self).all()
+        return qs.order_by('nome')
+
 class Equipe(models.Model):
     nome = models.CharField(max_length=100)
     eleicao = models.ForeignKey(Eleicao, related_name='equipe_eleicao')
-    automatico = models.BooleanField(default=False)
+    manual = models.BooleanField(u'Inserção manual de veículos', default=False)
+    objects = EquipeManager()
 
     
     class Meta:
@@ -237,7 +246,16 @@ class Equipe(models.Model):
             if isinstance(somatorio, int):
                 soma += somatorio
         return soma
-    
+
+    def get_perfis_equipe(self):
+        return self.perfilveiculo_set.filter(perfil_equipe=True)
+    def get_perfis_local(self):
+        return self.perfilveiculo_set.filter(perfil_equipe=False)
+
+    def total_veiculos_estimados(self):
+        total_agregado = self.alocacao_set.aggregate(soma_agregados=models.Sum('quantidade'))
+        return total_agregado.get('soma_agregados') and total_agregado.get('soma_agregados') or 0
+
 class Montagem(models.Model):
     local = models.OneToOneField(LocalVotacao, related_name='local_montagem')
     turno = models.CharField(max_length=1, choices=(('m', 'matutino'),('v', 'vespertino')))

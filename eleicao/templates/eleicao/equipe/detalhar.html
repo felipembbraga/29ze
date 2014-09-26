@@ -7,18 +7,22 @@
         <li class="active"><a href="#locais" role="tab" data-toggle="tab">Locais</a></li>
         {% comment %}<li><a href="#membros" role="tab" data-toggle="tab">Membros</a></li>{% endcomment %}
         <li><a href="#rotas" role="tab" data-toggle="tab">Rotas</a></li>
+        <li><a href="#estimativa" role="tab" data-toggle="tab">Quantidade de veículos</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active navbar" id="locais">
             {% include 'eleicao/equipe/detalhar_locais.html' %}
-	    </div>
-	    {% comment %}
+        </div>
+        {% comment %}
 	    <div class="tab-pane" id="membros">
 	    teste
 	    </div>
 	    {% endcomment %}
         <div class="tab-pane" id="rotas">
-        {% include 'eleicao/equipe/detalhar_rotas.html' %}
+            {% include 'eleicao/equipe/detalhar_rotas.html' %}
+        </div>
+        <div class="tab-pane" id="estimativa">
+            {% include 'eleicao/equipe/detalhar_estimativa.html' %}
         </div>
     </div>
 {% endblock %}
@@ -26,11 +30,11 @@
 {%block extrascripts %}
     <script src="{% static 'eleicao/js/equipe/detalhar.js' %}"></script>
     <script>
-    $(document).ready(function(){
-        if(location.hash.length > 0){
-            var selector = '#myTab a[href="' + location.hash + '"]';
-            $(selector).tab('show');
-        }
-    });
+        $(document).ready(function(){
+            if(location.hash.length > 0){
+                var selector = '#myTab a[href="' + location.hash + '"]';
+                $(selector).tab('show');
+            }
+        });
     </script>
 {% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+ {% load static from staticfiles %}
+{% block container %}
+       <div class="row"><h3>{{ perfil_veiculo.nome|upper }}{% if local %} - {% endif %}{% firstof local '' %} ({{ equipe.nome|upper }})</h3></div>
+   <form role="form" method="post" class="form-horizontal"> {% csrf_token %}
+    {% for field in form %}
+        <div class="row"">
+        {% if field.is_hidden %}
+            {{ field }}
+        {% else %}
+        <div class="form-group col-md-6{% if field.errors %} has-error{% endif %}">
+             {% if field.errors %}<label class="control-label" for="{{field.id_for_label}}">{{field.errors.as_text}}</label><br />{% endif %}
+            <label for="{{field.id_for_label}}">{{ field.label }}</label>
+                {{ field }}
+            <p class="help-block">{{ field.help_text }}</p>
+        </div>
+        {% endif %}
+        </div>
+
+    {% endfor %}
+   <div class="row">
+       <div class="col-md-6">
+           <strong>Total de Veiculos: </strong> {{ total_veiculos }}<br />
+           <strong>Veículos já estimados: </strong> <span id="veiculos_alocados">{{ veiculos_alocados }}</span><br />
+           <strong>Total de Veiculos na Equipe: </strong> <span id="veiculos_alocados_equipe">{{ equipe.total_veiculos_estimados }}</span><br />
+
+       </div>
+   </div>
+    <div class="divisor"></div>
+    <p class="botao-grupo">
+    <button type="submit" class="btn btn-primary botao">{% if form.instance.pk %}Editar{% else %}Cadastrar{% endif %}</button>
+    <button type="button" class="btn btn-default botao" onclick="window.location = '{% url 'equipe:detalhar' equipe.pk %}#estimativa';">Cancelar</button>
+    </p>
+    </form>
+
+{% endblock %}
+
+{%block extrascripts %}
+    <script src="{% static 'zona_eleitoral/js/misc/jquery_meio_mask.js' %}"></script>
+    <script src="{% static 'zona_eleitoral/js/misc/glDatePicker/glDatePicker.js' %}"></script>
+    <script>
+    $(document).ready(function(){
+        var total = {{ veiculos_alocados }} - {{ alocacao.quantidade }};
+        console.log(total);
+        $('#id_quantidade').change(function(){
+            $('#veiculos_alocados').text(total + parseInt($(this).val()));
+        });
+        $('#id_quantidade').trigger('change')
+    });
+
+    </script>
+{% endblock %}

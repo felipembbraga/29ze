@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
-from django.db import models
+import datetime
 
-# Create your models here.
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 from acesso.models import OrgaoPublico
 from eleicao.models import Eleicao, LocalVotacao, Equipe
 from core.models import Marca, Modelo, Pessoa, Local
-import datetime
+
 
 tipo_veiculo_choices = list(enumerate(('Passeio', 'Caminhonete', u'Caminhão', u'Micro-ônibus', 'Moto' )))
 estado_choices = list(enumerate((u'Ótimo', 'Bom', 'Regular', u'Sem condições de uso')))
@@ -90,7 +93,7 @@ class Motorista(Pessoa):
 
 class PerfilVeiculo(models.Model):
     nome = models.CharField(max_length=50)
-    perfil_equipe = models.BooleanField(default=False)
+    perfil_equipe = models.BooleanField(u'É perfil para equipe?', default=False)
     equipes = models.ManyToManyField(Equipe)
 
     def __unicode__(self):
@@ -100,7 +103,7 @@ class PerfilVeiculo(models.Model):
 class CronogramaVeiculo(models.Model):
     perfil = models.ForeignKey(PerfilVeiculo, related_name="cronograma_perfil")
     local = models.ForeignKey(Local, null=True, blank=True, verbose_name=u'Local de Apresentação')
-    dt_apresentacao = models.DateTimeField(u'Data da apresentação')
+    dt_apresentacao = models.DateTimeField(u'Data da Apresentação')
     eleicao = models.ForeignKey(Eleicao)
 
 
@@ -110,3 +113,18 @@ class Alocacao(models.Model):
     local_votacao = models.ForeignKey(LocalVotacao, null=True, blank=True)
     quantidade = models.PositiveIntegerField()
 
+    class Meta:
+        unique_together=('perfil_veiculo', 'equipe', 'local_votacao')
+
+
+@receiver(post_save, sender=PerfilVeiculo)
+def eleicao_post_save(signal, instance, sender, **kwargs):
+
+    for equipe in instance.equipes.all():
+        if instance.perfil_equipe:
+            if not Alocacao.objects.filter(perfil_veiculo=instance, equipe=equipe, local_votacao=None).exists():
+                Alocacao.objects.create(perfil_veiculo=instance, equipe=equipe, local_votacao=None, quantidade=0)
+            continue
+        for local in equipe.local_equipe.all():
+            if not Alocacao.objects.filter(perfil_veiculo=instance, equipe=equipe, local_votacao=local).exists():
+                Alocacao.objects.create(perfil_veiculo=instance, equipe=equipe, local_votacao=local, quantidade=0)
