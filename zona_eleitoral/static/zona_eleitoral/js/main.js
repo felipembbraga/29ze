@@ -55,7 +55,11 @@ $(document).ready(function(){
     $('.time').mask('99:99');
 	$('.telefone').mask('(99)9999-9999');
 	$('.tooltip-iniciar').tooltip({html:true,placement:'top'});
-	
+    if($('.breadcrumb li:last').children('a').length > 0) {
+        var texto = $('.breadcrumb li:last').children('a').text();
+        $('.breadcrumb li:last').children('a').remove();
+        $('.breadcrumb li:last').text(texto);
+    }
 });
 
 function abrirModal(url) {
