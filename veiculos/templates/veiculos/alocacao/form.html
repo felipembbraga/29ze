@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static from staticfiles %}
+{% load extra_tags %}
 {% block container %}
     <div class="row"><h3>{{ perfil_veiculo.nome|upper }}{% if local %} - {% endif %}{% firstof local '' %} ({{ equipe.nome|upper }})</h3></div>
     <form role="form" method="post" class="form-horizontal"> {% csrf_token %}
@@ -22,7 +23,8 @@
             <div class="col-md-6">
                 <strong>Total de Veiculos: </strong> {{ total_veiculos }}<br />
                 <strong>Veículos já estimados: </strong> <span id="veiculos_alocados">{{ veiculos_alocados }}</span><br />
-                <strong>Total de Veiculos na Equipe: </strong> <span id="veiculos_alocados_equipe">{{ equipe.total_veiculos_estimados }}</span><br />
+                <strong>Veículos restantes: </strong> <span id="veiculos_restantes">{{ total_veiculos|diferenca:veiculos_alocados }}</span><br />
+                <strong>Total de Veiculos estimados na Equipe: </strong> <span id="veiculos_alocados_equipe">{{ equipe.total_veiculos_estimados }}</span><br />
 
             </div>
         </div>
@@ -41,11 +43,18 @@
     <script>
         $(document).ready(function(){
             var total = {{ veiculos_alocados }} - {{ alocacao.quantidade }};
-            console.log(total);
+
+
             $('#id_quantidade').change(function(){
-                $('#veiculos_alocados').text(total + parseInt($(this).val()));
+                var valor = $(this).val()?parseInt($(this).val()):0;
+                $('#veiculos_alocados').text(total + valor);
+                var total_atual = parseInt($('#veiculos_alocados').text());
+                $('#veiculos_restantes').text({{ total_veiculos }} - total_atual);
             });
-            $('#id_quantidade').trigger('change')
+            $('#id_quantidade').keyup(function(event){
+                $('#id_quantidade').trigger('change');
+            });
+            $('#id_quantidade').trigger('change');
         });
 
     </script>
