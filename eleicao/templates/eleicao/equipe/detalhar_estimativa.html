@@ -17,7 +17,7 @@
                 <ul class="bs-list">
                     {% for perfil in equipe.get_perfis_equipe %}
                         <li>
-                            {{ perfil|upper }}<span class="badge pull-right">{% total_veiculos perfil equipe %}</span>
+                            {{ perfil|upper }} <span class="badge">{% total_veiculos perfil equipe %}</span>
 
                             <div class="btn-group btn-group-xs pull-right" style="margin-right:5px;">
                                 <a class="btn btn-primary btn-xs" href="{% url 'alocacao-veiculo:editar' equipe.pk perfil.pk %}" data-id="457">
@@ -42,7 +42,14 @@
                             <tbody>
                             <tr>
                                 <td>
-                                    <a href="{{ local.get_absolute_url }}">{{ local.local.nome }}</a><br />
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <a href="{{ local.get_absolute_url }}">{{ local.local.nome }}</a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Quantidade de seções: </strong>{{ local.get_count_secao_agregadas }}
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
@@ -50,7 +57,7 @@
                                     <ul class="bs-list">
                                         {% for perfil in local.get_perfis_local %}
                                             <li>
-                                                {{ perfil|upper }}<span class="badge pull-right">{% total_veiculos perfil equipe local %}</span>
+                                                {{ perfil|upper }} <span class="badge">{% total_veiculos perfil equipe local %}</span>
 
                                                 <div class="btn-group btn-group-xs pull-right" style="margin-right:5px;">
                                                     <a class="btn btn-primary btn-xs" href="{% url 'alocacao-veiculo:editar' equipe.pk perfil.pk local.pk %}" data-id="457">
