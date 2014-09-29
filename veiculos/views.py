@@ -329,7 +329,7 @@ def alocacao_editar(request, id_equipe, id_perfil, id_local=None):
         form = AlocacaoForm(request.POST, instance=alocacao, eleicao = request.eleicao_atual)
         if form.is_valid():
             form.save()
-            return redirect('equipe:detalhar', equipe.pk)
+            return redirect('equipe:detalhar-estimativa', equipe.pk)
     else:
         form = AlocacaoForm(instance=alocacao, eleicao = request.eleicao_atual)
     return render(request, 'veiculos/alocacao/form.html', locals())
