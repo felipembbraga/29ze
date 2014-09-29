@@ -1,6 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'eleicao/local_votacao/base.html' %}
 {% load static from staticfiles %}
-
+{% block extrabreadcrumb %}
+    {{ block.super }}
+    <li>{{ local.local.nome}}</li>
+{% endblock %}
 {% block container %}
 
 	<p>

@@ -1,6 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'eleicao/equipe/base.html' %}
 {% load static from staticfiles %}
-
+{% block extrabreadcrumb %}
+    {{ block.super }}
+    <li>{{ equipe.nome|upper }}</li>
+{% endblock %}
 
 {% block container %}
     <ul class="nav nav-pills" role="tablist" id="myTab">

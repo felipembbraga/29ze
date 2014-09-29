@@ -1,5 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'eleicao/equipe/base.html' %}
  {% load static from staticfiles %}
+
 {% block container %}
    <form role="form" method="post" class="form-horizontal col-md-4"> {% csrf_token %}
     {% for field in form %}

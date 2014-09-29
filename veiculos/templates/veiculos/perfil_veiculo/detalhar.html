@@ -1,4 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'veiculos/perfil_veiculo/base.html' %}
+{% load static from staticfiles %}
+{% block extrabreadcrumb %}
+    {{ block.super }}
+    <li>{{ perfil.nome|upper }}</li>
+{% endblock %}
 {% block container %}
     <div class="row" style="margin-bottom: 10px">
 
@@ -35,7 +40,7 @@
                 <tbody>
                 {% for equipe in perfil.equipes.all %}
                     <tr>
-                        <td><a href="{{ equipe.get_absolute_url }}">{{ equipe.nome }}</a></td>
+                        <td><a href="{{ equipe.get_absolute_url }}">{{ equipe.nome|upper }}</a></td>
                         <td>{{ equipe.local_equipe.count }}</td>
                         <td>{{ equipe.get_total_secoes }}</td>
                     </tr>
