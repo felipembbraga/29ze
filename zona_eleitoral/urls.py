@@ -16,4 +16,5 @@ urlpatterns = patterns('',
     url(r'^custom_admin/', include(custom_admin.site.urls)),
     url(r'^eleicao/', include('eleicao.urls', app_name='eleicao')),
     url(r'^veiculos/', include('veiculos.urls',app_name='veiculos')),
+    url(r'^teste/(\w+)/', 'utils.pdf_report.generate_pdf')
 )

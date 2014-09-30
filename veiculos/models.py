@@ -134,7 +134,7 @@ class Alocacao(models.Model):
 
 
 @receiver(post_save, sender=PerfilVeiculo)
-def eleicao_post_save(signal, instance, sender, **kwargs):
+def equipe_post_save(signal, instance, sender, **kwargs):
 
     for equipe in instance.equipes.all():
         if instance.perfil_equipe:

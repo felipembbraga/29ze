@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+{% load static from staticfiles %}
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+    <title></title>
+    <style type="text/css">
+{#        #cabecalho{#}
+{#            border: none;#}
+{#        }#}
+        @page {
+            size: a4 portrait;
+            @frame header {
+                -pdf-frame-content: cabecalho;
+                left: 50pt;
+                width: 500pt;
+                top: 20pt;
+                height: 80pt;
+                -pdf-frame-border: 0;
+                border:0;
+            }
+            @frame content {
+                left: 50pt;
+                width: 500pt;
+                top: 120pt;
+                height: 632pt;
+                -pdf-frame-border: 0;
+                border:0;
+            }
+            @frame footer {
+                -pdf-frame-content: rodape;
+                left: 50pt;
+                width: 500pt;
+                top: 772pt;
+                height: 20pt;
+                -pdf-frame-border: 0;
+                border:0;
+            }
+        }
+    </style>
+    {% block extrastyle %}{% endblock %}
+</head>
+<body>
+
+    <div id="cabecalho">
+        {% block cabecalho %}
+        <div align="center">
+            <img src="{% static 'zona_eleitoral/img/brasao2.png' %}" width="50" height="50">
+        </div>
+        <div align="center">
+            <small><strong>
+                PODER JUDICIÁRIO
+            </strong></small>
+        </div>
+        <div align="center">
+            <small><strong>
+                TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
+            </strong></small>
+        </div>
+        <div align="center">
+            <small><strong>
+                29ª ZONA ELEITORAL - PALMAS - TO
+            </strong></small>
+        </div>
+        {% endblock %}
+    </div>
+    <div id="rodape">
+        {% block rodape %}
+            <div style="float:right;">
+                (c) - Página <pdf:pagenumber /> of <pdf:pagecount />
+            </div>
+        {% endblock %}
+    </div>
+    <div id="content">
+    {% block content %}
+    {% endblock %}
+    </div>
+
+
+
+</body>
+</html>
