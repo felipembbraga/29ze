@@ -102,6 +102,8 @@ messages.ERROR: 'danger'}
 
 STATIC_URL = '/static/'
 
+MEDIA_URL='/media/'
+
 MEDIA_ROOT = LOCAL('media')
 
 STATIC_ROOT = LOCAL('static')
