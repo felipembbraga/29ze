@@ -93,7 +93,12 @@
             <h1>{% block titulo %}{{ titulo|upper }} {% endblock %}</h1>
         </div>
     {% endblock %}
-
+    {% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'home' %}">Home</a></li>
+        {% block extrabreadcrumb %}{% endblock %}
+    </ol>
+    {% endblock %}
     {% block container %}{% endblock %}
 </div>
 {% block footer %}{% endblock %}

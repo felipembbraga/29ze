@@ -98,3 +98,11 @@ def relatorio_equipe(request, id_equipe):
 def relatorio_equipe_rotas(request, id_equipe):
     equipe = get_object_or_404(Equipe, pk=int(id_equipe))
     return render(request, 'eleicao/reports/equipe_rotas.html', locals())
+
+def relatorio_equipe_estimativa(request, id_equipe):
+    equipe = get_object_or_404(Equipe, pk=int(id_equipe))
+    return render(request, 'eleicao/reports/equipe_estimativa.html', locals())
+
+def relatorio_estimativa_veiculos(request):
+    equipes = Equipe.objects.filter(eleicao = request.eleicao_atual).order_by('nome')
+    return render(request, 'eleicao/reports/estimativa.html', locals())

@@ -29,6 +29,7 @@ equipe_patterns = [
     url(r'^editar/(\d+)/$', equipe_editar, name='editar'),
     url(r'^excluir/(\d+)/$', equipe_excluir, name='excluir'),
     url(r'^detalhar/(\d+)/$', equipe_detalhar, name='detalhar'),
+    url(r'^detalhar/(\d+)/\#estimativa$', equipe_detalhar, name='detalhar-estimativa'),
     url(r'^montar-rota/(\d+)/$', equipe_montar_rotas, name='montar-rota'),
     url(r'^rota/salvar/(\d+)/$', equipe_salvar_rotas, name='salvar-rota'),
 ]
@@ -43,6 +44,8 @@ reports_patterns = [
     url(r'^secao-ordenado-xls/$', relatorio_secao_ordenado_xls, name='secao-ordenado-xls'),
     url(r'^equipe/(\d+)/$', relatorio_equipe, name='equipe'),
     url(r'^equipe-rotas/(\d+)/$', relatorio_equipe_rotas, name='equipe-rotas'),
+    url(r'^equipe-estimativa/(\d+)/$', relatorio_equipe_estimativa, name='equipe-estimativa'),
+    url(r'^estimativa-veiculos/$', relatorio_estimativa_veiculos, name='estimativa-veiculos'),
 ]
 
 

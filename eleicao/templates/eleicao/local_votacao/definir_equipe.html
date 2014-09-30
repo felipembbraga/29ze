@@ -1,5 +1,10 @@
-{% extends 'base.html' %}
- {% load static from staticfiles %}
+{% extends 'eleicao/local_votacao/base.html' %}
+{% load static from staticfiles %}
+{% block extrabreadcrumb %}
+    {{ block.super }}
+    <li><a href="{% url 'local:detalhar' id_local %}">{{ local.local.nome}}</a></li>
+    <li>Definir Equipe</li>
+{% endblock %}
 {% block container %}
    <form role="form" method="post" class="form-horizontal col-md-4"> {% csrf_token %}
         <div class="form-group{% if field.errors %} has-error{% endif %}">

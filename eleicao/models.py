@@ -37,6 +37,12 @@ class Eleicao(models.Model):
         return count
     def get_total_eleitores(self):
         return self.secao_set.aggregate(models.Sum('num_eleitores')).get('num_eleitores__sum')
+
+    def save(self, *args, **kwargs):
+        if self.nome:
+            self.nome=self.nome.upper()
+        super(Eleicao, self).save(*args, **kwargs)
+
         
 
 @receiver(post_save, sender=Eleicao)
@@ -255,6 +261,11 @@ class Equipe(models.Model):
     def total_veiculos_estimados(self):
         total_agregado = self.alocacao_set.aggregate(soma_agregados=models.Sum('quantidade'))
         return total_agregado.get('soma_agregados') and total_agregado.get('soma_agregados') or 0
+
+    def save(self, *args, **kwargs):
+        if self.nome:
+            self.nome=self.nome.upper()
+        super(Equipe, self).save(*args, **kwargs)
 
 class Montagem(models.Model):
     local = models.OneToOneField(LocalVotacao, related_name='local_montagem')

@@ -1,0 +1,65 @@
+{% extends 'base_relatorio.html' %}
+{% load perfil_veiculo %}
+{% block report %}
+    <div class="page-header">
+        <h2>Quantidade de Veículos - {{ equipe }}</h2>
+    </div>
+    <table class="table table-bordered">
+        <tbody>
+        {% if equipe.get_perfis_equipe.exists %}
+            <tr>
+                <td class="row-title" colspan="2">VEÍCULOS PARA A EQUIPE</td>
+            </tr>
+            {% for perfil in equipe.get_perfis_equipe %}
+                <tr>
+                    <td width="90%">
+                        {{ perfil|upper }}
+
+                    </td>
+                    <td width="10%">{% total_veiculos perfil equipe %}</td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+    <table class="table table-bordered">
+        <tbody>
+        {% if equipe.get_perfis_local.exists %}
+            <tr><td class="row-title" colspan="2">VEICULOS POR LOCAL</td></tr>
+
+            {% for local in equipe.local_equipe.all %}
+                {% if local.get_total_eleitores > 0 %}
+                    <tr>
+                        <td colspan="2">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td colspan="2">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                {{ local.local.nome }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong>Quantidade de seções: </strong>{{ local.get_count_secao_agregadas }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% for perfil in local.get_perfis_local %}
+                                    <tr>
+                                        <td width="90%">
+                                            {{ perfil|upper }}
+                                        </td>
+                                        <td width="10%">{% total_veiculos perfil equipe local %}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+{% endblock %}
