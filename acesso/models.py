@@ -43,6 +43,11 @@ class OrgaoPublico(User):
     
     def __unicode__(self):
         return self.nome_secretaria
+
+    def save(self, *args, **kwargs):
+        if self.nome_secretaria:
+            self.nome_secretaria=self.nome_secretaria.upper()
+        super(OrgaoPublico, self).save(*args, **kwargs)
     
 @receiver(post_save, sender=OrgaoPublico)
 def orgao_publico_post_save(signal, instance, sender, **kwargs):

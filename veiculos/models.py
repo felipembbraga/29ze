@@ -67,6 +67,18 @@ class Veiculo(models.Model):
             return html % {'veiculo': unicode(self), 'observacao': self.observacao}
         return self.__unicode__()
 
+    def save(self, *args, **kwargs):
+        if hasattr(self, 'placa'):
+            placa = getattr(self, 'placa')
+            self.placa = placa.upper()
+        if hasattr(self, 'nome_motorista'):
+            nome = getattr(self, 'nome_motorista')
+            self.nome_motorista = nome.upper()
+        if hasattr(self, 'endereco'):
+            endereco = getattr(self, 'endereco')
+            self.endereco = endereco.upper()
+        super(Veiculo, self).save(*args, **kwargs)
+
 
 class VeiculoSelecionado(models.Model):
     veiculo = models.OneToOneField(Veiculo, related_name='veiculo_selecionado')
@@ -94,6 +106,10 @@ class PerfilVeiculo(models.Model):
     def __unicode__(self):
         return unicode(self.nome)
 
+    def save(self, *args, **kwargs):
+        if self.nome:
+            self.nome=self.nome.upper()
+        super(PerfilVeiculo, self).save(*args, **kwargs)
 
 class CronogramaVeiculo(models.Model):
     perfil = models.ForeignKey(PerfilVeiculo, related_name="cronograma_perfil")
