@@ -44,6 +44,8 @@ reports_patterns = [
     url(r'^secao-ordenado-xls/$', relatorio_secao_ordenado_xls, name='secao-ordenado-xls'),
     url(r'^equipe/(\d+)/$', relatorio_equipe, name='equipe'),
     url(r'^equipe-rotas/(\d+)/$', relatorio_equipe_rotas, name='equipe-rotas'),
+    url(r'^equipe-estimativa/(\d+)/$', relatorio_equipe_estimativa, name='equipe-estimativa'),
+    url(r'^estimativa-veiculos/$', relatorio_estimativa_veiculos, name='estimativa-veiculos'),
 ]
 
 

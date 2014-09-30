@@ -1,113 +1,121 @@
 {% extends 'base.html' %}
 {% load static from staticfiles %}
 {% block extrastyle %}
-<style>
-body {
-    padding-top: 30px;
-}
-
-.report {
-    padding-top:15px;
-}
-
-
-@media print {
-
-    body {
-        padding-top: 10px;
-        font-size: 12px;
-    }
-    
-    @page {
-       @bottom-left {
-            content: counter(page) " de " counter(pages);
+    <style>
+        body {
+            padding-top: 30px;
         }
-        
-        #pageFooter {
-	        float: right;
-	        display: table-footer-group;
-	    }
-	    
-	    #pageFooter:after {
-	        counter-increment: page;
-	        content: counter(page);
-	    }
-	    
-    }
 
-    .botoes, .no-print {
-        display: none;
-    }    
-    
-    .table > tbody > tr > td{
-        padding: 3px;
-    }
+        .report {
+            padding-top:15px;
+        }
 
-    .tabela-impressao, .tabela-impressao tbody > tr, .tabela-impressao tbody tr > td, .tabela-impressao thead tr > th{
-        border-style: solid;
-        border-color: #BBB;
-        border-width: 2px;
-    }
-    
-    .quebra-pagina {
-        page-break-after: always;
-    }
 
-    .table-bordered, .pagina {
-       page-break-inside: avoid;
-       
+        @media print {
 
-    }
-}
-</style>
+            body {
+                padding-top: 10px;
+                font-size: 12px;
+                -webkit-print-color-adjust: exact;
+            }
+
+            @page {
+                @bottom-left {
+                    content: counter(page) " de " counter(pages);
+                }
+
+                #pageFooter {
+                    float: right;
+                    display: table-footer-group;
+                }
+
+                #pageFooter:after {
+                    counter-increment: page;
+                    content: counter(page);
+                }
+
+            }
+
+            .botoes, .no-print {
+                display: none;
+            }
+
+            .table > tbody > tr > td{
+                padding: 3px;
+            }
+
+            .tabela-impressao, .tabela-impressao tbody > tr, .tabela-impressao tbody tr > td, .tabela-impressao thead tr > th{
+                border-style: solid;
+                border-color: #BBB;
+                border-width: 2px;
+            }
+
+            .quebra-pagina {
+                page-break-after: always;
+            }
+
+            .table-bordered, .pagina {
+                page-break-inside: avoid;
+
+
+            }
+
+            .row-title {
+                background-color: #F9F9F9 !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
 {% endblock %}
 {% block navbar %}
 {% endblock %}
 {% block cabecalho %}
-        <div id="cabecalho" class="center-block">
-            <div align="center">
-                <img src="{% static 'zona_eleitoral/img/brasao2.png' %}" width="50" height="50">
-            </div>
-            <div align="center">
-                <small><strong>
-                    PODER JUDICIÁRIO
-                </strong></small>
-            </div>
-            <div align="center">
-                <small><strong>
-                    TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
-                </strong></small>
-            </div>
-            <div align="center">
-                <small><strong>
-                    29ª ZONA ELEITORAL - PALMAS - TO
-                </strong></small>
-            </div>
+    <div id="cabecalho" class="center-block">
+        <div align="center">
+            <img src="{% static 'zona_eleitoral/img/brasao2.png' %}" width="50" height="50">
         </div>
-        {% endblock %}
+        <div align="center">
+            <small><strong>
+                PODER JUDICIÁRIO
+            </strong></small>
+        </div>
+        <div align="center">
+            <small><strong>
+                TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
+            </strong></small>
+        </div>
+        <div align="center">
+            <small><strong>
+                29ª ZONA ELEITORAL - PALMAS - TO
+            </strong></small>
+        </div>
+    </div>
+{% endblock %}
 {% block div_titulo %}
 {% endblock %}
-{% block container %}
-<div class="row no-print">
-    <div class="col-md-3">
-	    <div class="btn-group">
-	    {% block botoes %}
-		    <button type="button" onclick="history.back()" class="btn btn-default btn-xs">Voltar</button>
-		    <button type="button" onclick="window.print()" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-print"></span>Imprimir</button>
-	    {% endblock %}
-	    </div>
-    </div>
-    <div class="col-md-5">
-        {% block dropdown %}{% endblock %}
-    </div>
-</div>
-
-
-<div class="report">
-{% block report %}
+{% block breadcrumb %}
 {% endblock %}
-</div>
-<div id="pageFooter"></div>
+{% block container %}
+    <div class="row no-print">
+        <div class="col-md-3">
+            <div class="btn-group">
+                {% block botoes %}
+                    <button type="button" onclick="history.back()" class="btn btn-default btn-xs">Voltar</button>
+                    <button type="button" onclick="window.print()" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-print"></span>Imprimir</button>
+                {% endblock %}
+            </div>
+        </div>
+        <div class="col-md-5">
+            {% block dropdown %}{% endblock %}
+        </div>
+    </div>
+
+
+    <div class="report">
+        {% block report %}
+        {% endblock %}
+    </div>
+    <div id="pageFooter"></div>
 {% endblock %}
 
 {% block extrascripts %}{% endblock %}
