@@ -96,7 +96,7 @@ class VeiculoSelecionado(models.Model):
 
 class Motorista(models.Model):
     pessoa = models.ForeignKey('core.Pessoa')
-    veiculo = models.ForeignKey(Veiculo, related_name='motorista_veiculo')
+    veiculo = models.ForeignKey(Veiculo, related_name='motorista_veiculo', null=True)
     eleicao = models.ForeignKey(Eleicao, related_name='motorista_eleicao')
 
     class Meta:
@@ -135,7 +135,7 @@ class Alocacao(models.Model):
     quantidade = models.PositiveIntegerField()
 
     class Meta:
-        unique_together=('perfil_veiculo', 'equipe', 'local_votacao')
+        unique_together = ('perfil_veiculo', 'equipe', 'local_votacao')
 
 
 class VeiculoAlocado(models.Model):
@@ -144,19 +144,19 @@ class VeiculoAlocado(models.Model):
     equipe = models.ForeignKey(Equipe)
     local_votacao = models.ForeignKey(LocalVotacao, null=True, blank=True)
 
+
 @receiver(post_save, sender=PerfilVeiculo)
 def equipe_post_save(signal, instance, sender, **kwargs):
 
     for equipe in instance.equipes.all():
         if instance.perfil_equipe:
             if not Alocacao.objects.filter(perfil_veiculo=instance, equipe=equipe, local_votacao=None).exists():
-                alocacao = Alocacao.objects.create(perfil_veiculo=instance, equipe=equipe, local_votacao=None, quantidade=0)
-                alocacao.save()
+                Alocacao.objects.create(perfil_veiculo=instance, equipe=equipe, local_votacao=None, quantidade=0)
             continue
         for local in equipe.local_equipe.all():
             if not Alocacao.objects.filter(perfil_veiculo=instance, equipe=equipe, local_votacao=local).exists():
-                alocacao = Alocacao.objects.create(perfil_veiculo=instance, equipe=equipe, local_votacao=local, quantidade=0)
-                alocacao.save()
+                Alocacao.objects.create(perfil_veiculo=instance, equipe=equipe, local_votacao=local, quantidade=0)
+
 
 def equipe_m2m_add(sender, instance, action, *args, **kwargs):
     for equipe in instance.equipes.all():
