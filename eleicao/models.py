@@ -267,6 +267,19 @@ class Equipe(models.Model):
             self.nome=self.nome.upper()
         super(Equipe, self).save(*args, **kwargs)
 
+class EquipesAlocacao(models.Model):
+    equipe = models.ForeignKey(Equipe, primary_key=True)
+    eleicao = models.ForeignKey(Eleicao)
+    total_estimativa = models.IntegerField()
+    estimativa_equipe = models.IntegerField()
+    estimativa_local = models.IntegerField()
+    veiculos_alocados = models.IntegerField()
+    veiculos_alocados_equipe = models.IntegerField()
+    veiculos_alocados_local = models.IntegerField()
+    class Meta:
+        managed = False
+        db_table=u'vw_equipes_alocacao'
+
 class Montagem(models.Model):
     local = models.OneToOneField(LocalVotacao, related_name='local_montagem')
     turno = models.CharField(max_length=1, choices=(('m', 'matutino'),('v', 'vespertino')))
@@ -280,4 +293,3 @@ class Funcionario(Pessoa):
     equipe = models.ForeignKey(Equipe, related_name='funcionario_equipe')
     cargo = models.ForeignKey(Cargo, related_name='funcionario_cargo')
     eleicao = models.ForeignKey('Eleicao', related_name='funcionario_eleicao')
-    
