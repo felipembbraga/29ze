@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from utils import custom_admin
-from views import home, index
+from views import home, index, teste_odt
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -16,5 +16,5 @@ urlpatterns = patterns('',
     url(r'^custom_admin/', include(custom_admin.site.urls)),
     url(r'^eleicao/', include('eleicao.urls', app_name='eleicao')),
     url(r'^veiculos/', include('veiculos.urls',app_name='veiculos')),
-    url(r'^teste/(\w+)/', 'utils.pdf_report.generate_pdf')
+    url(r'^teste/', teste_odt)
 )
