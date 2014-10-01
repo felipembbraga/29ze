@@ -6,8 +6,15 @@ MY_APPS = (
     'acesso',
     'veiculos',
     'django_extensions',
-    'south'
+    'south',
+    'webodt'
 )
+
+WEBODT_CONVERTER = 'webodt.converters.abiword.AbiwordODFConverter'
+
+WEBODT_TEMPLATE_PATH = LOCAL('odt_templates')
+WEBODT_GOOGLEDOCS_EMAIL = 'usuariozon029@gmail.com'
+WEBODT_GOOGLEDOCS_PASSWORD = 'Zon@0029'
 
 INSTALLED_APPS = INSTALLED_APPS + MY_APPS
 
