@@ -7,7 +7,7 @@ from django.dispatch import receiver
 
 from acesso.models import OrgaoPublico
 from eleicao.models import Eleicao, LocalVotacao, Equipe
-from core.models import Marca, Modelo, Pessoa, Local
+from core.models import Marca, Modelo, Local
 
 
 tipo_veiculo_choices = list(enumerate(('Passeio', 'Caminhonete', u'Caminhão', u'Micro-ônibus', 'Moto' )))
@@ -94,10 +94,15 @@ class VeiculoSelecionado(models.Model):
         return unicode(self.veiculo)
 
 
-class Motorista(Pessoa):
-    tel_residencial = models.CharField('Telefone Residencial', max_length=14, null=True, blank=True)
-    veiculo = models.ForeignKey(VeiculoSelecionado, related_name='motorista_veiculo')
-    inativo = models.BooleanField(default=False)
+class Motorista(models.Model):
+    pessoa = models.ForeignKey('core.Pessoa')
+    veiculo = models.ForeignKey(Veiculo, related_name='motorista_veiculo')
+    eleicao = models.ForeignKey(Eleicao, related_name='motorista_eleicao')
+
+    class Meta:
+        verbose_name = u'Motorista'
+        verbose_name_plural = u'Motoristas'
+        unique_together = ('pessoa', 'eleicao')
 
     def __unicode__(self):
         return unicode(self.nome)
