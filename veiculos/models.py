@@ -2,7 +2,7 @@
 import datetime
 
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 
 from acesso.models import OrgaoPublico
@@ -138,14 +138,36 @@ class Alocacao(models.Model):
         unique_together=('perfil_veiculo', 'equipe', 'local_votacao')
 
 
+class VeiculoAlocado(models.Model):
+    veiculo = models.ForeignKey(Veiculo)
+    perfil = models.ForeignKey(PerfilVeiculo)
+    equipe = models.ForeignKey(Equipe)
+    local_votacao = models.ForeignKey(LocalVotacao, null=True, blank=True)
+
 @receiver(post_save, sender=PerfilVeiculo)
 def equipe_post_save(signal, instance, sender, **kwargs):
 
     for equipe in instance.equipes.all():
         if instance.perfil_equipe:
             if not Alocacao.objects.filter(perfil_veiculo=instance, equipe=equipe, local_votacao=None).exists():
-                Alocacao.objects.create(perfil_veiculo=instance, equipe=equipe, local_votacao=None, quantidade=0)
+                alocacao = Alocacao.objects.create(perfil_veiculo=instance, equipe=equipe, local_votacao=None, quantidade=0)
+                alocacao.save()
             continue
         for local in equipe.local_equipe.all():
             if not Alocacao.objects.filter(perfil_veiculo=instance, equipe=equipe, local_votacao=local).exists():
-                Alocacao.objects.create(perfil_veiculo=instance, equipe=equipe, local_votacao=local, quantidade=0)
+                alocacao = Alocacao.objects.create(perfil_veiculo=instance, equipe=equipe, local_votacao=local, quantidade=0)
+                alocacao.save()
+
+def equipe_m2m_add(sender, instance, action, *args, **kwargs):
+    for equipe in instance.equipes.all():
+        if instance.perfil_equipe:
+            if not Alocacao.objects.filter(perfil_veiculo=instance, equipe=equipe, local_votacao=None).exists():
+                alocacao = Alocacao.objects.create(perfil_veiculo=instance, equipe=equipe, local_votacao=None, quantidade=0)
+                alocacao.save()
+            continue
+        for local in equipe.local_equipe.all():
+            if not Alocacao.objects.filter(perfil_veiculo=instance, equipe=equipe, local_votacao=local).exists():
+                alocacao = Alocacao.objects.create(perfil_veiculo=instance, equipe=equipe, local_votacao=local, quantidade=0)
+                alocacao.save()
+
+m2m_changed.connect(equipe_m2m_add, sender=PerfilVeiculo.equipes.through)
