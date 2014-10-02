@@ -6,10 +6,7 @@
     <li><a href="{% url 'veiculo:vistoria:listar' %}">Veículos Vistoriados</a></li>
 {% endblock %}
 
-{% block extrastyle %}
-    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
-{% endblock %}
- 
+
 {% block container %}
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -19,16 +16,15 @@
             <form id="form-filtro" method="GET">
                 <div class="row">
                     <div class="col-md-4">
-                        <strong>Total de veículos requisitados{% if id_orgao %} da secretaria{%endif%}: </strong>{{ total_requisitados }} <br />
-                        <strong>Total de veículos listados: </strong>{{ filtro.qs.count }} <br />
+                        <strong>Total de veículos alocados: </strong>{{ veiculos.object_list.count }} <br />
                         <strong>Total de veículos com motorista: </strong>{{ total_com_motorista }} <br />
                         <strong>Total de veículos sem motorista: </strong>{{ total_sem_motorista }} <br />
 
                     </div>
                     <div class="col-md-5">
                         <div class="form-group">
-                            <label for="{{form.orgao.id_for_label}}">{{ form.orgao.label }}</label>
-                            {{ form.orgao }}
+                            <label for="{{form.equipe.id_for_label}}">{{ form.equipe.label }}</label>
+                            {{ form.equipe }}
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -39,107 +35,94 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-10">
+                    <div class="col-md-12">
                         <table class="table table-striped" id="tabela-veiculo">
                             <thead>
-                                <tr>
-                                    <th width="10%">Placa</th>
-                                    <th width="33%">Veículo</th>
-                                    <th width="6%">Ano</th>
-                                    <th width="10%">Tipo</th>
-                                    <th width="6%">Estado</th>
-                                    <th width="10%">Motorista</th>
-                                    <th width="25%">Órgão Público</th>
-                                    <th></th>
-                                </tr>
+                            <tr>
+                                <th width="10%">Placa</th>
+                                <th width="25%">Veículo</th>
+                                <th width="20%">Motorista</th>
+                                <th width="10%">Equipe</th>
+                                <th width="10%">Perfil</th>
+                                <th width="25%">Local</th>
+                                <th></th>
+                            </tr>
                             </thead>
                             <tbody>
                             {% for veiculo in veiculos %}
                                 <tr>
 
                                     <td>
-                                        {% if veiculo.veiculo_selecionado %}<b>{% endif %}
 
-                                        <a href="#" onclick="abrirModal('{% url 'veiculo:detalhar' veiculo.pk %}');">{{veiculo.placa|upper }}</a>
-                                        {% if veiculo.veiculo_selecionado %}</b>{% endif %}
+
+                                        <a href="#" onclick="abrirModal('{% url 'veiculo:detalhar' veiculo.veiculo.pk %}');">{{veiculo.veiculo.placa|upper }}</a>
+
                                     </td>
                                     <td>
-                                        {% if veiculo.veiculo_selecionado %}<b>{% endif %}
-                                        {{veiculo.veiculo_with_popover|safe}}
-                                        {% if veiculo.veiculo_selecionado %}</b>{% endif %}
+
+                                        {{veiculo.veiculo.veiculo_with_popover|safe}}
                                     </td>
                                     <td>
-                                        {% if veiculo.veiculo_selecionado %}<b>{% endif %}
-                                        {{veiculo.get_ano}}
-                                        {% if veiculo.veiculo_selecionado %}</b>{% endif %}
+
+                                        {%  firstof veiculo.veiculo.motorista_veiculo.first.pessoa.nome.upper 'SEM MOTORISTA' %}
+
                                     </td>
                                     <td>
-                                        {% if veiculo.veiculo_selecionado %}<b>{% endif %}
-                                        {{veiculo.get_tipo}}
-                                        {% if veiculo.veiculo_selecionado %}</b>{% endif %}
+
+                                        {{veiculo.equipe}}
+
                                     </td>
                                     <td>
-                                        {% if veiculo.veiculo_selecionado %}<b>{% endif %}
-                                        {{veiculo.get_estado}}
-                                        {% if veiculo.veiculo_selecionado %}</b>{% endif %}
-                                    </td>
-                                    <td class="text-center"><span class="glyphicon
-                                       glyphicon-{% if veiculo.motorista_titulo_eleitoral  %}ok color-green{% else %}remove color-red{% endif %}"></span>
+
+                                        {{veiculo.perfil}}
+
                                     </td>
                                     <td>
-                                        {% if veiculo.veiculo_selecionado %}<b>{% endif %}
-                                        {{veiculo.orgao}}
-                                        {% if veiculo.veiculo_selecionado %}</b>{% endif %}
+                                        {% firstof veiculo.local_votacao 'VEICULO DE APOIO' %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-xs"  style="float:right;">
+                                            <a href="{% url 'report-veiculos:veiculo-alocado' veiculo.pk %}"
+                                               class="btn btn-default btn-xs bt-liberar" target="_blank">
+                                                <span class="glyphicon glyphicon-print"></span>
+                                                Imprimir notificação
+                                            </a>
+                                        </div>
+
                                     </td>
 
-                                    <td>
-                                       <div class="btn-group btn-group-xs"  style="float:right;">
-                                       {% if veiculo.veiculo_selecionado %}
-                                       <a data-id="{{veiculo.pk}}" href="javascript:void(0);"
-                                        class="btn btn-danger btn-xs bt-liberar">
-                                            <span class="glyphicon glyphicon-check"></span>
-                                            Liberar
-                                        </a>
-                                       {% else %}
-                                        <a data-id="{{veiculo.pk}}" href="javascript:void(0);"
-                                        class="btn btn-primary btn-xs bt-requisitar">
-                                            <span class="glyphicon glyphicon-check"></span>
-                                            Requisitar
-                                        </a>
-                                        {% endif %}
-                                    </div>
-                                    </td>
+
                                 </tr>
                             {% endfor %}
                             </tbody>
                         </table>
 
                         <ul class="pager">
-                        {% if veiculos.has_previous %}
-                            <li class="previous"><a href="javascript:void(0);">&larr; Anterior</a></li>
-                        {% endif %}
+                            {% if veiculos.has_previous %}
+                                <li class="previous"><a href="?pagina={{ veiculos.previous_page_number }}&num_por_pagina={{ form_pagina.num_por_pagina.value }}">&larr; Anterior</a></li>
+                            {% endif %}
                             <li>
                                 Página <input type="number" value="{{veiculos.number}}"
-                                    style="width:40px;" min="1" max="{{veiculos.paginator.num_pages}}"
-                                    name="pagina" id="pagina"
-                                    onchange="form.submit();"/> de {{veiculos.paginator.num_pages}}
+                                              style="width:40px;" min="1" max="{{veiculos.paginator.num_pages}}"
+                                              name="pagina" id="pagina"
+                                              onchange="form.submit();"/> de {{veiculos.paginator.num_pages}}
                             </li>
-                        {% if veiculos.has_next %}
-                            <li class="next"><a href="javascript:void(0);">Próxima &rarr;</a></li>
-                        {% endif %}
+                            {% if veiculos.has_next %}
+                                <li class="next"><a href="?pagina={{ veiculos.next_page_number }}&num_por_pagina={{ form_pagina.num_por_pagina.value }}">Próxima &rarr;</a></li>
+                            {% endif %}
                         </ul>
                     </div>
-                    <div class="col-md-2 col-filtro">
-                        <h3>Filtrar por:</h3>
-
-                        <div class="form-group">
-                        {% for field in filtro.form %}
-                            <label for="{{field.id_for_label}}">{{ field.label }}</label>
-                            {{ field }}
-                        {% endfor %}
-                        </div>
-
-                    </div>
+                    {#                    <div class="col-md-2 col-filtro">#}
+                    {#                        <h3>Filtrar por:</h3>#}
+                    {##}
+                    {#                        <div class="form-group">#}
+                    {#                        {% for field in filtro.form %}#}
+                    {#                            <label for="{{field.id_for_label}}">{{ field.label }}</label>#}
+                    {#                            {{ field }}#}
+                    {#                        {% endfor %}#}
+                    {#                        </div>#}
+                    {##}
+                    {#                    </div>#}
                 </div>
             </form>
         </div>
@@ -148,5 +131,36 @@
 
 {%block extrascripts %}
     <script src="{% static 'veiculos/js/classes/Veiculo.js' %}"></script>
-	<script src="{% static 'veiculos/js/veiculo/index.js' %}"></script>
+    <script src="{% static 'veiculos/js/veiculo/index.js' %}"></script>
+    <script>
+    $(document).ready(function(){
+        var veiculo = new Veiculo()
+	    $('#id_equipe').change(function(){
+	        var url;
+	        if($(this).val()=='')
+	            url = '{% url 'veiculo:vistoria:listar' %}';
+	        else
+	            url = '{% url 'veiculo:vistoria:listar' %}' + $(this).val() + '/';
+	        $('#pagina').val(1);
+	        location.href = url + '?' + $('#form-filtro').serialize();
+	    });
+
+
+	    $('.bt-requisitar').click(function(event){
+	        $(this).confirmar({
+	            message: "Você deseja requisitar este veículo?",
+	            onConfirm: function() {
+	                veiculo.setIdVeiculo($(this).data('id'));
+	                veiculo.requisitarVeiculo();
+	            }
+	        })
+	    });
+
+        $('#id_num_por_pagina').change(function(){
+	        location.href = '{% url 'veiculo:vistoria:listar' %}' + '?pagina='+{{ veiculos.number }}+'&num_por_pagina=' + $(this).val();
+	    });
+
+    });
+
+    </script>
 {% endblock %}

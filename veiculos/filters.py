@@ -3,6 +3,8 @@ from .models import Veiculo, ano_choices
 from django import forms
 import datetime
 import django_filters
+from veiculos.models import VeiculoAlocado
+
 
 class FilterNullBooleanSelect(forms.NullBooleanSelect):
     def __init__(self, *args, **kwargs):
@@ -64,3 +66,35 @@ class VeiculoFilter(django_filters.FilterSet):
         model = Veiculo
         fields = ['tipo', 'estado']
         form = FiltroForm
+
+
+class FiltroVeiculoAlocadoForm(forms.ModelForm):
+    class Meta:
+        model = VeiculoAlocado
+        fields=['perfil',]
+
+    def __init__(self, *args, **kwargs):
+        super(FiltroVeiculoAlocadoForm, self).__init__(*args, **kwargs)
+        for key in self.fields:
+            if not isinstance(self.fields[key].widget, forms.CheckboxInput):
+                self.fields[key].widget.attrs.update({'class': 'form-control'})
+            if isinstance(self.fields[key].widget, forms.Select):
+                if hasattr(self.fields[key], 'choices'):
+                    self.fields[key].choices = [('', 'Selecione'),] + list(self.fields[key].choices)
+
+
+
+class VeiculoAlocadoFilter(django_filters.FilterSet):
+
+
+    class Meta:
+
+        model = VeiculoAlocado
+        fields = ['perfil__nome',]
+        order_by = [('equipe', 'Equipe'), ('perfil', u'Função'), ('local_votacao', 'Local')]
+        form = FiltroVeiculoAlocadoForm
+
+    def get_ordering_field(self):
+        field = super(VeiculoAlocadoFilter, self).get_ordering_field()
+        field.label = 'Ordenar por'
+        return field

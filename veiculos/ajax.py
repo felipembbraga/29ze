@@ -296,6 +296,7 @@ def cadastrar_vistoria(request, formulario):
     """
     dajax = Dajax()
 
+
     if request.is_ajax():
         try:
             if formulario:

@@ -19,6 +19,7 @@ vistoria_veiculo_patterns = [
     url(r'^cadastrar/$', veiculo_vistoria, name='cadastrar'),
     url(r'^cadastrar/(\d+)/$', veiculo_vistoria, name='cadastrar'),
     url(r'^listar/$', veiculo_vistoria_listagem, name='listar'),
+    url(r'^listar/(\d+)/$', veiculo_vistoria_listagem, name='listar'),
 ]
 
 veiculo_patterns = [

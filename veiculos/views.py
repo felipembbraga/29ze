@@ -17,8 +17,9 @@ from forms import VeiculoForm, MotoristaForm
 from models import Veiculo, VeiculoSelecionado
 from utils.forms import NumPorPaginaForm
 from utils.Response import NotifyResponse
+from veiculos.filters import VeiculoAlocadoFilter
 from veiculos.forms import PerfilVeiculoForm, CronogramaForm, AlocacaoForm
-from veiculos.models import PerfilVeiculo, CronogramaVeiculo, Alocacao
+from veiculos.models import PerfilVeiculo, CronogramaVeiculo, Alocacao, VeiculoAlocado
 import datetime
 
 
@@ -360,5 +361,40 @@ def veiculo_vistoria(request):
 
 @login_required
 @permission_required('veiculos.inspection-veiculo', raise_exception=True)
-def veiculo_vistoria_listagem(request):
-    return render(request, 'veiculos/vistoria/listar.html')
+def veiculo_vistoria_listagem(request, id_equipe=None):
+    if id_equipe:
+        equipe = Equipe.objects.get(pk=int(id_equipe))
+        queryset = VeiculoAlocado.objects.filter(veiculo__eleicao = request.eleicao_atual, equipe=equipe)
+
+    else:
+        queryset = VeiculoAlocado.objects.filter(veiculo__eleicao = request.eleicao_atual)
+    lista_veiculos = queryset.order_by('equipe__nome', 'veiculo__marca__nome', 'veiculo__modelo__nome')
+
+    #filtro = VeiculoAlocadoFilter(request.GET, queryset = lista_veiculos)
+    #total_com_motorista = filtro.qs.exclude(motorista_titulo_eleitoral=None).count()
+    #total_sem_motorista = filtro.qs.filter(motorista_titulo_eleitoral=None).count()
+
+    form_pagina = NumPorPaginaForm(request.GET)
+    num_por_pagina = form_pagina.is_valid() and int(form_pagina.cleaned_data['num_por_pagina']) or 10
+    paginator = Paginator(lista_veiculos, num_por_pagina)
+    pagina = request.GET.get('pagina')
+    try:
+        veiculos = paginator.page(pagina)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        veiculos = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        veiculos = paginator.page(paginator.num_pages)
+    equipes = Equipe.objects.filter(eleicao=request.eleicao_atual).exclude(veiculoalocado=None).order_by('nome')
+    formequipe = modelform_factory(
+                VeiculoAlocado,
+                fields=('equipe',),
+                labels={'equipe':u'Selecionar uma equipe: '})
+    formequipe.base_fields['equipe'].queryset = equipes
+    if id_equipe:
+        form = formequipe({'equipe':id_equipe})
+    else:
+        form = formequipe()
+    form.fields['equipe'].widget.attrs.update({'class':'form-control'})
+    return render(request, 'veiculos/vistoria/listar.html', locals())
