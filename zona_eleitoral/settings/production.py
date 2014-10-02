@@ -34,6 +34,6 @@ AUTHENTICATION_BACKENDS = ('acesso.backends.OrgaoBackend',
                            )
 
 ALLOWED_HOSTS = ['*']
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = DEBUG
