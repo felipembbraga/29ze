@@ -28,7 +28,7 @@ def consultar_veiculo(request, placa):
             if Veiculo.objects.filter(placa__iexact=placa, veiculo_selecionado__isnull=False).exists():
             # Caso o veículo exista no sistema
                 veiculo = Veiculo.objects.get(placa__iexact=placa, veiculo_selecionado__isnull=False)
-                if veiculo.veiculoalocado:
+                if hasattr(veiculo, 'veiculoalocado') and veiculo.veiculoalocado is not None:
                     dajax = message_status(dajax, 'success', u"Veículo encontrado! O mesmo já foi alocado.", True)
                     veiculo_alocado = veiculo.veiculoalocado
                     if veiculo_alocado.local_votacao:
