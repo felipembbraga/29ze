@@ -81,5 +81,5 @@ def relatorio_veiculo_alocado(request, id_veiculo):
     template = webodt.ODFTemplate('modelo_notificacao.odt')
     document = template.render(Context(context))
     conv = converter()
-    pdf = conv.convert(document, format='pdf', output_filename='notificacao.pdf')
+    pdf = conv.convert(document, format='pdf')
     return HttpResponse(pdf, mimetype='application/pdf')
