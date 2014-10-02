@@ -13,7 +13,7 @@ from core.models import Marca, Local, Pessoa
 from selectable_select2.forms import Select2DependencyModelForm, Select2DependencyForm
 from selectable_select2.widgets import AutoCompleteSelect2Widget
 from veiculos.autocomplete import MotoristaLookup, EquipeLookup, PerfilChainedEquipeLookup, MarcaLookup, \
-    ModeloChainedMarcaLookup
+    ModeloChainedMarcaLookup, EquipeManualLookup
 from veiculos.models import PerfilVeiculo, CronogramaVeiculo, Alocacao, Motorista, VeiculoAlocado
 
 
@@ -200,6 +200,10 @@ class VistoriaForm(Select2DependencyForm):
                                                                      placeholder=u"Selecione uma função"),
                                     label=u'Função do Veículo', required=False)
     alocacao_manual = forms.BooleanField(label=u'Escolher equipe manualmente', required=False)
+    equipe_manual = forms.ModelChoiceField(queryset=EquipeManualLookup().get_queryset(),
+                                           widget=AutoCompleteSelect2Widget(EquipeManualLookup,
+                                                                            placeholder="Selecione uma equipe"),
+                                           label='Equipe', required=False)
 
     select2_deps = (
         (
@@ -217,6 +221,7 @@ class VistoriaForm(Select2DependencyForm):
         cleaned_data = super(VistoriaForm, self).clean()
         alocacao = cleaned_data.get("alocacao")
         alocacao_manual = cleaned_data.get("alocacao_manual")
+        equipe_manual = cleaned_data.get("equipe_manual")
         equipe = cleaned_data.get("equipe")
         perfil = cleaned_data.get("perfil")
         msg = u"Este campo é obrigatório para esse tipo de alocação"
@@ -229,12 +234,9 @@ class VistoriaForm(Select2DependencyForm):
                 self._errors["perfil"] = self.error_class([msg])
                 del cleaned_data["perfil"]
         else:
-            if alocacao_manual and equipe is None:
-                self._errors["equipe"] = self.error_class([msg])
-                del cleaned_data["equipe"]
-            elif not alocacao_manual and equipe is not None:
-                self._errors["equipe"] = self.error_class([u"Este campo não pode ser preenchido durante alocação automática."])
-                del cleaned_data["equipe"]
+            if alocacao_manual and equipe_manual is None:
+                self._errors["equipe_manual"] = self.error_class([msg])
+                del cleaned_data["equipe_manual"]
 
         return cleaned_data
 

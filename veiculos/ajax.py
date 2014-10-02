@@ -320,8 +320,8 @@ def cadastrar_vistoria(request, formulario):
 
                     if form_vistoria.cleaned_data['alocacao'] == '0':
                         import random
-                        if form_vistoria.cleaned_data.get('equipe'):
-                            equipe_auto = form_vistoria.cleaned_data.get('equipe')
+                        if form_vistoria.cleaned_data.get('alocacao_manual'):
+                            equipe_auto = form_vistoria.cleaned_data.get('equipe_manual')
                         else:
                             equipe_auto = random.choice(filter(equipes_c_vagas_locais, EquipesAlocacao.objects.all().order_by('equipe__nome')))
                         equipe_auto = equipe_auto.equipe

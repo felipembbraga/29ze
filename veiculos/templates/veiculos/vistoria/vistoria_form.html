@@ -144,23 +144,44 @@
                 {% endif %}
             </div>
         </div>
-        <div id="choice-alocacao-manual" class="col-md-3 campo-modal">
-            <div class="form-group{% if form_vistoria.alocacao_manual.errors %} has-error{% endif %}"><br>
-                <label for="{{form_vistoria.alocacao_manual.id_for_label}}">
-                    {{ form_vistoria.alocacao_manual.label }}{% if form_vistoria.alocacao_manual.field.required %}*{% endif %}
-                </label>
-                {% if form_vistoria.alocacao_manual.is_hidden %}
-                    <p class="form-control-static">{{ form_vistoria.alocacao_manual.value|upper }}<p>
-                {% endif %}
-                {{ form_vistoria.alocacao_manual }}
-                {% if not form_vistoria.alocacao_manual.is_hidden %}
-                    <p class="help-block">{{ form_vistoria.alocacao_manual.help_text }}</p>
-                {% endif %}
-                {% if form_vistoria.alocacao_manual.errors %}
-                    <label class="control-label" for="{{form_vistoria.alocacao_manual.id_for_label}}">
-                        {{form_vistoria.alocacao_manual.errors.as_text}}
-                    </label><br />
-                {% endif %}
+        <div id="choice-alocacao-manual">
+            <div class="col-md-3 campo-modal">
+                <div class="form-group{% if form_vistoria.alocacao_manual.errors %} has-error{% endif %}"><br>
+                    <label for="{{form_vistoria.alocacao_manual.id_for_label}}">
+                        {{ form_vistoria.alocacao_manual.label }}{% if form_vistoria.alocacao_manual.field.required %}*{% endif %}
+                    </label>
+                    {% if form_vistoria.alocacao_manual.is_hidden %}
+                        <p class="form-control-static">{{ form_vistoria.alocacao_manual.value|upper }}<p>
+                    {% endif %}
+                    {{ form_vistoria.alocacao_manual }}
+                    {% if not form_vistoria.alocacao_manual.is_hidden %}
+                        <p class="help-block">{{ form_vistoria.alocacao_manual.help_text }}</p>
+                    {% endif %}
+                    {% if form_vistoria.alocacao_manual.errors %}
+                        <label class="control-label" for="{{form_vistoria.alocacao_manual.id_for_label}}">
+                            {{form_vistoria.alocacao_manual.errors.as_text}}
+                        </label><br />
+                    {% endif %}
+                </div>
+            </div>
+            <div id="div-equipe-manual" class="col-md-3 campo-modal" style="display: none">
+                <div class="form-group{% if form_vistoria.equipe_manual.errors %} has-error{% endif %}">
+                    <label for="{{form_vistoria.equipe_manual.id_for_label}}">
+                        {{ form_vistoria.equipe_manual.label }}{% if form_vistoria.equipe_manual.field.required %}*{% endif %}
+                    </label>
+                    {% if form_vistoria.equipe_manual.is_hidden %}
+                        <p class="form-control-static">{{ form_vistoria.equipe_manual.value|upper }}<p>
+                    {% endif %}
+                    {{ form_vistoria.equipe_manual }}
+                    {% if not form_vistoria.equipe_manual.is_hidden %}
+                        <p class="help-block">{{ form_vistoria.equipe_manual.help_text }}</p>
+                    {% endif %}
+                    {% if form_vistoria.equipe_manual.errors %}
+                        <label class="control-label" for="{{form_vistoria.equipe_manual.id_for_label}}">
+                            {{form_vistoria.equipe_manual.errors.as_text}}
+                        </label><br />
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

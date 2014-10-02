@@ -100,6 +100,20 @@ $(document).ready(function(){
         }
     });
 
+    $('body').on('click', '#id_alocacao_manual', function() {
+        var div_equipe_manual = $('#div-equipe-manual');
+        var equipe_manual_sl2 = $('#s2id_id_equipe_manual');
+        var equipe_manual = $('#sid_equipe_manual');
+        if ($(this).is(':checked'))
+            div_equipe_manual.show();
+        else{
+            div_equipe_manual.hide();
+            equipe_manual_sl2.find('span.select2-chosen').html('Selecione uma equipe');
+            equipe_manual_sl2.removeClass('select2-allowclear');
+            equipe_manual.val('');
+        }
+    });
+
     $('#placa-veiculo').keypress(function(event){
         if(event.keyCode == 13)
             buscar_placa($(this).val());

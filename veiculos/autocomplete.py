@@ -1,7 +1,7 @@
 from eleicao.models import EquipesAlocacao
 from selectable.base import ModelLookup, LookupBase
 from selectable.registry import registry
-from veiculos.models import Marca, Modelo, Veiculo, Motorista, PerfilVeiculo
+from veiculos.models import Marca, Modelo, Motorista, PerfilVeiculo
 
 
 class MotoristaLookup(ModelLookup):
@@ -51,8 +51,10 @@ class ModeloChainedMarcaLookup(ModelLookup, LookupBase):
             results = results.filter(marca=marca).order_by('nome')
         return results
 
+
 def equipes_c_vagas(equipe):
     return (equipe.estimativa_equipe or 0 - equipe.veiculos_alocados_equipe) > 0
+
 
 class EquipeLookup(ModelLookup):
     model = EquipesAlocacao
@@ -90,8 +92,28 @@ class PerfilChainedEquipeLookup(ModelLookup, LookupBase):
         return []
 
 
+def equipes_c_vagas_locais(equipe):
+    return (equipe.estimativa_local or 0 - equipe.veiculos_alocados_local) > 0
+
+
+class EquipeManualLookup(ModelLookup):
+    model = EquipesAlocacao
+    search_fields = ('equipe__nome__icontains', )
+
+    def get_item_value(self, item):
+        return "%s" % item.equipe.nome
+
+    def get_item_label(self, item):
+        return "%s" % item.equipe.nome
+
+    def get_query(self, request, term):
+        qs = super(EquipeManualLookup, self).get_query(request, term)
+        return filter(equipes_c_vagas_locais, qs.order_by('equipe__nome'))
+
+
 registry.register(ModeloChainedMarcaLookup)
 registry.register(MarcaLookup)
 registry.register(MotoristaLookup)
 registry.register(EquipeLookup)
 registry.register(PerfilChainedEquipeLookup)
+registry.register(EquipeManualLookup)
