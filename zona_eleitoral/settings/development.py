@@ -12,6 +12,8 @@ MY_APPS = (
     'staticfiles_select2',
     'selectable',
     'selectable_select2',
+    'dajaxice',
+    'dajax',
 )
 
 WEBODT_CONVERTER = 'webodt.converters.abiword.AbiwordODFConverter'
@@ -27,6 +29,18 @@ WEBODT_GOOGLEDOCS_PASSWORD = 'Zon@0029'
 INSTALLED_APPS = INSTALLED_APPS + MY_APPS
 
 SELECTABLE_ESCAPED_KEYS = ('label', 'value')
+
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+    'django.template.loaders.eggs.Loader',
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'dajaxice.finders.DajaxiceFinder',
+)
 
 #AUTH_USER_MODEL = 'acesso.Usuario'
 
