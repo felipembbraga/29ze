@@ -208,7 +208,7 @@
     </div>
     {{ form_motorista.id }}
     <input type="hidden" id="id_placa_veiculo_vist" name="placa_veiculo_vist" value="{{ veiculo.placa|upper }}">
-    <button type="button" class="btn btn-primary pull-right" onclick="Dajaxice.veiculos.cadastrar_vistoria(Dajax.process, {'formulario': $('#vistoria_veiculo_form').serialize(true)})">Confirmar Vistoria</button>
+    <button type="button" class="btn btn-primary pull-right" onclick="salva_vistoria($('#vistoria_veiculo_form').serialize(true))">Confirmar Vistoria</button>
 </form>
 <script type="text/javascript" src="{% static 'staticfiles_select2/select2/select2.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'selectable_select2/js/jquery.dj.selectable.select2.js' %}"></script>

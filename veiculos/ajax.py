@@ -6,10 +6,11 @@ from dajaxice.utils import deserialize_form
 from django.core.urlresolvers import reverse
 from django.template.context import RequestContext
 from django.template.loader import render_to_string
-from eleicao.models import Equipe
+from eleicao.models import Equipe, EquipesAlocacao
 from models import Veiculo, Motorista
 from veiculos.forms import VeiculoVistoriaForm, VistoriaForm, MotoristaVistoriaForm
 from veiculos.models import VeiculoSelecionado, VeiculoAlocado
+from django.db import models
 
 
 @dajaxice_register()
@@ -32,8 +33,7 @@ def consultar_veiculo(request, placa):
                     dajax = message_status(dajax, 'success', u"Veículo encontrado! O mesmo já foi alocado.", True)
                     veiculo_alocado = veiculo.veiculoalocado
                     if veiculo_alocado.local_votacao:
-                        form_vistoria = VistoriaForm(initial={'equipe': veiculo_alocado.equipe,
-                                                              'perfil': veiculo_alocado.perfil})
+                        form_vistoria = VistoriaForm()
                     else:
                         form_vistoria = VistoriaForm(initial={'alocacao': 1, 'equipe': veiculo_alocado.equipe,
                                                               'perfil': veiculo_alocado.perfil})
@@ -299,7 +299,9 @@ def cadastrar_vistoria(request, formulario):
     if request.is_ajax():
         try:
             if formulario:
-            # Caso esteja sendo enviado o formulário
+                # Caso esteja sendo enviado o formulário
+                import pdb
+                pdb.set_trace()
                 formulario = deserialize_form(formulario)
                 veiculo = Veiculo.objects.get(placa__iexact=formulario.get('placa_veiculo_vist'))
                 if formulario.get('id'):
@@ -318,13 +320,31 @@ def cadastrar_vistoria(request, formulario):
                     elif not Motorista.objects.filter(pessoa__id=form_pessoa_motorista.cleaned_data['id']).exists():
                         Motorista.objects.get(form_pessoa_motorista.cleaned_data['motorista']).update(pessoa=pessoa_motorista)
 
+                    if form_vistoria.cleaned_data['alocacao'] == '0':
+                        import random
+                        if form_vistoria.cleaned_data.get('equipe'):
+                            equipe_auto = form_vistoria.cleaned_data.get('equipe')
+                        else:
+                            equipe_auto = random.choice(filter(equipes_c_vagas_locais, EquipesAlocacao.objects.all().order_by('equipe__nome')))
+                        equipe_auto = equipe_auto.equipe
+                        local_auto = random.choice(filter(locais_c_vagas, equipe_auto.local_equipe.all()))
+                        alocacao = random.choice(filter(alocacao_c_vagas, local_auto.alocacao_set.all()))
+                        perfil = alocacao.perfil_veiculo
+                        equipe = alocacao.equipe
+                        local_votacao = local_auto
+                    else:
+                        perfil = form_vistoria.cleaned_data['perfil']
+                        equipe = form_vistoria.cleaned_data['equipe'].equipe
+                        local_votacao = None
+
                     if not VeiculoAlocado.objects.filter(veiculo=veiculo).exists():
-                        veiculo_alocado = VeiculoAlocado.objects.create(veiculo=veiculo, perfil=form_vistoria.cleaned_data['perfil'],
-                                                                        equipe=form_vistoria.cleaned_data['equipe'].equipe)
+                        veiculo_alocado = VeiculoAlocado.objects.create(veiculo=veiculo, perfil=perfil, equipe=equipe,
+                                                                        local_votacao=local_votacao)
                     else:
                         veiculo_alocado = VeiculoAlocado.objects.get(veiculo=veiculo)
-                        veiculo_alocado.perfil = form_vistoria.cleaned_data['perfil']
-                        veiculo_alocado.equipe = form_vistoria.cleaned_data['equipe'].equipe
+                        veiculo_alocado.perfil = perfil
+                        veiculo_alocado.equipe = equipe
+                        veiculo_alocado.local_votacao = local_votacao
                         veiculo_alocado.save()
 
                     # dajax = message_status(dajax, 'success', u"Vistoria efetuada com sucesso!", True)
@@ -346,3 +366,17 @@ def cadastrar_vistoria(request, formulario):
     else:
         dajax = process_modal(dajax, 'msg', u"Instrução inválida!", True)
     return dajax.json()
+
+
+def equipes_c_vagas_locais(equipe):
+    return (equipe.estimativa_local or 0 - equipe.veiculos_alocados_local) > 0
+
+
+def locais_c_vagas(local):
+    soma_estimativa = local.alocacao_set.aggregate(models.Sum('quantidade')).get('quantidade__sum')
+    total_veiculos = local.veiculoalocado_set.count()
+    return soma_estimativa - total_veiculos > 0
+
+def alocacao_c_vagas(alocacao):
+    total_veiculos = alocacao.local_votacao.veiculoalocado_set.count()
+    return alocacao.quantidade - total_veiculos > 0

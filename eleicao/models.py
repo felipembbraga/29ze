@@ -35,6 +35,7 @@ class Eleicao(models.Model):
                 continue
             count += 1
         return count
+
     def get_total_eleitores(self):
         return self.secao_set.aggregate(models.Sum('num_eleitores')).get('num_eleitores__sum')
 
@@ -269,6 +270,7 @@ class Equipe(models.Model):
             self.nome=self.nome.upper()
         super(Equipe, self).save(*args, **kwargs)
 
+
 class EquipesAlocacao(models.Model):
     equipe = models.ForeignKey(Equipe, primary_key=True)
     eleicao = models.ForeignKey(Eleicao)
@@ -282,15 +284,18 @@ class EquipesAlocacao(models.Model):
         managed = False
         db_table=u'vw_equipes_alocacao'
 
+
 class Montagem(models.Model):
     local = models.OneToOneField(LocalVotacao, related_name='local_montagem')
     turno = models.CharField(max_length=1, choices=(('m', 'matutino'),('v', 'vespertino')))
     ordem = models.IntegerField()
-    
+
+
 class Cargo(models.Model):
     nome = models.CharField(max_length=50)
     eleicao = models.ForeignKey(Eleicao, related_name='cargo_eleicao')
-    
+
+
 class Funcionario(Pessoa):
     equipe = models.ForeignKey(Equipe, related_name='funcionario_equipe')
     cargo = models.ForeignKey(Cargo, related_name='funcionario_cargo')

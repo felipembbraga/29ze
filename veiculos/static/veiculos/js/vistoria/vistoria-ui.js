@@ -38,6 +38,11 @@ function change_motorista(val){
     Dajaxice.veiculos.consulta_motorista(default_callback, {'id_motorista': val});
 }
 
+function salva_vistoria(val){
+    block_screen();
+    Dajaxice.veiculos.cadastrar_vistoria(default_callback, {'formulario': val});
+}
+
 function aplica_mascaras(){
 	$('input[id*="placa"]').mask('aaa-9999');
 }
