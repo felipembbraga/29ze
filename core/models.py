@@ -19,6 +19,9 @@ class Telefones(models.Model):
     numero = models.CharField(u'Número', max_length=14)
     tipo = models.IntegerField('Tipo', choices=[(0, 'Telefone residencial'), (1, 'Telefone comercial'), (2, 'Telefone celular')])
 
+    def __unicode__(self):
+        return unicode(self.numero)
+
 
 class Local(models.Model):
     u'''

@@ -105,7 +105,7 @@ class Motorista(models.Model):
         unique_together = ('pessoa', 'eleicao')
 
     def __unicode__(self):
-        return unicode(self.nome)
+        return unicode(self.pessoa.nome)
 
 
 class PerfilVeiculo(models.Model):
@@ -125,6 +125,7 @@ class CronogramaVeiculo(models.Model):
     perfil = models.ForeignKey(PerfilVeiculo, related_name="cronograma_perfil")
     local = models.ForeignKey(Local, null=True, blank=True, verbose_name=u'Local de Apresentação')
     dt_apresentacao = models.DateTimeField(u'Data da Apresentação')
+    dia_montagem = models.BooleanField('Dia de montagem', default=False)
     eleicao = models.ForeignKey(Eleicao)
 
 
@@ -143,6 +144,8 @@ class VeiculoAlocado(models.Model):
     perfil = models.ForeignKey(PerfilVeiculo)
     equipe = models.ForeignKey(Equipe)
     local_votacao = models.ForeignKey(LocalVotacao, null=True, blank=True)
+    def __unicode__(self):
+        return unicode(self.veiculo)
 
 
 @receiver(post_save, sender=PerfilVeiculo)

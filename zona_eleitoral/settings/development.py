@@ -11,6 +11,10 @@ MY_APPS = (
 )
 
 WEBODT_CONVERTER = 'webodt.converters.abiword.AbiwordODFConverter'
+WEBODT_ODF_TEMPLATE_PREPROCESSORS = (
+    'webodt.preprocessors.xmlfor_preprocessor',
+    'webodt.preprocessors.unescape_templatetags_preprocessor'
+)
 
 WEBODT_TEMPLATE_PATH = LOCAL('odt_templates')
 WEBODT_GOOGLEDOCS_EMAIL = 'usuariozon029@gmail.com'

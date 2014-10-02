@@ -54,7 +54,8 @@
                 <thead>
                 <tr>
                     <th width="30%">Local</th>
-                    <th width="40%">Data de Apresentação</th>
+                    <th width="30%">Data de Apresentação</th>
+                    <th width="10%">Dia de Montagem</th>
                     <th width="30%"></th>
                 </tr>
                 </thead>
@@ -63,6 +64,9 @@
                     <tr>
                         <td>{% firstof cronograma.local 'NO LOCAL DE TRABALHO' %}</td>
                         <td>{{ cronograma.dt_apresentacao }}</td>
+                        <td class='text-center'><span class="glyphicon
+         glyphicon-{% if cronograma.dia_montagem  %}ok color-green{% else %}remove color-red{% endif %}"></span>
+                        </td>
                         <td class="botoes" >
                             <div class="btn-group btn-group-xs"  style="float:right;">
                                 <a href="{% url 'cronograma-veiculo:editar' cronograma.pk %}" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span>Editar</a>
