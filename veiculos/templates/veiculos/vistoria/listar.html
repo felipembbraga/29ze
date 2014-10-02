@@ -99,7 +99,7 @@
 
                         <ul class="pager">
                             {% if veiculos.has_previous %}
-                                <li class="previous"><a href="javascript:void(0);">&larr; Anterior</a></li>
+                                <li class="previous"><a href="{{ veiculos.previous_page_number }}">&larr; Anterior</a></li>
                             {% endif %}
                             <li>
                                 Página <input type="number" value="{{veiculos.number}}"
@@ -108,7 +108,7 @@
                                               onchange="form.submit();"/> de {{veiculos.paginator.num_pages}}
                             </li>
                             {% if veiculos.has_next %}
-                                <li class="next"><a href="javascript:void(0);">Próxima &rarr;</a></li>
+                                <li class="next"><a href="?pagina={{ veiculos.next_page_number }}">Próxima &rarr;</a></li>
                             {% endif %}
                         </ul>
                     </div>
@@ -132,4 +132,31 @@
 {%block extrascripts %}
     <script src="{% static 'veiculos/js/classes/Veiculo.js' %}"></script>
     <script src="{% static 'veiculos/js/veiculo/index.js' %}"></script>
+    <script>
+    $(document).ready(function(){
+        var veiculo = new Veiculo()
+	    $('#id_equipe').change(function(){
+	        var url;
+	        if($(this).val()=='')
+	            url = '{% url 'veiculo:vistoria:listar' %}';
+	        else
+	            url = '{% url 'veiculo:vistoria:listar' %}' + $(this).val() + '/';
+	        $('#pagina').val(1);
+	        location.href = url + '?' + $('#form-filtro').serialize();
+	    });
+	    
+
+	    $('.bt-requisitar').click(function(event){
+	        $(this).confirmar({
+	            message: "Você deseja requisitar este veículo?",
+	            onConfirm: function() {
+	                veiculo.setIdVeiculo($(this).data('id'));
+	                veiculo.requisitarVeiculo();
+	            }
+	        })
+	    });
+
+    });
+
+    </script>
 {% endblock %}

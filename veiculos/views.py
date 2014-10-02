@@ -386,7 +386,7 @@ def veiculo_vistoria_listagem(request, id_equipe=None):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         veiculos = paginator.page(paginator.num_pages)
-    equipes = Equipe.objects.filter(eleicao=request.eleicao_atual).order_by('nome')
+    equipes = Equipe.objects.filter(eleicao=request.eleicao_atual).exclude(veiculoalocado=None).order_by('nome')
     formequipe = modelform_factory(
                 VeiculoAlocado,
                 fields=('equipe',),
