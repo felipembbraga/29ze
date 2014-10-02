@@ -58,6 +58,9 @@ function nova_busca(modal){
 }
 
 function outro_motorista(){
+    var motorista_sl2 = $('#s2id_id_motorista');
+    motorista_sl2.find('span.select2-chosen').html('Selecione uma equipe');
+    motorista_sl2.removeClass('select2-allowclear');
     $('#id_titulo_eleitoral').val('');
     $('#id_nome').val('');
     $('#id_endereco').val('');
@@ -103,7 +106,7 @@ $(document).ready(function(){
     $('body').on('click', '#id_alocacao_manual', function() {
         var div_equipe_manual = $('#div-equipe-manual');
         var equipe_manual_sl2 = $('#s2id_id_equipe_manual');
-        var equipe_manual = $('#sid_equipe_manual');
+        var equipe_manual = $('#id_equipe_manual');
         if ($(this).is(':checked'))
             div_equipe_manual.show();
         else{
