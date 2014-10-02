@@ -43,7 +43,8 @@ class Veiculo(models.Model):
         )
 
     def __unicode__(self):
-        return u'%s %s' % (self.marca.nome, self.modelo.nome)
+        nome = u'%s %s' % (self.marca.nome, self.modelo.nome)
+        return nome.upper()
 
     @models.permalink
     def get_absolute_url(self):

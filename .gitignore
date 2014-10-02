@@ -9,3 +9,4 @@
 zona_eleitoral/settings/development_local.py
 zona_eleitoral/static/
 zona_eleitoral/media/
+core/static/dajax/

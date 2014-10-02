@@ -5,7 +5,7 @@
 <form id="form-filtro" method="GET">
 <div class="row">
     <div class="col-md-4">
-        <strong>Total de veículos requisitados{% if id_orgao %} da secretaria{%endif%}: </strong>{{ total_requisitados }} <br />
+        <strong>Total de veículos Alocados{% if id_equipe %} para equipe {%endif%}: </strong>{{ veiculos.count }} <br />
         <strong>Total de veículos listados: </strong>{{ filtro.qs.count }} <br />
         <strong>Total de veículos com motorista: </strong>{{ total_com_motorista }} <br />
         <strong>Total de veículos sem motorista: </strong>{{ total_sem_motorista }} <br />
@@ -172,16 +172,7 @@
 	            }
 	        })
 	    });
-	    
-	    $('.bt-liberar').click(function(event){
-            $(this).confirmar({
-                message: "Você deseja liberar este veículo?",
-                onConfirm: function() {
-                    veiculo.setIdVeiculo($(this).data('id'));
-                    veiculo.liberarVeiculo();
-                }
-            })
-        });
+
     });
 	    
     </script>

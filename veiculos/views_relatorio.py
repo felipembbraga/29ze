@@ -65,6 +65,8 @@ def relatorio_veiculo_alocado(request, id_veiculo):
                 c.dt_apresentacao = datetime.datetime(c.dt_apresentacao.year, c.dt_apresentacao.month,c.dt_apresentacao.day, 7,0)
         return c
     cronogramas = map(cronograma_local, veiculo.perfil.cronograma_perfil.filter(eleicao = request.eleicao_atual).order_by('dt_apresentacao'))
+    telefones = '/'.join(unicode(telefone) for telefone in motorista.pessoa.telefones_set.all()) if motorista else ''
+
     context = dict(
         veiculo='%s'%unicode(veiculo),
         motorista=motorista.pessoa.nome if motorista else 'SEM MOTORISTA',
@@ -74,8 +76,8 @@ def relatorio_veiculo_alocado(request, id_veiculo):
         sigla = veiculo.equipe.sigla,
         cronogramas=cronogramas,
         perfil=veiculo.perfil.nome,
-        telefones = motorista.pessoa.telefones_set.all() if motorista else 'SEM MOTORISTA',
-        endereco = motorista.pessoa.endereco if motorista else 'SEM MOTORISTA',
+        telefones = telefones,
+        endereco = motorista.pessoa.endereco if motorista else '',
         data=data
     )
     template = webodt.ODFTemplate('modelo_notificacao.odt')
