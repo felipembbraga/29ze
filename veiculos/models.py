@@ -140,7 +140,7 @@ class Alocacao(models.Model):
 
 
 class VeiculoAlocado(models.Model):
-    veiculo = models.ForeignKey(Veiculo)
+    veiculo = models.OneToOneField(Veiculo, verbose_name=u'Veículo')
     perfil = models.ForeignKey(PerfilVeiculo)
     equipe = models.ForeignKey(Equipe)
     local_votacao = models.ForeignKey(LocalVotacao, null=True, blank=True)
