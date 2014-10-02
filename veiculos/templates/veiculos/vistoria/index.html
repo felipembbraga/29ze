@@ -1,5 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'veiculos/vistoria/base.html' %}
 {% load static from staticfiles %}
+
+{% block extrabreadcrumb %}
+    {{ block.super }}
+{% endblock %}
+
 {% block extrastyle %}
     <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'veiculos/css/botoes_menu.min.css' %}" />

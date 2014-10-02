@@ -1,5 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'veiculos/vistoria/base.html' %}
 {% load static from staticfiles %}
+
+{% block extrabreadcrumb %}
+    {{ block.super }}
+    <li><a href="{% url 'veiculo:vistoria:listar' %}">Veículos Vistoriados</a></li>
+{% endblock %}
+
 {% block extrastyle %}
     <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
 {% endblock %}

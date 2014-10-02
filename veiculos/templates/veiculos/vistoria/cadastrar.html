@@ -1,6 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'veiculos/vistoria/base.html' %}
 {% load static from staticfiles %}
 {% load dajaxice_templatetags %}
+
+{% block extrabreadcrumb %}
+    {{ block.super }}
+    <li><a href="{% url 'veiculo:vistoria:cadastrar' %}">Efetuar Vistoria</a></li>
+{% endblock %}
 
 {% block extrastyle %}
     <link rel="stylesheet" type="text/css" href="{% static 'staticfiles_select2/select2/select2.css' %}"/>
