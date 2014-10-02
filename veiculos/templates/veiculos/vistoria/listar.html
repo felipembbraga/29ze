@@ -99,7 +99,7 @@
 
                         <ul class="pager">
                             {% if veiculos.has_previous %}
-                                <li class="previous"><a href="{{ veiculos.previous_page_number }}">&larr; Anterior</a></li>
+                                <li class="previous"><a href="?pagina={{ veiculos.previous_page_number }}">&larr; Anterior</a></li>
                             {% endif %}
                             <li>
                                 Página <input type="number" value="{{veiculos.number}}"
@@ -144,7 +144,7 @@
 	        $('#pagina').val(1);
 	        location.href = url + '?' + $('#form-filtro').serialize();
 	    });
-	    
+
 
 	    $('.bt-requisitar').click(function(event){
 	        $(this).confirmar({
