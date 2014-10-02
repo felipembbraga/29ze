@@ -7,7 +7,11 @@ MY_APPS = (
     'veiculos',
     'django_extensions',
     'south',
-    'webodt'
+    'webodt',
+    'jquery',
+    'staticfiles_select2',
+    'selectable',
+    'selectable_select2',
 )
 
 WEBODT_CONVERTER = 'webodt.converters.abiword.AbiwordODFConverter'
@@ -17,6 +21,8 @@ WEBODT_GOOGLEDOCS_EMAIL = 'usuariozon029@gmail.com'
 WEBODT_GOOGLEDOCS_PASSWORD = 'Zon@0029'
 
 INSTALLED_APPS = INSTALLED_APPS + MY_APPS
+
+SELECTABLE_ESCAPED_KEYS = ('label', 'value')
 
 #AUTH_USER_MODEL = 'acesso.Usuario'
 

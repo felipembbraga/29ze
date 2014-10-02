@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'veiculos/css/botoes_menu.min.css' %}" />
+{% endblock %}
+ 
+{% block container %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Opções Disponíveis</h3>
+        </div>
+        <div class="panel-body">
+            <div class="menu">
+                <a class="btn btn-default botao-menu" href="{% url 'veiculo:vistoria:cadastrar' %}"><img src="{% static "veiculos/img/vistoria/vitoria.png" %}" height="60"/><br>Efetuar<br>Vistoria</a>
+                <a class="btn btn-default botao-menu" href="{% url 'veiculo:vistoria:listar' %}"><img src="{% static "veiculos/img/vistoria/listar.png" %}" height="60"/><br>Veículos<br>Vistoriados</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{%block extrascripts %}
+    <script src="{% static 'veiculos/js/classes/Veiculo.js' %}"></script>
+	<script src="{% static 'veiculos/js/veiculo/index.js' %}"></script>
+{% endblock %}

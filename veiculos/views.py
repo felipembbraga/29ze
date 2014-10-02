@@ -346,19 +346,19 @@ def alocacao_editar(request, id_equipe, id_perfil, id_local=None):
     return render(request, 'veiculos/alocacao/form.html', locals())
 
 
+@login_required
 @permission_required('veiculos.inspection-veiculo', raise_exception=True)
-@login_required(login_url='acesso:login-veiculos')
 def index_vistoria(request):
     return render(request, 'veiculos/vistoria/index.html')
 
 
+@login_required
 @permission_required('veiculos.inspection-veiculo', raise_exception=True)
-@login_required(login_url='acesso:login-veiculos')
 def veiculo_vistoria(request):
     return render(request, 'veiculos/vistoria/cadastrar.html')
 
 
+@login_required
 @permission_required('veiculos.inspection-veiculo', raise_exception=True)
-@login_required(login_url='acesso:login-veiculos')
 def veiculo_vistoria_listagem(request):
     return render(request, 'veiculos/vistoria/listar.html')

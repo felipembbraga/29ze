@@ -71,13 +71,13 @@ class Veiculo(models.Model):
     def save(self, *args, **kwargs):
         if hasattr(self, 'placa'):
             placa = getattr(self, 'placa')
-            self.placa = placa.upper()
+            self.placa = placa.upper() if placa else None
         if hasattr(self, 'nome_motorista'):
             nome = getattr(self, 'nome_motorista')
-            self.nome_motorista = nome.upper()
+            self.nome_motorista = nome.upper() if nome else None
         if hasattr(self, 'endereco'):
             endereco = getattr(self, 'endereco')
-            self.endereco = endereco.upper()
+            self.endereco = endereco.upper() if endereco else None
         super(Veiculo, self).save(*args, **kwargs)
 
 
@@ -139,10 +139,10 @@ class Alocacao(models.Model):
 
 
 class VeiculoAlocado(models.Model):
-    veiculo = models.ForeignKey(Veiculo)
-    perfil = models.ForeignKey(PerfilVeiculo)
-    equipe = models.ForeignKey(Equipe)
-    local_votacao = models.ForeignKey(LocalVotacao, null=True, blank=True)
+    veiculo = models.ForeignKey(Veiculo, verbose_name=u'Veículo')
+    perfil = models.ForeignKey(PerfilVeiculo, verbose_name='Perfil')
+    equipe = models.ForeignKey(Equipe, verbose_name=u"Equipe")
+    local_votacao = models.ForeignKey(LocalVotacao, verbose_name=u"Local de Votação" , null=True, blank=True)
 
 
 @receiver(post_save, sender=PerfilVeiculo)

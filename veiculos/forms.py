@@ -4,22 +4,23 @@ Created on 05/08/2014
 
 @author: felipe
 '''
-import datetime
 from acesso.models import OrgaoPublico
-
 from django import forms
 from eleicao.models import Equipe
-
 from models import Veiculo
-from core.models import Marca, Local
-from veiculos.models import PerfilVeiculo, CronogramaVeiculo, Alocacao
+from core.models import Marca, Local, Pessoa
+from selectable_select2.forms import Select2DependencyModelForm, Select2DependencyForm
+from selectable_select2.widgets import AutoCompleteSelect2Widget
+from veiculos.autocomplete import MotoristaLookup, EquipeLookup, PerfilChainedEquipeLookup, MarcaLookup, \
+    ModeloChainedMarcaLookup
+from veiculos.models import PerfilVeiculo, CronogramaVeiculo, Alocacao, Motorista, VeiculoAlocado
 
 
 class VeiculoForm(forms.ModelForm):
     marca = forms.ModelChoiceField(queryset=Marca.objects.all().order_by('nome'))
-    placa = forms.RegexField(
-                        r'[A-Za-z]{3}-\d{4}',max_length=8, help_text='Ex.:ABC-1234', error_messages={'invalid' : u'Insira uma placa válida.'})
-    cadastrar_motorista = forms.BooleanField(initial=False,label = 'Cadastrar Motorista para o Veículo',required=False)
+    placa = forms.RegexField(r'[A-Za-z]{3}-\d{4}', max_length=8, help_text='Ex.:ABC-1234',
+                             error_messages={'invalid': u'Insira uma placa válida.'})
+    cadastrar_motorista = forms.BooleanField(initial=False, label='Cadastrar Motorista para o Veículo', required=False)
     
     class Meta:
         model = Veiculo
@@ -27,8 +28,7 @@ class VeiculoForm(forms.ModelForm):
         widgets = {
             'observacao': forms.Textarea(attrs={'rows': 3}),
         }
-        
-    
+
     def __init__(self, *args, **kwargs):
         super(VeiculoForm, self).__init__(*args, **kwargs)
         if self.instance.pk:
@@ -43,13 +43,36 @@ class VeiculoForm(forms.ModelForm):
         return self.cleaned_data.get('placa')
 
 
-class VeiculoVistoriaForm(VeiculoForm):
+class VeiculoVistoriaForm(Select2DependencyModelForm):
     orgao = forms.ModelChoiceField(queryset=OrgaoPublico.objects.all().order_by('nome_secretaria'))
     placa = forms.RegexField(r'[A-Za-z]{3}-\d{4}', max_length=8, help_text='Ex.:ABC-1234',
                              error_messages={'invalid': u'Insira uma placa válida.'},
                              widget=forms.TextInput(attrs={'readonly': ''}))
-    
-    
+    marca = forms.ModelChoiceField(queryset=MarcaLookup().get_queryset(),
+        widget=AutoCompleteSelect2Widget(MarcaLookup, placeholder="selecione uma marca"), label='Marca')
+    modelo = forms.ModelChoiceField(queryset=ModeloChainedMarcaLookup().get_queryset(),
+        widget=AutoCompleteSelect2Widget(ModeloChainedMarcaLookup, placeholder="selecione um modelo"), label='Modelo')
+
+    select2_deps = (
+        (
+            'modelo', {'parents': ['marca']},
+        ),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(VeiculoVistoriaForm, self).__init__(*args, **kwargs)
+        for key in self.fields:
+            if not isinstance(self.fields[key].widget, forms.CheckboxInput):
+                self.fields[key].widget.attrs.update({'class': 'form-control'})
+
+    class Meta:
+        model = Veiculo
+        fields = ['placa', 'marca', 'modelo', 'ano', 'tipo', 'lotacao', 'estado', 'orgao', 'observacao']
+        widgets = {
+            'observacao': forms.Textarea(attrs={'rows': 3}),
+        }
+
+
 class MotoristaForm(forms.ModelForm):
     motorista_titulo_eleitoral = forms.RegexField(
         r'\d{12}',
@@ -79,6 +102,7 @@ class MotoristaForm(forms.ModelForm):
 
 class PerfilVeiculoForm(forms.ModelForm):
     equipes = forms.ModelMultipleChoiceField(queryset=Equipe.objects.order_by('nome'))
+
     class Meta:
         model = PerfilVeiculo
 
@@ -98,9 +122,10 @@ class CronogramaForm(forms.ModelForm):
     )
     data = forms.DateField(label='Data da apresentação')
     hora = forms.TimeField(label='Horário de apresentação')
+
     class Meta:
         model = CronogramaVeiculo
-        fields= ('local', 'data', 'hora')
+        fields = ('local', 'data', 'hora')
 
     def __init__(self, data=None, instance=None, *args, **kwargs):
         if instance.pk and not data:
@@ -133,6 +158,7 @@ class CronogramaForm(forms.ModelForm):
                 raise forms.ValidationError(u'O perfil está ligada à equipe, não possui local.')
         return self.cleaned_data.get('local')
 
+
 class AlocacaoForm(forms.ModelForm):
     class Meta:
         model = Alocacao
@@ -141,14 +167,16 @@ class AlocacaoForm(forms.ModelForm):
             'local_votacao': forms.HiddenInput,
             'perfil_veiculo': forms.HiddenInput
         }
+
     def __init__(self,  data=None, eleicao=None, *args, **kwargs):
         super(AlocacaoForm, self).__init__(data, *args, **kwargs)
         self.eleicao = eleicao
         for key in self.fields:
             if not isinstance(self.fields[key].widget, forms.CheckboxInput):
                 self.fields[key].widget.attrs.update({'class': 'form-control'})
+
     def clean_quantidade(self):
-        total_veiculos = Veiculo.objects.filter(eleicao = self.eleicao).exclude(veiculo_selecionado=None).count()
+        total_veiculos = Veiculo.objects.filter(eleicao=self.eleicao).exclude(veiculo_selecionado=None).count()
         equipes = Equipe.objects.filter(eleicao=self.eleicao)
         veiculos_alocados = 0
         for equipe in equipes:
@@ -156,3 +184,51 @@ class AlocacaoForm(forms.ModelForm):
         if (veiculos_alocados + self.cleaned_data['quantidade']) - self.instance.quantidade > total_veiculos:
             raise forms.ValidationError(u'Quantidade de veiculos supera o número total de veículos requisitados')
         return self.cleaned_data['quantidade']
+
+
+class VistoriaForm(Select2DependencyForm):
+    alocacao = forms.ChoiceField(choices=[(0, u'Alocar por local'), (1, u'Alocar por equipe')], label=u'Alocação')
+    equipe = forms.ModelChoiceField(queryset=EquipeLookup().get_queryset(),
+                                    widget=AutoCompleteSelect2Widget(EquipeLookup,
+                                                                     placeholder="Selecione uma equipe"),
+                                    label='Equipe')
+    perfil = forms.ModelChoiceField(queryset=PerfilChainedEquipeLookup().get_queryset(),
+                                    widget=AutoCompleteSelect2Widget(PerfilChainedEquipeLookup,
+                                                                     placeholder=u"Selecione uma função"),
+                                    label=u'Função do Veículo')
+    alocacao_manual = forms.BooleanField(label=u'Escolher equipe manualmente', required=False)
+
+    select2_deps = (
+        (
+            'perfil', {'parents': ['equipe']},
+        ),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(VistoriaForm, self).__init__(*args, **kwargs)
+        for key in self.fields:
+            if not isinstance(self.fields[key].widget, forms.CheckboxInput):
+                self.fields[key].widget.attrs.update({'class': 'form-control'})
+
+
+class MotoristaVistoriaForm(forms.ModelForm):
+    id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+    nome = forms.CharField(label=u'Nome do Motorista', max_length=100)
+    titulo_eleitoral = forms.RegexField(r'^[0-9]{12}$', label=u'Título Eleitoral do Motorista',
+                                        max_length=12, help_text=u'Entre 11 e 12 dígitos.')
+    motorista = forms.ModelChoiceField(queryset=MotoristaLookup().get_queryset(),
+                                       widget=AutoCompleteSelect2Widget(MotoristaLookup,
+                                                                        placeholder="Selecione um motorista"),
+                                       label='Motorista', required=False)
+
+    class Meta:
+        model = Pessoa
+
+    def __init__(self, *args, **kwargs):
+        super(MotoristaVistoriaForm, self).__init__(*args, **kwargs)
+        for key in self.fields:
+            if not isinstance(self.fields[key].widget, forms.CheckboxInput):
+                self.fields[key].widget.attrs.update({
+                    'class': self.fields[key].widget.attrs.get('class') and
+                             self.fields[key].widget.attrs.get('class') + ' form-control' or 'form-control'
+                })
