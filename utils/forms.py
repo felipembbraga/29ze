@@ -5,7 +5,7 @@ from django.forms.util import ErrorList
 class NumPorPaginaForm(forms.Form):
     num_por_pagina = forms.ChoiceField(
                                        choices=[[i, i] for i in range(10, 51, 10)],
-                                       label=u"Nº elementos p/ página"
+                                       label=u"Qtde. p/ página"
                      )
     
     def __init__(self, *args, **kwargs):

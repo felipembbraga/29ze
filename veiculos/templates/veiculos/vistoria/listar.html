@@ -39,13 +39,13 @@
                         <table class="table table-striped" id="tabela-veiculo">
                             <thead>
                             <tr>
-                                <th width="10%">Placa</th>
-                                <th width="25%">Veículo</th>
+                                <th width="8%">Placa</th>
+                                <th width="20%">Veículo</th>
                                 <th width="20%">Motorista</th>
                                 <th width="10%">Equipe</th>
-                                <th width="10%">Perfil</th>
-                                <th width="25%">Local</th>
-                                <th></th>
+                                <th width="15%">Perfil</th>
+                                <th width="19%">Local</th>
+                                <th width="8%"></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -80,12 +80,18 @@
                                     <td>
                                         {% firstof veiculo.local_votacao 'VEICULO DE APOIO' %}
                                     </td>
-                                    <td>
+                                    <td vertical-align="middle">
+
                                         <div class="btn-group btn-group-xs"  style="float:right;">
                                             <a href="{% url 'report-veiculos:veiculo-alocado' veiculo.pk %}"
                                                class="btn btn-default btn-xs bt-liberar" target="_blank">
                                                 <span class="glyphicon glyphicon-print"></span>
-                                                Imprimir notificação
+
+                                            </a>
+                                            <a data-id="{{veiculo.pk}}" href="javascript:void(0);"
+                                               class="btn btn-danger btn-xs bt-desalocar">
+                                                <span class="glyphicon glyphicon-log-out"></span>
+
                                             </a>
                                         </div>
 
@@ -157,7 +163,20 @@
 	    });
 
         $('#id_num_por_pagina').change(function(){
-	        location.href = '{% url 'veiculo:vistoria:listar' %}' + '?pagina='+{{ veiculos.number }}+'&num_por_pagina=' + $(this).val();
+            var url = '{% url 'veiculo:vistoria:listar' %}';
+            if($('#id_equipe').val()!='')
+                url = url + $('#id_equipe').val() + '/';
+	        location.href = url + '?pagina='+{{ veiculos.number }}+'&num_por_pagina=' + $(this).val();
+	    });
+
+        $('.bt-desalocar').click(function(event){
+	        $(this).confirmar({
+	            message: "Você deseja desalocar este veículo?",
+	            onConfirm: function() {
+	                veiculo.setIdVeiculo($(this).data('id'));
+	                //veiculoVeiculo();
+	            }
+	        })
 	    });
 
     });
