@@ -266,13 +266,17 @@ def consulta_motorista(request, id_motorista):
 
             if id_motorista:
                 motorista = Motorista.objects.get(pk=int(id_motorista))
-                if motorista.veiculo:
+                if hasattr(motorista, 'veiculo') and hasattr(motorista.veiculo, 'veiculoalocado'):
+                    dajax = process_modal(dajax, 'msg',
+                                          u'Não é possivel selecionar esse motorista. O mesmo se encontra vinculado a veículo já alocado.', True)
+                    dajax.assign('#s2id_id_motorista span.select2-chosen', 'innerHTML', u'Selecione uma equipe')
+                    dajax.script("$('#s2id_id_motorista').removeClass('select2-allowclear');")
+                    dajax.script("$('#id_motorista').val('');")
+                    return dajax.json()
+                elif motorista.veiculo:
                     dajax = process_modal(dajax, 'requisitar-motorista',
                                           u'Motorista vinculado a outro veículo, deseja vincular a este?',
                                           True, u'Motorista vinculado a veículo')
-                elif True:
-                    dajax = process_modal(dajax, 'msg',
-                                          u'Não é possivel selecionar esse motorista. O mesmo se encontra vinculado a veículo já alocado.', True)
                     return dajax.json()
 
                 dajax.assign('#id_id', 'value', motorista.pessoa.id)
