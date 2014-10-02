@@ -265,7 +265,7 @@ def perfil_veiculo_detalhar(request, id_perfil):
     :return:
     """
     perfil = get_object_or_404(PerfilVeiculo, pk=int(id_perfil))
-    cronogramas = perfil.cronograma_perfil.filter(eleicao = request.eleicao_atual)
+    cronogramas = perfil.cronograma_perfil.filter(eleicao = request.eleicao_atual).order_by('dt_apresentacao')
     titulo = u'Detalhar Perfil de Veículo'
     return render(request, 'veiculos/perfil_veiculo/detalhar.html', locals())
 

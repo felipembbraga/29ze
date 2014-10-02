@@ -4,6 +4,7 @@ Created on 05/08/2014
 
 @author: felipe
 '''
+import datetime
 from acesso.models import OrgaoPublico
 from django import forms
 from eleicao.models import Equipe
@@ -122,10 +123,11 @@ class CronogramaForm(forms.ModelForm):
     )
     data = forms.DateField(label='Data da apresentação')
     hora = forms.TimeField(label='Horário de apresentação')
-
+    dia_montagem = forms.BooleanField(initial=False,required=False,label='Dia de montagem')
+    
     class Meta:
         model = CronogramaVeiculo
-        fields = ('local', 'data', 'hora')
+        fields= ('local', 'data', 'hora', 'dia_montagem')
 
     def __init__(self, data=None, instance=None, *args, **kwargs):
         if instance.pk and not data:
@@ -133,7 +135,8 @@ class CronogramaForm(forms.ModelForm):
             data.update({
                 'data': '{:%d/%m/%Y}'.format(instance.dt_apresentacao),
                 'hora': '{:%H:%M:%S}'.format(instance.dt_apresentacao),
-                'local': instance.local
+                'local': instance.local,
+                'dia_montagem': instance.dia_montagem
             })
         super(CronogramaForm, self).__init__(data=data, instance=instance, *args, **kwargs)
         for key in self.fields:

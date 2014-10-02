@@ -4,11 +4,18 @@ Created on 07/08/2014
 
 @author: felipe
 '''
+import datetime
 from django.forms.models import modelform_factory
 from django.contrib.auth.decorators import login_required, permission_required
-from django.shortcuts import render
+from django.http.response import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from django.template import Context
+import webodt
+from webodt.converters import converter
 from models import Veiculo, VeiculoSelecionado
 from acesso.models import OrgaoPublico
+from veiculos.models import VeiculoAlocado
+
 
 @permission_required('veiculos.view_veiculo', raise_exception=True)
 @login_required(login_url='acesso:login-veiculos')
@@ -41,4 +48,38 @@ def relatorio_veiculos_requisitados(request, id_orgao=None):
     form = Form({'orgao':id_orgao})
     form.fields['orgao'].widget.attrs.update({'class':'form-control'})
     return render(request, 'veiculos/report/veiculos_requisitados.html', locals())
-    
+
+def relatorio_veiculo_alocado(request, id_veiculo):
+    veiculo = get_object_or_404(VeiculoAlocado, pk=int(id_veiculo))
+    motorista = veiculo.veiculo.motorista_veiculo.first()
+    data = datetime.datetime.now()
+    def cronograma_local(c):
+        if not c.local:
+            c.local = veiculo.local_votacao.local
+        c.local.endereco = c.local.endereco.upper()
+        c.local.bairro = c.local.bairro.upper()
+        if c.dia_montagem:
+            if veiculo.local_votacao.local_montagem.turno=='v':
+                c.dt_apresentacao = datetime.datetime(c.dt_apresentacao.year, c.dt_apresentacao.month,c.dt_apresentacao.day, 14,0)
+            else:
+                c.dt_apresentacao = datetime.datetime(c.dt_apresentacao.year, c.dt_apresentacao.month,c.dt_apresentacao.day, 7,0)
+        return c
+    cronogramas = map(cronograma_local, veiculo.perfil.cronograma_perfil.filter(eleicao = request.eleicao_atual).order_by('dt_apresentacao'))
+    context = dict(
+        veiculo='%s'%unicode(veiculo),
+        motorista=motorista.pessoa.nome if motorista else 'SEM MOTORISTA',
+        placa = veiculo.veiculo.placa,
+        equipe = veiculo.equipe.nome,
+        orgao=veiculo.veiculo.orgao.nome_secretaria,
+        sigla = veiculo.equipe.sigla,
+        cronogramas=cronogramas,
+        perfil=veiculo.perfil.nome,
+        telefones = motorista.pessoa.telefones_set.all() if motorista else 'SEM MOTORISTA',
+        endereco = motorista.pessoa.endereco if motorista else 'SEM MOTORISTA',
+        data=data
+    )
+    template = webodt.ODFTemplate('modelo_notificacao.odt')
+    document = template.render(Context(context))
+    conv = converter()
+    pdf = conv.convert(document, format='pdf', output_filename='notificacao.pdf')
+    return HttpResponse(pdf, mimetype='application/pdf')
