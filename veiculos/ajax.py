@@ -3,6 +3,7 @@ from core.models import Modelo, Pessoa
 from dajax.core import Dajax
 from dajaxice.decorators import dajaxice_register
 from dajaxice.utils import deserialize_form
+from django.core.urlresolvers import reverse
 from django.template.context import RequestContext
 from django.template.loader import render_to_string
 from eleicao.models import Equipe
@@ -27,9 +28,9 @@ def consultar_veiculo(request, placa):
             if Veiculo.objects.filter(placa__iexact=placa, veiculo_selecionado__isnull=False).exists():
             # Caso o veículo exista no sistema
                 veiculo = Veiculo.objects.get(placa__iexact=placa, veiculo_selecionado__isnull=False)
-                if veiculo.veiculoalocado_set.all().exists():
+                if veiculo.veiculoalocado:
                     dajax = message_status(dajax, 'success', u"Veículo encontrado! O mesmo já foi alocado.", True)
-                    veiculo_alocado = veiculo.veiculoalocado_set.first()
+                    veiculo_alocado = veiculo.veiculoalocado
                     if veiculo_alocado.local_votacao:
                         form_vistoria = VistoriaForm(initial={'equipe': veiculo_alocado.equipe,
                                                               'perfil': veiculo_alocado.perfil})
@@ -318,8 +319,8 @@ def cadastrar_vistoria(request, formulario):
                         Motorista.objects.get(form_pessoa_motorista.cleaned_data['motorista']).update(pessoa=pessoa_motorista)
 
                     if not VeiculoAlocado.objects.filter(veiculo=veiculo).exists():
-                        VeiculoAlocado.objects.create(veiculo=veiculo, perfil=form_vistoria.cleaned_data['perfil'],
-                                                      equipe=form_vistoria.cleaned_data['equipe'].equipe)
+                        veiculo_alocado = VeiculoAlocado.objects.create(veiculo=veiculo, perfil=form_vistoria.cleaned_data['perfil'],
+                                                                        equipe=form_vistoria.cleaned_data['equipe'].equipe)
                     else:
                         veiculo_alocado = VeiculoAlocado.objects.get(veiculo=veiculo)
                         veiculo_alocado.perfil = form_vistoria.cleaned_data['perfil']
@@ -327,7 +328,7 @@ def cadastrar_vistoria(request, formulario):
                         veiculo_alocado.save()
 
                     # dajax = message_status(dajax, 'success', u"Vistoria efetuada com sucesso!", True)
-                    dajax = process_modal(dajax, 'msg', u'Vistoria efetuada com sucesso!<br><br><a href="%s" class="btn btn-default" target="_blank"><span class="glyphicon glyphicon-print"></span> Imprimir comprovante</a>' % '', True)
+                    dajax = process_modal(dajax, 'msg', u'Vistoria efetuada com sucesso!<br><br><a href="%s" class="btn btn-default" target="_blank"><span class="glyphicon glyphicon-print"></span> Imprimir comprovante</a>' % reverse('report-veiculos:veiculo-alocado', args=(veiculo_alocado.pk,)), True)
                     dajax = process_form_vistoria(dajax)
 
                     return dajax.json()
