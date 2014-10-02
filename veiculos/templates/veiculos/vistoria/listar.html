@@ -99,7 +99,7 @@
 
                         <ul class="pager">
                             {% if veiculos.has_previous %}
-                                <li class="previous"><a href="?pagina={{ veiculos.previous_page_number }}">&larr; Anterior</a></li>
+                                <li class="previous"><a href="?pagina={{ veiculos.previous_page_number }}&num_por_pagina={{ form_pagina.num_por_pagina.value }}">&larr; Anterior</a></li>
                             {% endif %}
                             <li>
                                 Página <input type="number" value="{{veiculos.number}}"
@@ -108,7 +108,7 @@
                                               onchange="form.submit();"/> de {{veiculos.paginator.num_pages}}
                             </li>
                             {% if veiculos.has_next %}
-                                <li class="next"><a href="?pagina={{ veiculos.next_page_number }}">Próxima &rarr;</a></li>
+                                <li class="next"><a href="?pagina={{ veiculos.next_page_number }}&num_por_pagina={{ form_pagina.num_por_pagina.value }}">Próxima &rarr;</a></li>
                             {% endif %}
                         </ul>
                     </div>
@@ -154,6 +154,10 @@
 	                veiculo.requisitarVeiculo();
 	            }
 	        })
+	    });
+
+        $('#id_num_por_pagina').change(function(){
+	        location.href = '{% url 'veiculo:vistoria:listar' %}' + '?pagina='+{{ veiculos.number }}+'&num_por_pagina=' + $(this).val();
 	    });
 
     });
