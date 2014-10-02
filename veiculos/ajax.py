@@ -314,11 +314,18 @@ def cadastrar_vistoria(request, formulario):
                     pessoa_motorista = form_pessoa_motorista.save()
 
                     if not formulario.get('motorista'):
-                        Motorista.objects.create(pessoa=pessoa_motorista, veiculo=veiculo, eleicao=request.eleicao_atual)
-                    elif not Motorista.objects.filter(pessoa__id=form_pessoa_motorista.cleaned_data['id']).exists():
-                        Motorista.objects.get(form_pessoa_motorista.cleaned_data['motorista']).update(pessoa=pessoa_motorista)
+                        motorista = Motorista.objects.create(pessoa=pessoa_motorista, veiculo=veiculo, eleicao=request.eleicao_atual)
+                    else:
+                        motorista = form_pessoa_motorista.cleaned_data['motorista']
+                        motorista.pessoa = pessoa_motorista
+                        motorista.veiculo = veiculo
+                        motorista.eleicao = request.eleicao_atual
+                        motorista.save()
 
-                    if form_vistoria.cleaned_data['alocacao'] == '0':
+                    if not motorista.veiculo:
+                        motorista.veiculo = veiculo
+
+                    if form_vistoria.cleaned_data.get('alocacao') == '0':
                         import random
                         if form_vistoria.cleaned_data.get('alocacao_manual'):
                             equipe_auto = form_vistoria.cleaned_data.get('equipe_manual')
@@ -331,8 +338,8 @@ def cadastrar_vistoria(request, formulario):
                         equipe = alocacao.equipe
                         local_votacao = local_auto
                     else:
-                        perfil = form_vistoria.cleaned_data['perfil']
-                        equipe = form_vistoria.cleaned_data['equipe'].equipe
+                        perfil = form_vistoria.cleaned_data.get('perfil')
+                        equipe = form_vistoria.cleaned_data.get('equipe').equipe
                         local_votacao = None
 
                     if not VeiculoAlocado.objects.filter(veiculo=veiculo).exists():
@@ -346,7 +353,7 @@ def cadastrar_vistoria(request, formulario):
                         veiculo_alocado.save()
 
                     # dajax = message_status(dajax, 'success', u"Vistoria efetuada com sucesso!", True)
-                    dajax = process_modal(dajax, 'msg', u'Vistoria efetuada com sucesso!<br><br><a href="%s" class="btn btn-default" target="_blank"><span class="glyphicon glyphicon-print"></span> Imprimir comprovante</a>' % reverse('report-veiculos:veiculo-alocado', args=(veiculo_alocado.pk,)), True)
+                    dajax = process_modal(dajax, 'msg', u'<p style="text-align: center;">Vistoria efetuada com sucesso!<br><br><a href="%s" class="btn btn-default" target="_blank"><span class="glyphicon glyphicon-print"></span> Imprimir comprovante</a></p>' % reverse('report-veiculos:veiculo-alocado', args=(veiculo_alocado.pk,)), True)
                     dajax = process_form_vistoria(dajax)
 
                     return dajax.json()
