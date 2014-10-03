@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.shortcuts import get_object_or_404
 from core.models import Modelo, Pessoa
 from dajax.core import Dajax
 from dajaxice.decorators import dajaxice_register
@@ -379,6 +380,24 @@ def cadastrar_vistoria(request, formulario):
     else:
         dajax = process_modal(dajax, 'msg', u"Instrução inválida!", True)
     return dajax.json()
+
+@dajaxice_register()
+def desalocar_veiculo(request, id_veiculo):
+    dajax = Dajax()
+
+    if request.is_ajax():
+        try:
+            veiculo = get_object_or_404(VeiculoAlocado, pk=int(id_veiculo))
+            placa = veiculo.veiculo.placa
+            veiculo.delete()
+            dajax.script("$.notify({theme:'sucesso', title:'Veiculo da placa %s desalocado com sucesso!'});"%placa.upper())
+
+        except Exception, e:
+            dajax = process_modal(dajax, 'msg',
+                                  "Ocorreu um erro: <strong>%s</strong><br>Favor entrar em contato com o departamento de TI." % e,
+                                  True)
+    return dajax.json()
+
 
 
 def equipes_c_vagas_locais(equipe):
