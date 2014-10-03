@@ -1,6 +1,6 @@
 {% extends 'veiculos/vistoria/base.html' %}
 {% load static from staticfiles %}
-
+{% load dajaxice_templatetags %}
 {% block extrabreadcrumb %}
     {{ block.super }}
     <li><a href="{% url 'veiculo:vistoria:listar' %}">Veículos Vistoriados</a></li>
@@ -138,6 +138,8 @@
 {%block extrascripts %}
     <script src="{% static 'veiculos/js/classes/Veiculo.js' %}"></script>
     <script src="{% static 'veiculos/js/veiculo/index.js' %}"></script>
+    {% dajaxice_js_import %}
+    <script src="{% static "dajax/jquery.dajax.core.js" %}"></script>
     <script>
     $(document).ready(function(){
         var veiculo = new Veiculo()
@@ -166,15 +168,17 @@
             var url = '{% url 'veiculo:vistoria:listar' %}';
             if($('#id_equipe').val()!='')
                 url = url + $('#id_equipe').val() + '/';
-	        location.href = url + '?pagina='+{{ veiculos.number }}+'&num_por_pagina=' + $(this).val();
+	        location.href = url + '?pagina=' + {{ veiculos.number }} + '&num_por_pagina=' + $(this).val();
 	    });
 
         $('.bt-desalocar').click(function(event){
+            self = this;
 	        $(this).confirmar({
 	            message: "Você deseja desalocar este veículo?",
 	            onConfirm: function() {
-	                veiculo.setIdVeiculo($(this).data('id'));
-	                //veiculoVeiculo();
+	                Dajaxice.veiculos.desalocar_veiculo(Dajax.process, {'id_veiculo': $(self).data('id')});
+                    window.setTimeout('location.reload()', 3000);
+
 	            }
 	        })
 	    });

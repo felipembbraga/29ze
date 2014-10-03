@@ -60,7 +60,7 @@ def relatorio_veiculo_alocado(request, id_veiculo):
         c.local.bairro = c.local.bairro.upper()
         if c.dia_montagem:
             if veiculo.local_votacao.local_montagem.turno=='v':
-                c.dt_apresentacao = datetime.datetime(c.dt_apresentacao.year, c.dt_apresentacao.month,c.dt_apresentacao.day, 14,0)
+                c.dt_apresentacao = datetime.datetime(c.dt_apresentacao.year, c.dt_apresentacao.month,c.dt_apresentacao.day, 13,0)
             else:
                 c.dt_apresentacao = datetime.datetime(c.dt_apresentacao.year, c.dt_apresentacao.month,c.dt_apresentacao.day, 7,0)
         return c
