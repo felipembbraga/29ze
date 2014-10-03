@@ -217,7 +217,7 @@ class VistoriaForm(Select2DependencyForm):
                                           label=u'Local de Votação', required=False)
     perfil_manual = forms.ModelChoiceField(queryset=PerfilManualChainedLocalManualLookup().get_queryset(),
                                            widget=AutoCompleteSelect2Widget(PerfilManualChainedLocalManualLookup,
-                                                                            placeholder="Selecione um perfil"),
+                                                                            placeholder=u"Selecione uma função"),
                                            label=u'Função do Veículo', required=False)
 
     select2_deps = (

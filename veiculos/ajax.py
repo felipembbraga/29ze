@@ -336,16 +336,26 @@ def cadastrar_vistoria(request, formulario):
 
                     if form_vistoria.cleaned_data.get('alocacao') == '0':
                         import random
+
+                        # verifica se o servidor marcou o campo de alocação manual, e pega a equipe selecionada
                         if form_vistoria.cleaned_data.get('alocacao_manual'):
                             equipe_auto = form_vistoria.cleaned_data.get('equipe_manual')
                         else:
                             equipe_auto = random.choice(filter(equipes_c_vagas_locais, EquipesAlocacao.objects.all().order_by('equipe__nome')))
                         equipe_auto = equipe_auto.equipe
+
+                        # verifica se o servidor marcou o campo de alocação manual, e pega o local selecionado
                         if form_vistoria.cleaned_data.get('alocacao_manual'):
                             local_auto = form_vistoria.cleaned_data.get('local_manual')
                         else:
                             local_auto = random.choice(filter(locais_c_vagas, equipe_auto.local_equipe.all()))
-                        alocacao = random.choice(filter(alocacao_c_vagas, local_auto.alocacao_set.all()))
+
+                        # verifica se o servidor marcou o campo de alocação manual, e pega o perfil selecionado
+                        if form_vistoria.cleaned_data.get('alocacao_manual'):
+                            alocacao = form_vistoria.cleaned_data.get('perfil_manual')
+                        else:
+                            alocacao = random.choice(filter(alocacao_c_vagas, local_auto.alocacao_set.all()))
+
                         perfil = alocacao.perfil_veiculo
                         equipe = alocacao.equipe
                         local_votacao = local_auto

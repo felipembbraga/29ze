@@ -107,6 +107,10 @@ $(document).ready(function(){
         var div_equipe_manual = $('#div-equipe-manual');
         var equipe_manual_sl2 = $('#s2id_id_equipe_manual');
         var equipe_manual = $('#id_equipe_manual');
+        var local_manual_sl2 = $('#s2id_id_local_manual');
+        var local_manual = $('#id_local_manual');
+        var perfil_manual_sl2 = $('#s2id_id_perfil_manual');
+        var perfil_manual = $('#id_perfil_manual');
         if ($(this).is(':checked'))
             div_equipe_manual.show();
         else{
@@ -114,6 +118,12 @@ $(document).ready(function(){
             equipe_manual_sl2.find('span.select2-chosen').html('Selecione uma equipe');
             equipe_manual_sl2.removeClass('select2-allowclear');
             equipe_manual.val('');
+            local_manual_sl2.find('span.select2-chosen').html('Selecione um local');
+            local_manual_sl2.removeClass('select2-allowclear');
+            local_manual.val('');
+            perfil_manual_sl2.find('span.select2-chosen').html('Selecione uma função');
+            perfil_manual_sl2.removeClass('select2-allowclear');
+            perfil_manual.val('');
         }
     });
 
