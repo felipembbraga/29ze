@@ -2,7 +2,7 @@ from acesso.models import OrgaoPublico
 from eleicao.models import EquipesAlocacao, LocalVotacao
 from selectable.base import ModelLookup, LookupBase
 from selectable.registry import registry
-from veiculos.models import Marca, Modelo, Motorista, PerfilVeiculo
+from veiculos.models import Marca, Modelo, Motorista, PerfilVeiculo, Alocacao
 from django.db import models
 
 
@@ -149,23 +149,28 @@ class LocalManualChainedEquipeManualLookup(ModelLookup, LookupBase):
         return []
 
 
+def alocacao_c_vagas(alocacao):
+    total_veiculos = alocacao.local_votacao.veiculoalocado_set.filter(perfil=alocacao.perfil_veiculo).count()
+    return alocacao.quantidade - total_veiculos > 0
+
+
 class PerfilManualChainedLocalManualLookup(ModelLookup, LookupBase):
-    model = LocalVotacao
-    search_fields = ('local__nome__icontains', )
+    model = Alocacao
+    search_fields = ('perfil_veiculo__nome__icontains', )
 
     def get_item_value(self, item):
         # Display for currently selected item
-        return "%s" % item.local.nome
+        return "%s" % item.perfil_veiculo.nome
 
     def get_item_label(self, item):
-        return "%s" % item.local.nome
+        return "%s" % item.perfil_veiculo.nome
 
     def get_query(self, request, term):
-        results = super(LocalManualChainedEquipeManualLookup, self).get_query(request, term)
-        equipe = request.GET.get('equipe', '')
+        results = super(PerfilManualChainedLocalManualLookup, self).get_query(request, term)
+        local = request.GET.get('local_manual', '')
 
-        if equipe:
-            return filter(locais_c_vagas, results.filter(equipes=equipe).order_by('local__nome'))
+        if local:
+            return filter(alocacao_c_vagas, results.filter(local_votacao=local).order_by('perfil_veiculo__nome'))
         return []
 
 
@@ -177,3 +182,4 @@ registry.register(EquipeLookup)
 registry.register(PerfilChainedEquipeLookup)
 registry.register(EquipeManualLookup)
 registry.register(LocalManualChainedEquipeManualLookup)
+registry.register(PerfilManualChainedLocalManualLookup)

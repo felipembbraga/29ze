@@ -13,7 +13,8 @@ from core.models import Marca, Local, Pessoa
 from selectable_select2.forms import Select2DependencyModelForm, Select2DependencyForm
 from selectable_select2.widgets import AutoCompleteSelect2Widget
 from veiculos.autocomplete import MotoristaLookup, EquipeLookup, PerfilChainedEquipeLookup, MarcaLookup, \
-    ModeloChainedMarcaLookup, EquipeManualLookup, OrgaoLookup, LocalManualChainedEquipeManualLookup
+    ModeloChainedMarcaLookup, EquipeManualLookup, OrgaoLookup, LocalManualChainedEquipeManualLookup, \
+    PerfilManualChainedLocalManualLookup
 from veiculos.models import PerfilVeiculo, CronogramaVeiculo, Alocacao, Motorista, VeiculoAlocado
 
 
@@ -210,10 +211,24 @@ class VistoriaForm(Select2DependencyForm):
                                            widget=AutoCompleteSelect2Widget(EquipeManualLookup,
                                                                             placeholder="Selecione uma equipe"),
                                            label='Equipe', required=False)
+    local_manual = forms.ModelChoiceField(queryset=LocalManualChainedEquipeManualLookup().get_queryset(),
+                                          widget=AutoCompleteSelect2Widget(LocalManualChainedEquipeManualLookup,
+                                                                           placeholder="Selecione um local"),
+                                          label=u'Local de Votação', required=False)
+    perfil_manual = forms.ModelChoiceField(queryset=PerfilManualChainedLocalManualLookup().get_queryset(),
+                                           widget=AutoCompleteSelect2Widget(PerfilManualChainedLocalManualLookup,
+                                                                            placeholder="Selecione um perfil"),
+                                           label=u'Função do Veículo', required=False)
 
     select2_deps = (
         (
             'perfil', {'parents': ['equipe']},
+        ),
+        (
+            'local_manual', {'parents': ['equipe_manual']},
+        ),
+        (
+            'perfil_manual', {'parents': ['local_manual']},
         ),
     )
 

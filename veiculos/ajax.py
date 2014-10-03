@@ -422,7 +422,6 @@ def recarregar_monitoramento(request):
     return dajax.json()
 
 
-
 def equipes_c_vagas_locais(equipe):
     return (equipe.estimativa_local or 0 - equipe.veiculos_alocados_local) > 0
 
@@ -433,5 +432,5 @@ def locais_c_vagas(local):
     return soma_estimativa - total_veiculos > 0
 
 def alocacao_c_vagas(alocacao):
-    total_veiculos = alocacao.local_votacao.veiculoalocado_set.count()
+    total_veiculos = alocacao.local_votacao.veiculoalocado_set.filter(perfil=alocacao.perfil_veiculo).count()
     return alocacao.quantidade - total_veiculos > 0
