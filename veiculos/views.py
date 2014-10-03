@@ -212,6 +212,7 @@ def veiculo_liberar(request, id_veiculo):
 def veiculo_detalhar(request, id_veiculo):
     titulo = 'Detalhar veículo'
     veiculo = get_object_or_404(Veiculo, pk=int(id_veiculo))
+    motorista = veiculo.motorista_veiculo.filter(eleicao=veiculo.eleicao).first()
     return render(request, 'veiculos/veiculo/detalhar.html', locals())
 
 def perfil_veiculo_cadastrar(request):

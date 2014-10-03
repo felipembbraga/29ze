@@ -58,29 +58,29 @@
                         <p class="form-control-static text-center" style="padding:0;"><strong>DADOS DO MOTORISTA</strong></p>
                     </td>
                 </tr>
-                {% if veiculo.motorista_titulo_eleitoral %}
+                {% if motorista %}
                 <tr>
                     <td colspan="2">
                         <label style="margin-bottom:3px;"><small>Nº Título Eleitoral</small></label>
-                        <p class="form-control-static" style="padding:0;">{{ veiculo.motorista_titulo_eleitoral }}</p>
+                        <p class="form-control-static" style="padding:0;">{{ motorista.pessoa.titulo_eleitoral }}</p>
                     </td>
                     <td colspan="2">
                         <label style="margin-bottom:3px;"><small>Nome</small></label>
-                        <p class="form-control-static" style="padding:0;">{{ veiculo.motorista_nome|upper }}</p>
+                        <p class="form-control-static" style="padding:0;">{{ motorista.pessoa.nome|upper }}</p>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2">
                         <label style="margin-bottom:3px;"><small>Endereço</small></label>
-                        <p class="form-control-static" style="padding:0;">{{ veiculo.endereco|upper }}</p>
+                        <p class="form-control-static" style="padding:0;">{{ motorista.pessoa.endereco|upper }}</p>
                     </td>
                     <td>
                         <label style="margin-bottom:3px;"><small>Telefone Residencial</small></label>
-                        <p class="form-control-static" style="padding:0;">{{ veiculo.tel_residencial }}</p>
+                        <p class="form-control-static" style="padding:0;">{{ motorista.tel_residencial }}</p>
                     </td>
                     <td>
                         <label style="margin-bottom:3px;"><small>Telefone Celular</small></label>
-                        <p class="form-control-static" style="padding:0;">{{ veiculo.tel_celular }}</p>
+                        <p class="form-control-static" style="padding:0;">{{ motorista.tel_celular }}</p>
                     </td>
                 </tr>
                 {% else %}

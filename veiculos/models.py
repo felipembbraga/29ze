@@ -101,6 +101,11 @@ class Motorista(models.Model):
     veiculo = models.ForeignKey(Veiculo, related_name='motorista_veiculo', null=True)
     eleicao = models.ForeignKey(Eleicao, related_name='motorista_eleicao')
 
+    def tel_residencial(self):
+        return '/'.join(unicode(telefone) for telefone in self.pessoa.telefones_set.filter(tipo=0))
+    def tel_celular(self):
+        return '/'.join(unicode(telefone) for telefone in self.pessoa.telefones_set.filter(tipo=2))
+
     class Meta:
         verbose_name = u'Motorista'
         verbose_name_plural = u'Motoristas'
