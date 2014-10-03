@@ -13,7 +13,7 @@ from core.models import Marca, Local, Pessoa
 from selectable_select2.forms import Select2DependencyModelForm, Select2DependencyForm
 from selectable_select2.widgets import AutoCompleteSelect2Widget
 from veiculos.autocomplete import MotoristaLookup, EquipeLookup, PerfilChainedEquipeLookup, MarcaLookup, \
-    ModeloChainedMarcaLookup, EquipeManualLookup, OrgaoLookup, LocalManualLookup
+    ModeloChainedMarcaLookup, EquipeManualLookup, OrgaoLookup, LocalManualChainedEquipeManualLookup
 from veiculos.models import PerfilVeiculo, CronogramaVeiculo, Alocacao, Motorista, VeiculoAlocado
 
 
@@ -210,20 +210,11 @@ class VistoriaForm(Select2DependencyForm):
                                            widget=AutoCompleteSelect2Widget(EquipeManualLookup,
                                                                             placeholder="Selecione uma equipe"),
                                            label='Equipe', required=False)
-    local_manual = forms.ModelChoiceField(queryset=LocalManualLookup().get_queryset(),
-                                   widget=AutoCompleteSelect2Widget(LocalManualLookup,
-                                                                     placeholder="Selecione um local"),
-                                    label='Local', required=False)
-    perfil_manual = forms
 
     select2_deps = (
         (
             'perfil', {'parents': ['equipe']},
         ),
-        (
-            'local_manual', {'parents': ['equipe_manual']},
-        ),
-
     )
 
     def __init__(self, *args, **kwargs):

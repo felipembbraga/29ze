@@ -5,6 +5,6 @@
             <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="{{ equipe.percentual_alocado }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ equipe.percentual_alocado }}%; min-width: 0;"></div>
             <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="{{ equipe.percentual_estimado }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ equipe.percentual_estimado }}%; min-width: 0;"></div>
         </div>
-        <p style="margin-bottom: 0"><span style="color: #00b100;font-weight: bold;">{{ equipe.alocado }}</span><span class="pull-right" style="color: #F0AD4E;font-weight: bold;">{{ equipe.estimado }}</span></p>
+        <div style="color: #00b100;font-weight: bold; width: 20%; display: inline-block;">{{ equipe.alocado }}</div><div class="" style="font-weight: bold; width: 60%; display: inline-block; text-align: center">{{ equipe.total_estimado }}</div><div class="pull-right" style="color: #F0AD4E;font-weight: bold; width: 20%; display: inline-block; text-align: right">{{ equipe.estimado }}</div>
     </div>
 {% endfor %}

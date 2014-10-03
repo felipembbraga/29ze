@@ -418,7 +418,8 @@ def monta_monitoramento(request):
     equipe_monitoracao = []
     for equipe in equipes:
         dict = {'equipe': equipe.equipe,
-                'estimado': equipe.total_estimativa,
+                'total_estimado': equipe.total_estimativa,
+                'estimado': equipe.total_estimativa - equipe.veiculos_alocados,
                 'alocado': equipe.veiculos_alocados,
                 'percentual_alocado': (100 * equipe.veiculos_alocados) / equipe.total_estimativa}
 
