@@ -11,7 +11,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from acesso.decorators import orgao_atualizar
 from acesso.models import OrgaoPublico
 from core.models import Modelo
-from eleicao.models import LocalVotacao, Equipe
+from django.template.context import RequestContext
+from eleicao.models import LocalVotacao, Equipe, EquipesAlocacao
 from filters import VeiculoFilter
 from forms import VeiculoForm, MotoristaForm
 from models import Veiculo, VeiculoSelecionado
@@ -349,19 +350,19 @@ def alocacao_editar(request, id_equipe, id_perfil, id_local=None):
 
 
 @login_required
-@permission_required('veiculos.inspection-veiculo', raise_exception=True)
+@permission_required('veiculos.inspection_veiculo', raise_exception=True)
 def index_vistoria(request):
     return render(request, 'veiculos/vistoria/index.html')
 
 
 @login_required
-@permission_required('veiculos.inspection-veiculo', raise_exception=True)
+@permission_required('veiculos.inspection_veiculo', raise_exception=True)
 def veiculo_vistoria(request):
     return render(request, 'veiculos/vistoria/cadastrar.html')
 
 
 @login_required
-@permission_required('veiculos.inspection-veiculo', raise_exception=True)
+@permission_required('veiculos.inspection_veiculo', raise_exception=True)
 def veiculo_vistoria_listagem(request, id_equipe=None):
     if id_equipe:
         equipe = Equipe.objects.get(pk=int(id_equipe))
@@ -399,3 +400,20 @@ def veiculo_vistoria_listagem(request, id_equipe=None):
         form = formequipe()
     form.fields['equipe'].widget.attrs.update({'class':'form-control'})
     return render(request, 'veiculos/vistoria/listar.html', locals())
+
+
+@login_required
+@permission_required('veiculos.monitor_vistoria', raise_exception=True)
+def monitorar_vistoria(request):
+    equipes = EquipesAlocacao.objects.filter(eleicao=request.eleicao_atual).order_by('equipe__nome')
+    equipe_monitoracao = []
+    for equipe in equipes:
+        dict = {'equipe': equipe.equipe,
+                'estimado': equipe.total_estimativa,
+                'alocado': equipe.veiculos_alocados,
+                'percentual_alocado': (100 * equipe.veiculos_alocados) / equipe.total_estimativa}
+
+        dict['percentual_estimado'] = 100 - dict['percentual_alocado']
+
+        equipe_monitoracao.append(dict)
+    return render(request, 'veiculos/vistoria/monitor.html', RequestContext(request, {'equipes_monitoracao': equipe_monitoracao}))

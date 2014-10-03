@@ -40,6 +40,7 @@ class Veiculo(models.Model):
             ('view_veiculo', u'Visualizar Veículos'),
             ('view_all_veiculo', u'Visualizar Todos os Veículos'),
             ('inspection_veiculo', u'Virtoria de Veículo'),
+            ('monitor_vistoria', u'Monitorar Vistoria'),
         )
 
     def __unicode__(self):
