@@ -341,7 +341,10 @@ def cadastrar_vistoria(request, formulario):
                         else:
                             equipe_auto = random.choice(filter(equipes_c_vagas_locais, EquipesAlocacao.objects.all().order_by('equipe__nome')))
                         equipe_auto = equipe_auto.equipe
-                        local_auto = random.choice(filter(locais_c_vagas, equipe_auto.local_equipe.all()))
+                        if form_vistoria.cleaned_data.get('alocacao_manual'):
+                            local_auto = form_vistoria.cleaned_data.get('local_manual')
+                        else:
+                            local_auto = random.choice(filter(locais_c_vagas, equipe_auto.local_equipe.all()))
                         alocacao = random.choice(filter(alocacao_c_vagas, local_auto.alocacao_set.all()))
                         perfil = alocacao.perfil_veiculo
                         equipe = alocacao.equipe

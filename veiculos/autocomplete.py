@@ -1,8 +1,9 @@
 from acesso.models import OrgaoPublico
-from eleicao.models import EquipesAlocacao
+from eleicao.models import EquipesAlocacao, LocalVotacao
 from selectable.base import ModelLookup, LookupBase
 from selectable.registry import registry
 from veiculos.models import Marca, Modelo, Motorista, PerfilVeiculo
+from django.db import models
 
 
 class MotoristaLookup(ModelLookup):
@@ -99,7 +100,7 @@ class PerfilChainedEquipeLookup(ModelLookup, LookupBase):
         equipe = request.GET.get('equipe', '')
 
         if equipe:
-            results = results.filter(equipes=equipe).order_by('nome')
+            results = results.filter(equipe=equipe).order_by('nome')
             return results.filter(perfil_equipe=True)
         return []
 
@@ -123,6 +124,51 @@ class EquipeManualLookup(ModelLookup):
         return filter(equipes_c_vagas_locais, qs.order_by('equipe__nome'))
 
 
+def locais_c_vagas(local):
+    soma_estimativa = local.alocacao_set.aggregate(models.Sum('quantidade')).get('quantidade__sum')
+    total_veiculos = local.veiculoalocado_set.count()
+    return soma_estimativa - total_veiculos > 0
+
+
+class LocalManualChainedEquipeManualLookup(ModelLookup, LookupBase):
+    model = LocalVotacao
+    search_fields = ('local__nome__icontains', )
+
+    def get_item_value(self, item):
+        # Display for currently selected item
+        return "%s" % item.local.nome
+
+    def get_item_label(self, item):
+        return "%s" % item.local.nome
+
+    def get_query(self, request, term):
+        results = super(LocalManualChainedEquipeManualLookup, self).get_query(request, term)
+        equipe = request.GET.get('equipe_manual', '')
+        if equipe:
+            return filter(locais_c_vagas, results.filter(equipe=equipe).order_by('local__nome'))
+        return []
+
+
+class PerfilManualChainedLocalManualLookup(ModelLookup, LookupBase):
+    model = LocalVotacao
+    search_fields = ('local__nome__icontains', )
+
+    def get_item_value(self, item):
+        # Display for currently selected item
+        return "%s" % item.local.nome
+
+    def get_item_label(self, item):
+        return "%s" % item.local.nome
+
+    def get_query(self, request, term):
+        results = super(LocalManualChainedEquipeManualLookup, self).get_query(request, term)
+        equipe = request.GET.get('equipe', '')
+
+        if equipe:
+            return filter(locais_c_vagas, results.filter(equipes=equipe).order_by('local__nome'))
+        return []
+
+
 registry.register(ModeloChainedMarcaLookup)
 registry.register(OrgaoLookup)
 registry.register(MarcaLookup)
@@ -130,3 +176,4 @@ registry.register(MotoristaLookup)
 registry.register(EquipeLookup)
 registry.register(PerfilChainedEquipeLookup)
 registry.register(EquipeManualLookup)
+registry.register(LocalManualChainedEquipeManualLookup)
