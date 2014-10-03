@@ -52,7 +52,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': '127.0.0.1',
         'PORT': '5432',
-        'NAME': 'db_zona_eleitoral',
+        'NAME': 'db_zona_eleitoral2',
         'USER': 'zona_eleitoral',
         'PASSWORD': 'swordfish0001'
     }
