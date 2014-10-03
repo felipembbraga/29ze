@@ -11,7 +11,8 @@ from views import index, veiculo_index, veiculo_cadastrar, veiculo_editar, veicu
     veiculo_vistoria_listagem
 from veiculos.views import veiculo_excluir, veiculo_listar, veiculo_requisitar, veiculo_liberar, veiculo_detalhar, \
     perfil_veiculo_cadastrar, perfil_veiculo_listar, perfil_veiculo_editar, perfil_veiculo_detalhar, \
-    cronograma_cadastrar, cronograma_editar, cronograma_excluir, alocacao_editar, veiculo_vistoria, index_vistoria
+    cronograma_cadastrar, cronograma_editar, cronograma_excluir, alocacao_editar, veiculo_vistoria, index_vistoria, \
+    monitorar_vistoria
 
 
 vistoria_veiculo_patterns = [
@@ -20,6 +21,7 @@ vistoria_veiculo_patterns = [
     url(r'^cadastrar/(\d+)/$', veiculo_vistoria, name='cadastrar'),
     url(r'^listar/$', veiculo_vistoria_listagem, name='listar'),
     url(r'^listar/(\d+)/$', veiculo_vistoria_listagem, name='listar'),
+    url(r'^monitorar/$', monitorar_vistoria, name='monitorar'),
 ]
 
 veiculo_patterns = [
