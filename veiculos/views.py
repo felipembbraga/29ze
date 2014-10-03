@@ -405,6 +405,10 @@ def veiculo_vistoria_listagem(request, id_equipe=None):
 @login_required
 @permission_required('veiculos.monitor_vistoria', raise_exception=True)
 def monitorar_vistoria(request):
+    return render(request, 'veiculos/vistoria/monitor.html', RequestContext(request, {'equipes_monitoracao': monta_monitoramento(request)}))
+
+
+def monta_monitoramento(request):
     equipes = EquipesAlocacao.objects.filter(eleicao=request.eleicao_atual).order_by('equipe__nome')
     equipe_monitoracao = []
     for equipe in equipes:
@@ -416,4 +420,5 @@ def monitorar_vistoria(request):
         dict['percentual_estimado'] = 100 - dict['percentual_alocado']
 
         equipe_monitoracao.append(dict)
-    return render(request, 'veiculos/vistoria/monitor.html', RequestContext(request, {'equipes_monitoracao': equipe_monitoracao}))
+
+    return equipe_monitoracao

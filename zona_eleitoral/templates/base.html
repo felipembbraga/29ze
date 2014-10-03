@@ -112,6 +112,23 @@
 <script src="{% static 'zona_eleitoral/js/main.js' %}"></script>
 {% block extrascripts %}{% endblock %}
 {% include 'modal.html' %}
-{% block extra_modals %}{% endblock %}
+{% block extra_modals %}
+    <div class="modal fade" id="modal-msg" tabindex="-1" role="dialog" aria-labelledby="modal-msg-title" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="modal-msg-title">Atenção</h4>
+                </div>
+                <div class="modal-body">
+                    <p id="msg-txt"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Entendi</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endblock %}
 </body>
 </html> 

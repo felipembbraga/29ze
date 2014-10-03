@@ -1,5 +1,6 @@
 {% extends 'veiculos/vistoria/base.html' %}
 {% load static from staticfiles %}
+{% load dajaxice_templatetags %}
 
 {% block extrabreadcrumb %}
     {{ block.super }}
@@ -46,6 +47,16 @@
 {% endblock %}
 
 {%block extrascripts %}
-    <script src="{% static 'veiculos/js/classes/Veiculo.js' %}"></script>
-	<script src="{% static 'veiculos/js/veiculo/index.js' %}"></script>
+    {% dajaxice_js_import %}
+    <script src="{% static "dajax/jquery.dajax.core.js" %}"></script>
+	<script>
+        $(document).ready(function(){
+            function transition() {
+                console.log('aqui');
+                Dajaxice.veiculos.recarregar_monitoramento(Dajax.process);
+            }
+
+            setInterval(transition, 20000);
+        });
+	</script>
 {% endblock %}

@@ -12,6 +12,7 @@ from models import Veiculo, Motorista
 from veiculos.forms import VeiculoVistoriaForm, VistoriaForm, MotoristaVistoriaForm
 from veiculos.models import VeiculoSelecionado, VeiculoAlocado
 from django.db import models
+from veiculos.views import monta_monitoramento
 
 
 @dajaxice_register()
@@ -396,6 +397,26 @@ def desalocar_veiculo(request, id_veiculo):
             dajax = process_modal(dajax, 'msg',
                                   "Ocorreu um erro: <strong>%s</strong><br>Favor entrar em contato com o departamento de TI." % e,
                                   True)
+    return dajax.json()
+
+
+@dajaxice_register()
+def recarregar_monitoramento(request):
+    """
+    Atualiza o select dos modelos de acordo com a marca selecionada
+    """
+    dajax = Dajax()
+    if request.is_ajax():
+        try:
+            monitoramento = monta_monitoramento(request)
+            render = render_to_string('veiculos/vistoria/monitor-detalhe.html', RequestContext(request, {'equipes_monitoracao': monitoramento}))
+            dajax.assign('#monitor-detalhe', 'innerHTML', render)
+        except Exception, e:
+            dajax = process_modal(dajax, 'msg',
+                                  "Ocorreu um erro: <strong>%s</strong><br>Favor entrar em contato com o departamento de TI." % e,
+                                  True)
+    else:
+        dajax = process_modal(dajax, 'msg', u"Instrução inválida!", True)
     return dajax.json()
 
 

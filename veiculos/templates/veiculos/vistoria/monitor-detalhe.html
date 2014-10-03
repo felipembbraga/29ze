@@ -2,12 +2,9 @@
     <div class="col-md-2" style="border: 1px solid #ccc; border-radius: 3px; margin: 10px; padding: 10px; width: 18.2%">
         <p>{{ equipe.equipe }}</p>
         <div class="progress" style="margin-bottom: 0">
-            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="{{ equipe.percentual_alocado }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ equipe.percentual_alocado }}%">
-                {{ equipe.alocado }}
-            </div>
-            <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="{{ equipe.percentual_estimado }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ equipe.percentual_estimado }}%">
-                {{ equipe.estimado }}
-            </div>
+            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="{{ equipe.percentual_alocado }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ equipe.percentual_alocado }}%; min-width: 0;"></div>
+            <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="{{ equipe.percentual_estimado }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ equipe.percentual_estimado }}%; min-width: 0;"></div>
         </div>
+        <p style="margin-bottom: 0"><span style="color: #00b100;font-weight: bold;">{{ equipe.alocado }}</span><span class="pull-right" style="color: #F0AD4E;font-weight: bold;">{{ equipe.estimado }}</span></p>
     </div>
 {% endfor %}
