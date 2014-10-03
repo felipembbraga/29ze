@@ -282,7 +282,6 @@ def consulta_motorista(request, id_motorista):
                     dajax = process_modal(dajax, 'requisitar-motorista',
                                           u'Motorista vinculado a outro veículo, deseja vincular a este?',
                                           True, u'Motorista vinculado a veículo')
-                    return dajax.json()
 
                 dajax.assign('#id_id', 'value', motorista.pessoa.id)
                 dajax.assign('#id_titulo_eleitoral', 'value', motorista.pessoa.titulo_eleitoral)
