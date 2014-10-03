@@ -1,3 +1,4 @@
+from acesso.models import OrgaoPublico
 from eleicao.models import EquipesAlocacao
 from selectable.base import ModelLookup, LookupBase
 from selectable.registry import registry
@@ -20,6 +21,17 @@ class MotoristaLookup(ModelLookup):
         if self.filters:
             qs = qs.filter(**self.filters).order_by('pessoa__nome')
         return qs
+
+
+class OrgaoLookup(ModelLookup):
+    model = OrgaoPublico
+    search_fields = ('nome_secretaria__icontains', )
+
+    def get_item_value(self, item):
+        return "%s" % item.nome_secretaria
+
+    def get_item_label(self, item):
+        return "%s" % item.nome_secretaria
 
 
 class MarcaLookup(ModelLookup):
@@ -112,6 +124,7 @@ class EquipeManualLookup(ModelLookup):
 
 
 registry.register(ModeloChainedMarcaLookup)
+registry.register(OrgaoLookup)
 registry.register(MarcaLookup)
 registry.register(MotoristaLookup)
 registry.register(EquipeLookup)

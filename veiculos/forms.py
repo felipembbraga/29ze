@@ -13,7 +13,7 @@ from core.models import Marca, Local, Pessoa
 from selectable_select2.forms import Select2DependencyModelForm, Select2DependencyForm
 from selectable_select2.widgets import AutoCompleteSelect2Widget
 from veiculos.autocomplete import MotoristaLookup, EquipeLookup, PerfilChainedEquipeLookup, MarcaLookup, \
-    ModeloChainedMarcaLookup, EquipeManualLookup
+    ModeloChainedMarcaLookup, EquipeManualLookup, OrgaoLookup
 from veiculos.models import PerfilVeiculo, CronogramaVeiculo, Alocacao, Motorista, VeiculoAlocado
 
 
@@ -45,14 +45,20 @@ class VeiculoForm(forms.ModelForm):
 
 
 class VeiculoVistoriaForm(Select2DependencyModelForm):
-    orgao = forms.ModelChoiceField(queryset=OrgaoPublico.objects.all().order_by('nome_secretaria'))
+    # orgao = forms.ModelChoiceField(queryset=OrgaoPublico.objects.all().order_by('nome_secretaria'))
     placa = forms.RegexField(r'[A-Za-z]{3}-\d{4}', max_length=8, help_text='Ex.:ABC-1234',
                              error_messages={'invalid': u'Insira uma placa válida.'},
                              widget=forms.TextInput(attrs={'readonly': ''}))
+    orgao = forms.ModelChoiceField(queryset=OrgaoLookup().get_queryset(),
+                                   widget=AutoCompleteSelect2Widget(OrgaoLookup, placeholder=u"Selecione um órgão"),
+                                   label=u'Órgão')
     marca = forms.ModelChoiceField(queryset=MarcaLookup().get_queryset(),
-        widget=AutoCompleteSelect2Widget(MarcaLookup, placeholder="selecione uma marca"), label='Marca')
+                                   widget=AutoCompleteSelect2Widget(MarcaLookup, placeholder="Selecione uma marca"),
+                                   label='Marca')
     modelo = forms.ModelChoiceField(queryset=ModeloChainedMarcaLookup().get_queryset(),
-        widget=AutoCompleteSelect2Widget(ModeloChainedMarcaLookup, placeholder="selecione um modelo"), label='Modelo')
+                                    widget=AutoCompleteSelect2Widget(ModeloChainedMarcaLookup,
+                                                                     placeholder="Selecione um modelo"),
+                                    label='Modelo')
 
     select2_deps = (
         (

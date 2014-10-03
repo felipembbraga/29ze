@@ -90,6 +90,7 @@ class VeiculoSelecionado(models.Model):
     veiculo = models.OneToOneField(Veiculo, related_name='veiculo_selecionado')
     local = models.ForeignKey(LocalVotacao, related_name='local_veiculo', null=True, blank=True)
     administrador = models.BooleanField(default=False, blank=True)
+    requisitado_vistoria = models.BooleanField('Requisitado durante vistoria', default=False)
 
     def __unicode__(self):
         return unicode(self.veiculo)

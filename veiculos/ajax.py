@@ -25,12 +25,14 @@ def consultar_veiculo(request, placa):
     msg = ''
 
     if request.is_ajax():
+        dajax = process_form_vistoria(dajax)
         try:
             if Veiculo.objects.filter(placa__iexact=placa, veiculo_selecionado__isnull=False).exists():
             # Caso o veículo exista no sistema
                 veiculo = Veiculo.objects.get(placa__iexact=placa, veiculo_selecionado__isnull=False)
                 if hasattr(veiculo, 'veiculoalocado') and veiculo.veiculoalocado is not None:
-                    dajax = message_status(dajax, 'success', u"Veículo encontrado! O mesmo já foi alocado.", True)
+                    dajax = process_modal(dajax, 'veiculo-alocado',
+                                          u'O veículo consultado já foi alocado. Deseja alterar sua alocação?', True)
                     veiculo_alocado = veiculo.veiculoalocado
                     if veiculo_alocado.local_votacao:
                         form_vistoria = VistoriaForm()
@@ -40,7 +42,7 @@ def consultar_veiculo(request, placa):
                     form_motorista = MotoristaVistoriaForm(initial={'motorista': veiculo.motorista_veiculo.first(),
                                                                     'id': veiculo.motorista_veiculo.first().pessoa.id},
                                                            instance=veiculo.motorista_veiculo.first().pessoa)
-                    dajax = process_form_vistoria(dajax, veiculo, True, request, form_vistoria, form_motorista)
+                    dajax = process_form_vistoria(dajax, veiculo, True, request, form_vistoria, form_motorista, True)
                 else:
                     dajax = message_status(dajax, 'success', u"Veículo encontrado!", True)
                     dajax = process_form_vistoria(dajax, veiculo, True, request)
@@ -94,7 +96,7 @@ def cadastrar_veiculo(request, placa, formulario):
                 if form.is_valid():
                 # Se o formulário for válido
                     veiculo = form.save()
-                    VeiculoSelecionado.objects.get_or_create(veiculo=veiculo)  # realiza a requisição do veículo automaticamente
+                    VeiculoSelecionado.objects.get_or_create(veiculo=veiculo, requisitado_vistoria=True)  # realiza a requisição do veículo automaticamente
 
                     dajax = message_status(dajax, 'success', u"Veículo cadastrado com sucesso!", True)
                     dajax = process_form_vistoria(dajax, veiculo, True, request)
@@ -153,8 +155,8 @@ def requisitar_veiculo(request, placa):
     veiculo = Veiculo.objects.filter(placa__iexact=placa)
 
     if veiculo:
-    # Caso exista veículo com a placa informada no sistema, requisita o mesmo
-        VeiculoSelecionado.objects.get_or_create(veiculo=veiculo.first())
+        # Caso exista veículo com a placa informada no sistema, requisita o mesmo
+        VeiculoSelecionado.objects.get_or_create(veiculo=veiculo.first(), requisitado_vistoria=True)
         message = "Veículo requisitado com sucesso!"
         status = 'success'
 
@@ -217,7 +219,7 @@ def process_modal(dajax, modal=None, msg=None, exibe=False, titulo=None):
     return dajax
 
 
-def process_form_vistoria(dajax, veiculo=None, exibe=False, request=None, form_vistoria=None, form_motorista=None):
+def process_form_vistoria(dajax, veiculo=None, exibe=False, request=None, form_vistoria=None, form_motorista=None, disable_show=False):
     """
     Função utilizada para montar e exibir a seção do formulário de vistoria,
     ou esconder esta mesma seção de acordo com o parâmetro exibe
@@ -247,7 +249,8 @@ def process_form_vistoria(dajax, veiculo=None, exibe=False, request=None, form_v
                                                                                           'form_vistoria': form_vistoria,
                                                                                           'form_motorista': form_motorista}))
         dajax.assign('#cadastrar-vistoria .panel-body', 'innerHTML', render)
-        dajax.script("$('#cadastrar-vistoria').show();")
+        if not disable_show:
+            dajax.script("$('#cadastrar-vistoria').show();")
     else:
         dajax.assign('#cadastrar-vistoria .panel-body', 'innerHTML', '')
         dajax.script("$('#cadastrar-vistoria').hide();")
