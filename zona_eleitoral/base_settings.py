@@ -71,7 +71,7 @@ WSGI_APPLICATION = 'zona_eleitoral.deploy.wsgi.application'
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Araguaina'
 
 DATE_FORMAT= '%d/%m/%Y'
 
