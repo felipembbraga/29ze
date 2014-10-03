@@ -136,6 +136,16 @@ class CronogramaVeiculo(models.Model):
     dia_montagem = models.BooleanField('Dia de montagem', default=False)
     eleicao = models.ForeignKey(Eleicao)
 
+@receiver(post_save, sender=Motorista)
+def motorista_post_save(signal, instance, sender, **kwargs):
+    if instance.veiculo:
+        veiculo = instance.veiculo
+        motoristas = veiculo.motorista_veiculo.all()
+        for m in motoristas:
+            if m.pk == instance.pk:
+                continue
+            m.veiculo = None
+            m.save()
 
 class Alocacao(models.Model):
     perfil_veiculo = models.ForeignKey(PerfilVeiculo)

@@ -16,8 +16,7 @@
             <form id="form-filtro" method="GET">
                 <div class="row">
                     <div class="col-md-4">
-                        <strong>Total de veículos alocados: </strong>{{ veiculos.object_list.count }} <br />
-                        <strong>Total de veículos com motorista: </strong>{{ total_com_motorista }} <br />
+                        <strong>Total de veículos alocados: </strong>{{ lista_veiculos.count }} <br />
                         <strong>Total de veículos sem motorista: </strong>{{ total_sem_motorista }} <br />
 
                     </div>
@@ -32,6 +31,14 @@
                             <label for="{{form_pagina.num_por_pagina.id_for_label}}">{{ form_pagina.num_por_pagina.label }}</label>
                             {{ form_pagina.num_por_pagina }}
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="{{ pesquisar }}" id="pesquisar" name="pesquisar" placeholder="Pesquisar Placa" />
+                        <span class="input-group-btn">
+                            <a href="javascript:void(0);" class="btn btn-default" id="bt-pesquisar">Pesquisar</a>
+                        </span>
                     </div>
                 </div>
                 <div class="row">
@@ -141,49 +148,53 @@
     {% dajaxice_js_import %}
     <script src="{% static "dajax/jquery.dajax.core.js" %}"></script>
     <script>
-    $(document).ready(function(){
-        var veiculo = new Veiculo()
-	    $('#id_equipe').change(function(){
-	        var url;
-	        if($(this).val()=='')
-	            url = '{% url 'veiculo:vistoria:listar' %}';
-	        else
-	            url = '{% url 'veiculo:vistoria:listar' %}' + $(this).val() + '/';
-	        $('#pagina').val(1);
-	        location.href = url + '?' + $('#form-filtro').serialize();
-	    });
+        $(document).ready(function(){
+            var veiculo = new Veiculo()
+            $('#id_equipe').change(function(){
+                var url;
+                if($(this).val()=='')
+                    url = '{% url 'veiculo:vistoria:listar' %}';
+                else
+                    url = '{% url 'veiculo:vistoria:listar' %}' + $(this).val() + '/';
+                $('#pagina').val(1);
+                location.href = url + '?' + $('#form-filtro').serialize();
+            });
 
 
-	    $('.bt-requisitar').click(function(event){
-	        $(this).confirmar({
-	            message: "Você deseja requisitar este veículo?",
-	            onConfirm: function() {
-	                veiculo.setIdVeiculo($(this).data('id'));
-	                veiculo.requisitarVeiculo();
-	            }
-	        })
-	    });
+            $('#bt-pesquisar').click(function(event){
+                var url = '{% url 'veiculo:vistoria:listar' %}';
+                if($('#id_equipe').val()!='')
+                    url = url + $('#id_equipe').val() + '/';
 
-        $('#id_num_por_pagina').change(function(){
-            var url = '{% url 'veiculo:vistoria:listar' %}';
-            if($('#id_equipe').val()!='')
-                url = url + $('#id_equipe').val() + '/';
-	        location.href = url + '?pagina=' + {{ veiculos.number }} + '&num_por_pagina=' + $(this).val();
-	    });
+                location.href = url + '?pagina=' + {{ veiculos.number }} + '&num_por_pagina=' + $('#id_num_por_pagina').val() + '&pesquisar=' + $("#pesquisar").val();
+            });
 
-        $('.bt-desalocar').click(function(event){
-            self = this;
-	        $(this).confirmar({
-	            message: "Você deseja desalocar este veículo?",
-	            onConfirm: function() {
-	                Dajaxice.veiculos.desalocar_veiculo(Dajax.process, {'id_veiculo': $(self).data('id')});
-                    window.setTimeout('location.reload()', 3000);
+            $('#pesquisar').keypress(function(event) {
+                if (event.keyCode == 13)
+                    $('#bt-pesquisar').trigger('click');
+            });
 
-	            }
-	        })
-	    });
+            $('#id_num_por_pagina').change(function(){
+                var url = '{% url 'veiculo:vistoria:listar' %}';
+                if($('#id_equipe').val()!='')
+                    url = url + $('#id_equipe').val() + '/';
 
-    });
+                location.href = url + '?pagina=' + {{ veiculos.number }} + '&num_por_pagina=' + $(this).val() + '&pesquisar=' + $("#pesquisar").val();
+            });
+
+            $('.bt-desalocar').click(function(event){
+                self = this;
+                $(this).confirmar({
+                    message: "Você deseja desalocar este veículo?",
+                    onConfirm: function() {
+                        Dajaxice.veiculos.desalocar_veiculo(Dajax.process, {'id_veiculo': $(self).data('id')});
+                        window.setTimeout('location.reload()', 3000);
+
+                    }
+                })
+            });
+
+        });
 
     </script>
 {% endblock %}

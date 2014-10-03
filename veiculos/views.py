@@ -364,13 +364,18 @@ def veiculo_vistoria(request):
 @login_required
 @permission_required('veiculos.inspection_veiculo', raise_exception=True)
 def veiculo_vistoria_listagem(request, id_equipe=None):
+
     if id_equipe:
         equipe = Equipe.objects.get(pk=int(id_equipe))
         queryset = VeiculoAlocado.objects.filter(veiculo__eleicao = request.eleicao_atual, equipe=equipe)
 
     else:
         queryset = VeiculoAlocado.objects.filter(veiculo__eleicao = request.eleicao_atual)
+    total_veiculos = queryset.count()
     lista_veiculos = queryset.order_by('equipe__nome', 'veiculo__marca__nome', 'veiculo__modelo__nome')
+    pesquisar = request.GET.get('pesquisar') and request.GET.get('pesquisar') or ''
+    if pesquisar != '':
+       lista_veiculos = lista_veiculos.filter(veiculo__placa__icontains=pesquisar)
 
     #filtro = VeiculoAlocadoFilter(request.GET, queryset = lista_veiculos)
     #total_com_motorista = filtro.qs.exclude(motorista_titulo_eleitoral=None).count()
