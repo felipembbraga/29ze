@@ -12,6 +12,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template import Context
 import webodt
 from webodt.converters import converter
+from eleicao.models import Equipe
 from models import Veiculo, VeiculoSelecionado
 from acesso.models import OrgaoPublico
 from veiculos.models import VeiculoAlocado
@@ -85,3 +86,17 @@ def relatorio_veiculo_alocado(request, id_veiculo):
     conv = converter()
     pdf = conv.convert(document, format='pdf')
     return HttpResponse(pdf, mimetype='application/pdf')
+
+def relatorio_veiculos_alocados(request, id_equipe=None):
+
+    if id_equipe:
+        equipe = get_object_or_404(Equipe, pk=int(id_equipe))
+    equipes = Equipe.objects.filter(eleicao=request.eleicao_atual).order_by('nome')
+    Form = modelform_factory(
+                VeiculoAlocado,
+                fields=('equipe',),
+                labels={'equipe':u'Selecionar Equipe: '})
+    Form.base_fields['equipe'].queryset = equipes
+    form = Form({'equipe':id_equipe})
+    form.fields['equipe'].widget.attrs.update({'class':'form-control'})
+    return render(request, 'veiculos/report/veiculos_alocados.html', locals())

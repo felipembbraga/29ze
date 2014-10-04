@@ -5,7 +5,7 @@ Created on 05/08/2014
 '''
 from django.conf.urls import include, url, patterns
 from veiculos.views_relatorio import relatorio_veiculos, relatorio_admin_orgao_sem_veiculo, \
-    relatorio_veiculos_requisitados, relatorio_veiculo_alocado
+    relatorio_veiculos_requisitados, relatorio_veiculo_alocado, relatorio_veiculos_alocados
 
 from views import index, veiculo_index, veiculo_cadastrar, veiculo_editar, veiculo_ajax_get_modelo, info, \
     veiculo_vistoria_listagem
@@ -63,6 +63,8 @@ report_patterns = [
     url(r'^veiculos-requisitados/$', relatorio_veiculos_requisitados, name='veiculos-requisitados'),
     url(r'^veiculos-requisitados/(\d+)/$', relatorio_veiculos_requisitados, name='veiculos-requisitados'),
     url(r'^veiculo-alocado/(\d+)/$', relatorio_veiculo_alocado, name='veiculo-alocado'),
+    url(r'^veiculos-alocados/$', relatorio_veiculos_alocados, name='veiculos-alocados'),
+    url(r'^veiculos-alocados/(\d+)/$', relatorio_veiculos_alocados, name='veiculos-alocados'),
 ]
 
 urlpatterns = patterns('',

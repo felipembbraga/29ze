@@ -50,11 +50,11 @@ STATICFILES_FINDERS = (
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': '127.0.0.1',
+        'HOST': '200.169.134.29',
         'PORT': '5432',
-        'NAME': 'db_zona_eleitoral_dev',
-        'USER': 'zona_eleitoral_dev',
-        'PASSWORD': 'qwerasdf'
+        'NAME': 'db_zona_eleitoral2',
+        'USER': 'zona_eleitoral',
+        'PASSWORD': 'swordfish0001'
     }
 }
 
