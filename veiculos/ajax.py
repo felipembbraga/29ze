@@ -433,7 +433,7 @@ def recarregar_monitoramento(request):
 
 
 def equipes_c_vagas_locais(equipe):
-    return (equipe.estimativa_local or 0 - equipe.veiculos_alocados_local) > 0
+    return ((equipe.estimativa_local or 0) - equipe.veiculos_alocados_local) > 0
 
 
 def locais_c_vagas(local):

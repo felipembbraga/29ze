@@ -66,7 +66,7 @@ class ModeloChainedMarcaLookup(ModelLookup, LookupBase):
 
 
 def equipes_c_vagas(equipe):
-    return (equipe.estimativa_equipe or 0 - equipe.veiculos_alocados_equipe) > 0
+    return ((equipe.estimativa_equipe or 0) - equipe.veiculos_alocados_equipe) > 0
 
 
 class EquipeLookup(ModelLookup):
@@ -106,7 +106,7 @@ class PerfilChainedEquipeLookup(ModelLookup, LookupBase):
 
 
 def equipes_c_vagas_locais(equipe):
-    return (equipe.estimativa_local or 0 - equipe.veiculos_alocados_local) > 0
+    return ((equipe.estimativa_local or 0) - equipe.veiculos_alocados_local) > 0
 
 
 class EquipeManualLookup(ModelLookup):
