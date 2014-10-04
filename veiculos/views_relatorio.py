@@ -11,7 +11,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.template import Context
-from veiculos.forms import FrequenciaForm
+from excel_response import ExcelResponse
+from veiculos.forms import FrequenciaForm, RelatorioDiaForm
 import webodt
 from webodt.converters import converter
 from eleicao.models import Equipe
@@ -111,7 +112,7 @@ def frequencia_motoristas(request):
     if request.POST:
         formulario = FrequenciaForm(request.POST)
         dict_equipe = None
-
+        data = None
         if formulario.is_valid():
             data = formulario.cleaned_data['data_frequencia']
             equipe = formulario.cleaned_data['equipe']
@@ -132,7 +133,33 @@ def frequencia_motoristas(request):
                     if veiculos_alocados_local:
                         dict_equipe['locais'].append({'local': local,
                                                       'veiculos_local': veiculos_alocados_local})
-        return render(request, 'veiculos/report/frequencia_motoristas.html', {'dict_equipe': dict_equipe, 'form': formulario})
+        return render(request, 'veiculos/report/frequencia_motoristas.html', {'dict_equipe': dict_equipe, 'form': formulario, 'data': data})
 
     formulario = FrequenciaForm()
+    return render(request, 'veiculos/report/frequencia_motoristas.html', {'form': formulario})
+
+
+@permission_required('eleicao.view_local_votacao', raise_exception=True)
+def relatorio_motoristas_dia(request):
+    formulario = RelatorioDiaForm()
+
+    if request.POST:
+        formulario = RelatorioDiaForm(request.POST)
+
+        if formulario.is_valid():
+            data = formulario.cleaned_data['data_frequencia']
+            veiculos = VeiculoAlocado.objects.filter(perfil__cronograma_perfil__dt_apresentacao__range=(data, data.replace(day=data.day+1)))
+            cabecalho = ['equipe', 'local', 'perfil', 'placa_veiculo', 'titulo_eleitor', 'nome_motorista', 'telefone_celular', 'telefone_residencial', ]
+            data = [cabecalho,]
+            for veiculoalocado in veiculos:
+                data.append([veiculoalocado.equipe,
+                             veiculoalocado.local_votacao,
+                             veiculoalocado.perfil,
+                             veiculoalocado.veiculo.placa,
+                             veiculoalocado.veiculo.motorista_veiculo.first().pessoa.titulo_eleitoral,
+                             veiculoalocado.veiculo.motorista_veiculo.first().pessoa.nome,
+                             veiculoalocado.veiculo.motorista_veiculo.first().pessoa.tel_celular(),
+                             veiculoalocado.veiculo.motorista_veiculo.first().pessoa.tel_residencial(),])
+
+            return ExcelResponse(data, 'motoristas_do_dia')
     return render(request, 'veiculos/report/frequencia_motoristas.html', {'form': formulario})

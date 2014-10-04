@@ -300,3 +300,16 @@ class FrequenciaForm(forms.ModelForm):
                     'class': self.fields[key].widget.attrs.get('class') and
                              self.fields[key].widget.attrs.get('class') + ' form-control' or 'form-control'
                 })
+
+
+class RelatorioDiaForm(forms.Form):
+    data_frequencia = forms.DateField(label=u'Data da Frequência')
+
+    def __init__(self, *args, **kwargs):
+        super(RelatorioDiaForm, self).__init__(*args, **kwargs)
+        for key in self.fields:
+            if not isinstance(self.fields[key].widget, forms.CheckboxInput):
+                self.fields[key].widget.attrs.update({
+                    'class': self.fields[key].widget.attrs.get('class') and
+                             self.fields[key].widget.attrs.get('class') + ' form-control' or 'form-control'
+                })

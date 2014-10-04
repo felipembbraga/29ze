@@ -1,0 +1,106 @@
+{% extends 'base_relatorio.html' %}
+{% load static from staticfiles %}
+
+{% block botoes %}
+    <a href="{% url 'veiculo:vistoria:listar' %}" class="btn btn-default btn-xs">Voltar</a>
+    <button type="button" onclick="window.print()" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-print"></span>Imprimir</button>
+{% endblock %}
+
+{% block cabecalho %}
+    <div id="cabecalho" class="center-block no-print">
+        <div align="center">
+            <img src="{% static 'zona_eleitoral/img/brasao2.png' %}" width="50" height="50">
+        </div>
+        <div align="center">
+            <small><strong>
+                PODER JUDICIÁRIO
+            </strong></small>
+        </div>
+        <div align="center">
+            <small><strong>
+                TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
+            </strong></small>
+        </div>
+        <div align="center">
+            <small><strong>
+                29ª ZONA ELEITORAL - PALMAS - TO
+            </strong></small>
+        </div>
+    </div>
+{% endblock %}
+
+{% block dropdown %}
+    <form id="form-frequencia" method="post" onsubmit="block_screen();">
+        {% csrf_token %}
+        <div class="form-group col-md-4">
+            <label for="{{form.data_frequencia.id_for_label}}">{{ form.data_frequencia.label }}</label>
+            {{ form.data_frequencia }}
+        </div>
+        <div class="form-group col-md-4"><br>
+            <button type="submit" class="btn btn-primary">Gerar Frequência</button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'veiculos/css/botoes_menu.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap_datetimepicker/css/bootstrap-datetimepicker.min.css' %}" />
+    <style type="text/css">
+        thead {
+            display: table-header-group;
+        }
+
+        body{
+            padding-top: 10px;
+        }
+
+        .container{
+            margin: 0;
+            width: 100%;
+        }
+
+        .panel{
+            page-break-after: always;
+        }
+        .blockUI.blockMsg > img {
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        .blockUI.blockMsg > .loading-blockui{
+            display: inline-block;
+            font-size: 1.3em;
+            text-align: left;
+            margin: 20px 10px;
+            font-weight: 700;
+        }
+    </style>
+{% endblock %}
+
+{%block extrascripts %}
+    <script src="{% static 'veiculos/js/vistoria/jquery.blockUI.min.js' %}"></script>
+    <script src="{% static 'bootstrap_datetimepicker/js/moment.min.js' %}"></script>
+    <script src="{% static 'bootstrap_datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script>
+        function block_screen(){
+            $.blockUI({ message: '<img src="/static/veiculos/img/loader.gif"/> <div class="loading-blockui">Processando...<br>Um momento por favor.</div>',
+                css: { 'z-index': '9991', 'border-radius': '10px', 'border-color': '#D1D1D1'},
+                overlayCSS: { 'z-index': '9990', 'background-color': '#F7F7F7'} });
+        }
+
+        $(function () {
+            var frequencia = $('#id_data_frequencia');
+            frequencia.datetimepicker({
+                pickTime: false,
+                language: 'pt-BR',
+                minDate: '1/1/2014',
+                showToday: true,
+                useCurrent: false
+            });
+
+	        frequencia.mask('99/99/9999');
+        });
+    </script>
+{% endblock %}

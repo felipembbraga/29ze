@@ -4,7 +4,7 @@ Created on 05/08/2014
 @author: felipe
 '''
 from django.conf.urls import include, url, patterns
-from veiculos.views_relatorio import frequencia_motoristas
+from veiculos.views_relatorio import frequencia_motoristas, relatorio_motoristas_dia
 from veiculos.views_relatorio import relatorio_veiculos, relatorio_admin_orgao_sem_veiculo, \
     relatorio_veiculos_requisitados, relatorio_veiculo_alocado, relatorio_veiculos_alocados
 
@@ -67,6 +67,7 @@ report_patterns = [
     url(r'^veiculos-alocados/$', relatorio_veiculos_alocados, name='veiculos-alocados'),
     url(r'^veiculos-alocados/(\d+)/$', relatorio_veiculos_alocados, name='veiculos-alocados'),
     url(r'^frequencia-motoristas/$', frequencia_motoristas, name='frequencia'),
+    url(r'^motoristas-dia/$', relatorio_motoristas_dia, name='motoristas-dia'),
 ]
 
 urlpatterns = patterns('',
