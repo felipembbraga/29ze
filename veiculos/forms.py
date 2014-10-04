@@ -303,7 +303,7 @@ class FrequenciaForm(forms.ModelForm):
 
 
 class RelatorioDiaForm(forms.Form):
-    data_frequencia = forms.DateField(label=u'Data da Frequência')
+    data_frequencia = forms.DateField(label=u'Data')
 
     def __init__(self, *args, **kwargs):
         super(RelatorioDiaForm, self).__init__(*args, **kwargs)

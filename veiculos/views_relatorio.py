@@ -138,7 +138,7 @@ def frequencia_motoristas(request):
     formulario = FrequenciaForm()
     return render(request, 'veiculos/report/frequencia_motoristas.html', {'form': formulario})
 
-
+@login_required
 @permission_required('eleicao.view_local_votacao', raise_exception=True)
 def relatorio_motoristas_dia(request):
     formulario = RelatorioDiaForm()
@@ -148,18 +148,20 @@ def relatorio_motoristas_dia(request):
 
         if formulario.is_valid():
             data = formulario.cleaned_data['data_frequencia']
-            veiculos = VeiculoAlocado.objects.filter(perfil__cronograma_perfil__dt_apresentacao__range=(data, data.replace(day=data.day+1)))
-            cabecalho = ['equipe', 'local', 'perfil', 'placa_veiculo', 'titulo_eleitor', 'nome_motorista', 'telefone_celular', 'telefone_residencial', ]
-            data = [cabecalho,]
-            for veiculoalocado in veiculos:
-                data.append([veiculoalocado.equipe,
-                             veiculoalocado.local_votacao,
-                             veiculoalocado.perfil,
-                             veiculoalocado.veiculo.placa,
-                             veiculoalocado.veiculo.motorista_veiculo.first().pessoa.titulo_eleitoral,
-                             veiculoalocado.veiculo.motorista_veiculo.first().pessoa.nome,
-                             veiculoalocado.veiculo.motorista_veiculo.first().pessoa.tel_celular(),
-                             veiculoalocado.veiculo.motorista_veiculo.first().pessoa.tel_residencial(),])
+            veiculos = VeiculoAlocado.objects.filter(perfil__cronograma_perfil__dt_apresentacao__range=(data, data.replace(day=data.day+1))).order_by('equipe__nome', 'veiculo__motorista_veiculo__pessoa__nome', 'local_votacao__local__nome').select_related()
+            cabecalho = ['nome_motorista', 'titulo_eleitor', 'placa_veiculo', 'equipe', 'local', 'perfil', 'telefone_celular', 'telefone_residencial', ]
+            dados = [cabecalho, ]
 
-            return ExcelResponse(data, 'motoristas_do_dia')
-    return render(request, 'veiculos/report/frequencia_motoristas.html', {'form': formulario})
+            for veiculoalocado in veiculos:
+                dados.append([unicode(veiculoalocado.veiculo.motorista_veiculo.first().pessoa.nome.upper()),
+                              unicode(veiculoalocado.veiculo.motorista_veiculo.first().pessoa.titulo_eleitoral),
+                              unicode(veiculoalocado.veiculo.placa.upper()),
+                              unicode(veiculoalocado.equipe),
+                              unicode(veiculoalocado.local_votacao) if veiculoalocado.local_votacao else '',
+                              unicode(veiculoalocado.perfil),
+                              unicode(veiculoalocado.veiculo.motorista_veiculo.first().pessoa.tel_celular()),
+                              unicode(veiculoalocado.veiculo.motorista_veiculo.first().pessoa.tel_residencial()), ])
+
+            return ExcelResponse(dados, 'motoristas_do_dia')
+
+    return render(request, 'veiculos/report/motoristas_por_dia.html', {'form': formulario})

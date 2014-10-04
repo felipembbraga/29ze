@@ -1,45 +1,9 @@
-{% extends 'base_relatorio.html' %}
+{% extends 'base.html' %}
 {% load static from staticfiles %}
 
-{% block botoes %}
-    <a href="{% url 'veiculo:vistoria:listar' %}" class="btn btn-default btn-xs">Voltar</a>
-    <button type="button" onclick="window.print()" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-print"></span>Imprimir</button>
-{% endblock %}
-
-{% block cabecalho %}
-    <div id="cabecalho" class="center-block no-print">
-        <div align="center">
-            <img src="{% static 'zona_eleitoral/img/brasao2.png' %}" width="50" height="50">
-        </div>
-        <div align="center">
-            <small><strong>
-                PODER JUDICIÁRIO
-            </strong></small>
-        </div>
-        <div align="center">
-            <small><strong>
-                TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
-            </strong></small>
-        </div>
-        <div align="center">
-            <small><strong>
-                29ª ZONA ELEITORAL - PALMAS - TO
-            </strong></small>
-        </div>
-    </div>
-{% endblock %}
-
-{% block dropdown %}
-    <form id="form-frequencia" method="post" onsubmit="block_screen();">
-        {% csrf_token %}
-        <div class="form-group col-md-4">
-            <label for="{{form.data_frequencia.id_for_label}}">{{ form.data_frequencia.label }}</label>
-            {{ form.data_frequencia }}
-        </div>
-        <div class="form-group col-md-4"><br>
-            <button type="submit" class="btn btn-primary">Gerar Frequência</button>
-        </div>
-    </form>
+{% block extrabreadcrumb %}
+    {{ block.super }}
+    <li><a href="{% url 'report-veiculos:motoristas-dia' %}">Motoristas por Dia</a></li>
 {% endblock %}
 
 {% block extrastyle %}
@@ -48,22 +12,6 @@
     <link rel="stylesheet" type="text/css" href="{% static 'veiculos/css/botoes_menu.min.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap_datetimepicker/css/bootstrap-datetimepicker.min.css' %}" />
     <style type="text/css">
-        thead {
-            display: table-header-group;
-        }
-
-        body{
-            padding-top: 10px;
-        }
-
-        .container{
-            margin: 0;
-            width: 100%;
-        }
-
-        .panel{
-            page-break-after: always;
-        }
         .blockUI.blockMsg > img {
             margin-bottom: 30px;
             display: inline-block;
@@ -77,6 +25,24 @@
             font-weight: 700;
         }
     </style>
+{% endblock %}
+
+{% block container %}
+    <form id="form-motoristas-dia" method="post">
+        <div class="row" style="text-align: center; margin-top: 20px" >
+            <h4 style="font-weight: bold">Relação de Motoristas do Dia</h4>
+        </div>
+        {% csrf_token %}
+        <div class="row">
+        <div class="form-group col-md-2 col-md-offset-4">
+            <label for="{{form.data_frequencia.id_for_label}}">{{ form.data_frequencia.label }}</label>
+            {{ form.data_frequencia }}
+        </div>
+        <div class="form-group col-md-2" style="padding-right: 0"><br>
+            <button type="submit" class="btn btn-primary pull-right">Gerar Relatório</button>
+        </div>
+        </div>
+    </form>
 {% endblock %}
 
 {%block extrascripts %}
