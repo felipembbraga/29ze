@@ -8,7 +8,7 @@ from django.db.models.query_utils import Q
 from django.forms.models import modelform_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-
+from django.db import models
 from acesso.decorators import orgao_atualizar
 from acesso.models import OrgaoPublico
 from core.models import Modelo
@@ -415,14 +415,21 @@ def monitorar_vistoria(request):
 
 
 def monta_monitoramento(request):
-    equipes = EquipesAlocacao.objects.filter(eleicao=request.eleicao_atual).order_by('equipe__nome')
+    equipes = Equipe.objects.all().select_related()
     equipe_monitoracao = []
     for equipe in equipes:
-        dict = {'equipe': equipe.equipe,
-                'total_estimado': equipe.total_estimativa,
-                'estimado': equipe.total_estimativa - equipe.veiculos_alocados,
-                'alocado': equipe.veiculos_alocados,
-                'percentual_alocado': (100 * equipe.veiculos_alocados) / equipe.total_estimativa}
+        if equipe.equipesalocacao_set.all():
+            dict = {'equipe': equipe,
+                    'total_estimado': equipe.equipesalocacao_set.first().total_estimativa,
+                    'estimado': equipe.equipesalocacao_set.first().total_estimativa - equipe.equipesalocacao_set.first().veiculos_alocados,
+                    'alocado': equipe.equipesalocacao_set.first().veiculos_alocados,
+                    'percentual_alocado': (100 * equipe.equipesalocacao_set.first().veiculos_alocados) / equipe.equipesalocacao_set.first().total_estimativa}
+        else:
+            dict = {'equipe': equipe,
+                    'total_estimado': equipe.alocacao_set.aggregate(models.Sum('quantidade')).get('quantidade__sum'),
+                    'estimado': 0,
+                    'alocado': equipe.veiculoalocado_set.count(),
+                    'percentual_alocado': 100}
 
         dict['percentual_estimado'] = 100 - dict['percentual_alocado']
 
