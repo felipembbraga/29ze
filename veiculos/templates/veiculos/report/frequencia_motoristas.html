@@ -1,4 +1,4 @@
-{% extends 'veiculos/vistoria/base.html' %}
+{% extends 'base_relatorio.html' %}
 {% load static from staticfiles %}
 {% load dajaxice_templatetags %}
 
@@ -9,27 +9,53 @@
     <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'veiculos/css/botoes_menu.min.css' %}" />
     <style type="text/css">
+        thead {
+            display: table-header-group;
+        }
+
         body{
             padding-top: 10px;
         }
+
         .container{
             margin: 0;
             width: 100%;
         }
+
         .panel{
             page-break-after: always;
         }
     </style>
 {% endblock %}
 
-{% block navbar %}
+{% block cabecalho %}
 {% endblock %}
 
 {% block container %}
-    <h4 style="font-size: 18px; text-align: center;">Frequência Motoristas</h4>
     {% for equipe in equipes %}
         {% for local in equipe.local_equipe.all %}
             {% if local.veiculoalocado_set.all %}
+                <div id="cabecalho" class="center-block">
+                    <div align="center">
+                        <img src="{% static 'zona_eleitoral/img/brasao2.png' %}" width="50" height="50">
+                    </div>
+                    <div align="center">
+                        <small><strong>
+                            PODER JUDICIÁRIO
+                        </strong></small>
+                    </div>
+                    <div align="center">
+                        <small><strong>
+                            TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
+                        </strong></small>
+                    </div>
+                    <div align="center">
+                        <small><strong>
+                            29ª ZONA ELEITORAL - PALMAS - TO
+                        </strong></small>
+                    </div>
+                </div>
+                <h4 style="font-size: 18px; text-align: center;">Frequência Motoristas</h4>
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h5 class="panel-title" style="font-weight: bold;">{{ equipe }}</h5>
@@ -40,13 +66,13 @@
                             <table class="table table-bordered" style="width: 100%;">
                                 {% for veiculoalocado in local.veiculoalocado_set.all %}
                                     <tr>
-                                        <td style="vertical-align: middle; font-size: 12px; width: 70%;">
+                                        <td style="vertical-align: middle; font-size: 12px; width: 60%;">
                                             {{ veiculoalocado.veiculo.motorista_veiculo.first|upper }} - <strong>{{ veiculoalocado.veiculo.motorista_veiculo.first.pessoa.titulo_eleitoral }}</strong><br>
-                                            <span style="font-size: 10px">{{ veiculoalocado.veiculo|upper }} - <strong>{{ veiculoalocado.veiculo.placa|upper }}</strong></span>
+                                            <span style="font-size: 10px"><strong>{{ veiculoalocado.veiculo.placa|upper }}</strong> - {{ veiculoalocado.veiculo|upper }}</span>
                                         </td>
                                         <td style="font-size: 12px; text-align: center;"><br>
-                                            _____________________________________________<br><br>
-                                            _____________________________________________
+                                            Manhã: _____________________________________________<br><br>
+                                            Tarde: _____________________________________________
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -57,15 +83,4 @@
             {% endif %}
         {% endfor %}
     {% endfor %}
-{% endblock %}
-
-{%block extrascripts %}
-    <script>
-{#        printDivCSS = new String ('<link href="myprintstyle.css" rel="stylesheet" type="text/css">')#}
-        function printDiv(divId) {
-            window.frames["print_frame"].document.body.innerHTML=document.getElementById(divId).innerHTML;
-            window.frames["print_frame"].window.focus();
-            window.frames["print_frame"].window.print();
-        }
-    </script>
 {% endblock %}
