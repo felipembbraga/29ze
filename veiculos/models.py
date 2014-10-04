@@ -152,6 +152,8 @@ class AlocacaoManager(models.Manager):
         return self.filter(perfil_veiculo__perfil_equipe=True)
     def get_perfis_local(self):
         return self.filter(perfil_veiculo__perfil_equipe=False)
+    def all(self):
+        return super(AlocacaoManager, self).all().order_by('perfil__nome')
 
 class Alocacao(models.Model):
     perfil_veiculo = models.ForeignKey(PerfilVeiculo)
@@ -165,13 +167,21 @@ class Alocacao(models.Model):
     def get_veiculos_alocados(self):
         return self.perfil_veiculo.veiculoalocado_set.filter(equipe=self.equipe, perfil=self.perfil_veiculo, local_votacao=self.local_votacao)
 
+    def perfil_com_veiculos_alocados(self):
+        return self.perfil_veiculo.veiculoalocado_set.filter(perfil=self.perfil_veiculo, equipe=self.equipe, local_votacao=self.local_votacao).exists()
 
+class VeiculoAlocadoManager(models.Manager):
+    def get_perfis_equipe(self):
+        return self.filter(perfil__perfil_equipe=True)
+    def get_perfis_local(self):
+        return self.filter(perfil__perfil_equipe=False)
 class VeiculoAlocado(models.Model):
     veiculo = models.OneToOneField(Veiculo, verbose_name=u'Veículo')
     perfil = models.ForeignKey(PerfilVeiculo, verbose_name='Perfil')
     equipe = models.ForeignKey(Equipe, verbose_name=u"Equipe")
     local_votacao = models.ForeignKey(LocalVotacao, verbose_name=u"Local de Votação" , null=True, blank=True)
-    
+    objects = VeiculoAlocadoManager()
+
     def __unicode__(self):
         return unicode(self.veiculo)
 
