@@ -86,7 +86,9 @@ class LocalVotacao(models.Model):
 
     def get_perfis_local(self):
         return self.equipe.perfilveiculo_set.filter(perfil_equipe=False)
-    
+
+    def get_veiculos_alocados(self):
+        return self.veiculoalocado_set.all()
 class SecaoManager(models.Manager):
     
     def secao_pai(self):

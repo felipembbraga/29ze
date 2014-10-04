@@ -13,6 +13,13 @@ class Pessoa(models.Model):
     endereco = models.CharField(u'Endereço Residencial', max_length=150, null=True, blank=True)
     data_cadastro = models.DateTimeField(auto_now_add=True)
 
+    def tel_residencial(self):
+        return '/'.join(unicode(telefone) for telefone in self.telefones_set.filter(tipo=0))
+    def tel_comercial(self):
+        return '/'.join(unicode(telefone) for telefone in self.telefones_set.filter(tipo=1))
+    def tel_celular(self):
+        return '/'.join(unicode(telefone) for telefone in self.telefones_set.filter(tipo=2))
+
 
 class Telefones(models.Model):
     pessoa = models.ForeignKey(Pessoa)

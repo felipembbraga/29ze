@@ -147,14 +147,23 @@ def motorista_post_save(signal, instance, sender, **kwargs):
             m.veiculo = None
             m.save()
 
+class AlocacaoManager(models.Manager):
+    def get_perfis_equipe(self):
+        return self.filter(perfil_veiculo__perfil_equipe=True)
+    def get_perfis_local(self):
+        return self.filter(perfil_veiculo__perfil_equipe=False)
+
 class Alocacao(models.Model):
     perfil_veiculo = models.ForeignKey(PerfilVeiculo)
     equipe = models.ForeignKey(Equipe)
     local_votacao = models.ForeignKey(LocalVotacao, null=True, blank=True)
     quantidade = models.PositiveIntegerField()
-
+    objects = AlocacaoManager()
     class Meta:
         unique_together = ('perfil_veiculo', 'equipe', 'local_votacao')
+
+    def get_veiculos_alocados(self):
+        return self.perfil_veiculo.veiculoalocado_set.filter(equipe=self.equipe, perfil=self.perfil_veiculo, local_votacao=self.local_votacao)
 
 
 class VeiculoAlocado(models.Model):
