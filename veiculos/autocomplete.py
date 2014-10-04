@@ -100,7 +100,7 @@ class PerfilChainedEquipeLookup(ModelLookup, LookupBase):
         equipe = request.GET.get('equipe', '')
 
         if equipe:
-            results = results.filter(equipe=equipe).order_by('nome')
+            results = results.filter(equipes=equipe).order_by('nome')
             return results.filter(perfil_equipe=True)
         return []
 
