@@ -66,6 +66,8 @@ report_patterns = [
     url(r'^veiculo-alocado/(\d+)/$', relatorio_veiculo_alocado, name='veiculo-alocado'),
     url(r'^veiculos-alocados/$', relatorio_veiculos_alocados, name='veiculos-alocados'),
     url(r'^veiculos-alocados/(\d+)/$', relatorio_veiculos_alocados, name='veiculos-alocados'),
+    url(r'^veiculos-alocados-perfil/$', relatorio_veiculos_alocados, name='veiculos-alocados-perfil'),
+    url(r'^veiculos-alocados-perfil/(\d+)/$', relatorio_veiculos_alocados, name='veiculos-alocados-perfil'),
     url(r'^frequencia-motoristas/$', frequencia_motoristas, name='frequencia'),
     url(r'^motoristas-dia/$', relatorio_motoristas_dia, name='motoristas-dia'),
 ]
