@@ -18,7 +18,7 @@ from webodt.converters import converter
 from eleicao.models import Equipe
 from models import Veiculo, VeiculoSelecionado
 from acesso.models import OrgaoPublico
-from veiculos.models import VeiculoAlocado
+from veiculos.models import VeiculoAlocado, PerfilVeiculo
 
 
 @permission_required('veiculos.view_veiculo', raise_exception=True)
@@ -105,6 +105,21 @@ def relatorio_veiculos_alocados(request, id_equipe=None):
     form.fields['equipe'].widget.attrs.update({'class':'form-control'})
     return render(request, 'veiculos/report/veiculos_alocados.html', locals())
 
+def relatorio_veiculos_alocados_por_perfil(request, id_perfil=None):
+
+    if id_perfil:
+        perfil = get_object_or_404(PerfilVeiculo, pk=int(id_perfil))
+        equipes = perfil.equipes.filter(eleicao = request.eleicao_atual).exclude(veiculoalocado=None).order_by('nome')
+        veiculos = perfil.veiculoalocado_set.filter(veiculo__eleicao = request.eleicao_atual).order_by('veiculo__motorista_veiculo__pessoa__nome')
+    perfis = PerfilVeiculo.objects.all().order_by('nome')
+    Form = modelform_factory(
+                VeiculoAlocado,
+                fields=('perfil',),
+                labels={u'perfil':u'Selecionar Função: '})
+    Form.base_fields['perfil'].queryset = perfis
+    form = Form({'perfil':id_perfil})
+    form.fields['perfil'].widget.attrs.update({'class':'form-control'})
+    return render(request, 'veiculos/report/veiculos_alocados_perfil.html', locals())
 
 @login_required
 @permission_required('veiculos.monitor_vistoria', raise_exception=True)

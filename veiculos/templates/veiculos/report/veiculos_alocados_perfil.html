@@ -1,0 +1,131 @@
+{% extends 'base_relatorio.html' %}
+{% block botoes %}
+    <a href="{% url 'veiculo:vistoria:listar' %}" class="btn btn-default btn-xs">Voltar</a>
+    <button type="button" onclick="window.print()" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-print"></span>Imprimir</button>
+{% endblock %}
+{% block dropdown %}
+    <div class="form-group">
+        <label for="{{form.perfil.id_for_label}}">{{ form.perfil.label }}</label>
+        {{ form.perfil }}
+    </div>
+{% endblock %}
+
+{% block report %}
+    <h1>Veiculos Alocados por Perfil</h1>
+    {% if perfil %}
+        <div class="page-header">
+            <h2>{{ perfil }}</h2>
+        </div>
+
+        {% for equipe in equipes %}
+            <div class="page-header">
+                <h3>{{ equipe }}</h3>
+            </div>
+            {% for veiculo in veiculos %}
+                {% if veiculo.equipe == equipe %}
+                    <table class="table table-bordered" >
+                        <tbody>
+                        <tr style="background-color:#EEE">
+                            <td colspan="4">
+                                <p class="form-control-static text-center" style="padding:0;"><strong>DADOS DO VEÍCULO</strong></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label style="margin-bottom:3px;"><small>Placa</small></label>
+                                <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.placa|upper }}</p>
+                            </td>
+                            <td>
+                                <label style="margin-bottom:3px;"><small>Marca</small></label>
+                                <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.marca|upper }}</p>
+                            </td>
+                            <td colspan="2">
+                                <label style="margin-bottom:3px;"><small>Modelo</small></label>
+                                <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.modelo|upper }}</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="10%">
+                                <label style="margin-bottom:3px;"><small>Ano</small></label>
+                                <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.get_ano }}</p>
+                            </td>
+                            <td width="30%">
+                                <label style="margin-bottom:3px;"><small>Tipo de Veículo</small></label>
+                                <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.get_tipo|upper }}</p>
+                            </td>
+                            <td width="20%">
+                                <label style="margin-bottom:3px;"><small>Lotação</small></label>
+                                <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.lotacao }}</p>
+                            </td>
+                            <td width="40%">
+                                <label style="margin-bottom:3px;"><small>Estado</small></label>
+                                <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.get_estado|upper }}</p>
+                            </td>
+                        </tr>
+                        {% if veiculo.veiculo.observacao %}
+                            <tr>
+                                <td colspan="4">
+                                    <label style="margin-bottom:3px;"><small>Observação</small></label>
+                                    <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.observacao|upper }}</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        <tr style="background-color:#EEE">
+                            <td colspan="4">
+                                <p class="form-control-static text-center" style="padding:0;"><strong>DADOS DO MOTORISTA</strong></p>
+                            </td>
+                        </tr>
+                        {% if veiculo.veiculo.motorista_veiculo %}
+                            <tr>
+                                <td colspan="2">
+                                    <label style="margin-bottom:3px;"><small>Nº Título Eleitoral</small></label>
+                                    <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.motorista_veiculo.first.pessoa.titulo_eleitoral }}</p>
+                                </td>
+                                <td colspan="2">
+                                    <label style="margin-bottom:3px;"><small>Nome</small></label>
+                                    <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.motorista_veiculo.first.pessoa.nome|upper }}</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label style="margin-bottom:3px;"><small>Endereço</small></label>
+                                    <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.motorista_veiculo.first.pessoa.endereco|upper }}</p>
+                                </td>
+                                <td>
+                                    <label style="margin-bottom:3px;"><small>Telefone Residencial</small></label>
+                                    <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.motorista_veiculo.first.pessoa.tel_residencial }}</p>
+                                </td>
+                                <td>
+                                    <label style="margin-bottom:3px;"><small>Telefone Celular</small></label>
+                                    <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.motorista_veiculo.first.pessoa.tel_celular }}</p>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4">
+                                    <p class="form-control-static text-center" style="padding:0;">SEM MOTORISTA CADASTRADO</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{%block extrascripts %}
+    <script>
+        $(document).ready(function(){
+            $('#id_perfil').change(function(){
+                var url = "{% url 'report-veiculos:veiculos-alocados-perfil' %}";
+                if($(this).val()!='')
+                    url = "{% url 'report-veiculos:veiculos-alocados-perfil' %}" + $(this).val() + '/';
+                location.href = url;
+            });
+        });
+
+    </script>
+
+{% endblock %}
