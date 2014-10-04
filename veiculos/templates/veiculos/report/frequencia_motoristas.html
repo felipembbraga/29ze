@@ -1,0 +1,71 @@
+{% extends 'veiculos/vistoria/base.html' %}
+{% load static from staticfiles %}
+{% load dajaxice_templatetags %}
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'veiculos/css/botoes_menu.min.css' %}" />
+    <style type="text/css">
+        body{
+            padding-top: 10px;
+        }
+        .container{
+            margin: 0;
+            width: 100%;
+        }
+        .panel{
+            page-break-after: always;
+        }
+    </style>
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block container %}
+    <h4 style="font-size: 18px; text-align: center;">Frequência Motoristas</h4>
+    {% for equipe in equipes %}
+        {% for local in equipe.local_equipe.all %}
+            {% if local.veiculoalocado_set.all %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h5 class="panel-title" style="font-weight: bold;">{{ equipe }}</h5>
+                    </div>
+                    <div class="panel-body" style="padding: 0 15px">
+                        <div id="equipe-{{ equipe.pk }}">
+                            <h6 style="font-weight: 600">{{ local }}</h6>
+                            <table class="table table-bordered" style="width: 100%;">
+                                {% for veiculoalocado in local.veiculoalocado_set.all %}
+                                    <tr>
+                                        <td style="vertical-align: middle; font-size: 12px; width: 70%;">
+                                            {{ veiculoalocado.veiculo.motorista_veiculo.first|upper }} - <strong>{{ veiculoalocado.veiculo.motorista_veiculo.first.pessoa.titulo_eleitoral }}</strong><br>
+                                            <span style="font-size: 10px">{{ veiculoalocado.veiculo|upper }} - <strong>{{ veiculoalocado.veiculo.placa|upper }}</strong></span>
+                                        </td>
+                                        <td style="font-size: 12px; text-align: center;"><br>
+                                            _____________________________________________<br><br>
+                                            _____________________________________________
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+{% endblock %}
+
+{%block extrascripts %}
+    <script>
+{#        printDivCSS = new String ('<link href="myprintstyle.css" rel="stylesheet" type="text/css">')#}
+        function printDiv(divId) {
+            window.frames["print_frame"].document.body.innerHTML=document.getElementById(divId).innerHTML;
+            window.frames["print_frame"].window.focus();
+            window.frames["print_frame"].window.print();
+        }
+    </script>
+{% endblock %}

@@ -4,6 +4,7 @@ Created on 05/08/2014
 @author: felipe
 '''
 from django.conf.urls import include, url, patterns
+from eleicao.views_relatorio import frequencia_motoristas
 from veiculos.views_relatorio import relatorio_veiculos, relatorio_admin_orgao_sem_veiculo, \
     relatorio_veiculos_requisitados, relatorio_veiculo_alocado
 
@@ -35,6 +36,7 @@ veiculo_patterns = [
     url(r'^requisitar/(\d+)/$', veiculo_requisitar, name='requisitar'),
     url(r'^liberar/(\d+)/$', veiculo_liberar, name='liberar'),
     url(r'^index/$', veiculo_index, name='index'),
+    url(r'^frequencia-motoristas/$', frequencia_motoristas, name='frequencia'),
     url(r'^vistoria/', include(vistoria_veiculo_patterns, namespace='vistoria')),
 ]
 
