@@ -376,7 +376,7 @@ def veiculo_vistoria_listagem(request, id_equipe=None):
     lista_veiculos = queryset.order_by('equipe__nome', 'veiculo__marca__nome', 'veiculo__modelo__nome')
     pesquisar = request.GET.get('pesquisar') and request.GET.get('pesquisar') or ''
     if pesquisar != '':
-       lista_veiculos = lista_veiculos.filter(Q(veiculo__motorista_veiculo__pessoa__nome__icontains=pesquisar)| Q(veiculo__placa__icontains=pesquisar))
+       lista_veiculos = lista_veiculos.filter(Q(veiculo__motorista_veiculo__pessoa__nome__icontains=pesquisar) | Q(veiculo__placa__icontains=pesquisar))
 
     #filtro = VeiculoAlocadoFilter(request.GET, queryset = lista_veiculos)
     #total_com_motorista = filtro.qs.exclude(motorista_titulo_eleitoral=None).count()

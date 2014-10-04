@@ -2,6 +2,7 @@
 import datetime
 
 from django.db import models
+from django.db.models.query import QuerySet
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 
@@ -129,12 +130,14 @@ class PerfilVeiculo(models.Model):
             self.nome=self.nome.upper()
         super(PerfilVeiculo, self).save(*args, **kwargs)
 
+
 class CronogramaVeiculo(models.Model):
     perfil = models.ForeignKey(PerfilVeiculo, related_name="cronograma_perfil")
     local = models.ForeignKey(Local, null=True, blank=True, verbose_name=u'Local de Apresentação')
     dt_apresentacao = models.DateTimeField(u'Data da Apresentação')
     dia_montagem = models.BooleanField('Dia de montagem', default=False)
     eleicao = models.ForeignKey(Eleicao)
+
 
 @receiver(post_save, sender=Motorista)
 def motorista_post_save(signal, instance, sender, **kwargs):
@@ -147,13 +150,17 @@ def motorista_post_save(signal, instance, sender, **kwargs):
             m.veiculo = None
             m.save()
 
+
 class AlocacaoManager(models.Manager):
     def get_perfis_equipe(self):
         return self.filter(perfil_veiculo__perfil_equipe=True)
+
     def get_perfis_local(self):
         return self.filter(perfil_veiculo__perfil_equipe=False)
+
     def all(self):
         return super(AlocacaoManager, self).all().order_by('perfil__nome')
+
 
 class Alocacao(models.Model):
     perfil_veiculo = models.ForeignKey(PerfilVeiculo)
@@ -170,11 +177,26 @@ class Alocacao(models.Model):
     def perfil_com_veiculos_alocados(self):
         return self.perfil_veiculo.veiculoalocado_set.filter(perfil=self.perfil_veiculo, equipe=self.equipe, local_votacao=self.local_votacao).exists()
 
-class VeiculoAlocadoManager(models.Manager):
+
+class VeiculoAlocadoQuerySet(QuerySet):
     def get_perfis_equipe(self):
         return self.filter(perfil__perfil_equipe=True)
+
     def get_perfis_local(self):
         return self.filter(perfil__perfil_equipe=False)
+
+
+class VeiculoAlocadoManager(models.Manager):
+    def get_queryset(self):
+        return VeiculoAlocadoQuerySet(self.model, using=self._db)
+
+    def get_perfis_equipe(self):
+        return self.get_queryset().get_perfis_equipe()
+
+    def get_perfis_local(self):
+        return self.get_queryset().get_perfis_local()
+
+
 class VeiculoAlocado(models.Model):
     veiculo = models.OneToOneField(Veiculo, verbose_name=u'Veículo')
     perfil = models.ForeignKey(PerfilVeiculo, verbose_name='Perfil')

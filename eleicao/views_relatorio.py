@@ -1,8 +1,10 @@
 #-*- coding: utf-8 -*-
+from datetime import date
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from models import LocalVotacao, Equipe, Secao
 from excel_response import ExcelResponse
+from veiculos.models import VeiculoAlocado
 
 
 @login_required
@@ -115,10 +117,3 @@ def relatorio_equipe_estimativa(request, id_equipe):
 def relatorio_estimativa_veiculos(request):
     equipes = Equipe.objects.filter(eleicao = request.eleicao_atual).order_by('nome')
     return render(request, 'eleicao/reports/estimativa.html', locals())
-
-
-@login_required
-@permission_required('veiculos.monitor_vistoria', raise_exception=True)
-def frequencia_motoristas(request):
-    equipes = Equipe.objects.all()[:1].select_related()
-    return render(request, 'veiculos/report/frequencia_motoristas.html', {'equipes': equipes})

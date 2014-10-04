@@ -1,13 +1,54 @@
 {% extends 'base_relatorio.html' %}
 {% load static from staticfiles %}
-{% load dajaxice_templatetags %}
 
-{% block breadcrumb %}
+{% block botoes %}
+    <a href="{% url 'veiculo:vistoria:listar' %}" class="btn btn-default btn-xs">Voltar</a>
+    <button type="button" onclick="window.print()" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-print"></span>Imprimir</button>
+{% endblock %}
+
+{% block cabecalho %}
+    <div id="cabecalho" class="center-block no-print">
+        <div align="center">
+            <img src="{% static 'zona_eleitoral/img/brasao2.png' %}" width="50" height="50">
+        </div>
+        <div align="center">
+            <small><strong>
+                PODER JUDICIÁRIO
+            </strong></small>
+        </div>
+        <div align="center">
+            <small><strong>
+                TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
+            </strong></small>
+        </div>
+        <div align="center">
+            <small><strong>
+                29ª ZONA ELEITORAL - PALMAS - TO
+            </strong></small>
+        </div>
+    </div>
+{% endblock %}
+
+{% block dropdown %}
+    <form id="form-frequencia" method="post" onsubmit="block_screen();">
+        {% csrf_token %}
+        <div class="form-group col-md-8">
+            <label for="{{form.equipe.id_for_label}}">{{ form.equipe.label }}</label>
+            {{ form.equipe }}
+        </div>
+        <div class="form-group col-md-4" style="padding-right: 0">
+            <label for="{{form.data_frequencia.id_for_label}}">{{ form.data_frequencia.label }}</label>
+            {{ form.data_frequencia }}
+        </div>
+        <button type="submit" class="btn btn-primary pull-right">Gerar Frequência</button>
+    </form>
 {% endblock %}
 
 {% block extrastyle %}
+    {{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'veiculos/css/botoes_menu.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap_datetimepicker/css/bootstrap-datetimepicker.min.css' %}" />
     <style type="text/css">
         thead {
             display: table-header-group;
@@ -25,47 +66,115 @@
         .panel{
             page-break-after: always;
         }
+        .blockUI.blockMsg > img {
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        .blockUI.blockMsg > .loading-blockui{
+            display: inline-block;
+            font-size: 1.3em;
+            text-align: left;
+            margin: 20px 10px;
+            font-weight: 700;
+        }
     </style>
 {% endblock %}
 
-{% block cabecalho %}
-{% endblock %}
 
-{% block container %}
-    {% for equipe in equipes %}
-        {% for local in equipe.local_equipe.all %}
-            {% if local.veiculoalocado_set.all %}
-                <div id="cabecalho" class="center-block">
-                    <div align="center">
-                        <img src="{% static 'zona_eleitoral/img/brasao2.png' %}" width="50" height="50">
-                    </div>
-                    <div align="center">
-                        <small><strong>
-                            PODER JUDICIÁRIO
-                        </strong></small>
-                    </div>
-                    <div align="center">
-                        <small><strong>
-                            TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
-                        </strong></small>
-                    </div>
-                    <div align="center">
-                        <small><strong>
-                            29ª ZONA ELEITORAL - PALMAS - TO
-                        </strong></small>
-                    </div>
+{% block report %}
+    {% if dict_equipe %}
+        <div id="cabecalho" class="center-block print">
+            <div align="center">
+                <img src="{% static 'zona_eleitoral/img/brasao2.png' %}" width="50" height="50">
+            </div>
+            <div align="center">
+                <small><strong>
+                    PODER JUDICIÁRIO
+                </strong></small>
+            </div>
+            <div align="center">
+                <small><strong>
+                    TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
+                </strong></small>
+            </div>
+            <div align="center">
+                <small><strong>
+                    29ª ZONA ELEITORAL - PALMAS - TO
+                </strong></small>
+            </div>
+        </div>
+        <h4 style="font-size: 18px; text-align: center;">Frequência de Motoristas</h4>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h5 class="panel-title" style="font-weight: bold;">{{ dict_equipe.equipe }}</h5>
+            </div>
+            <div class="panel-body" style="padding: 0 15px">
+                <div id="equipe-{{ dict_equipe.equipe.pk }}">
+                    <h6 style="font-weight: 600">MOTORISTAS DA EQUIPE</h6>
+
+                    {% for veiculoalocado in dict_equipe.veiculos_equipe %}
+                        <table class="table table-bordered" style="width: 100%; margin-bottom: 8px;">
+                            <tr class="pagina">
+                                <td class="pagina" style="vertical-align: middle; font-size: 12px; width: 60%;">
+                                    {{ veiculoalocado.veiculo.motorista_veiculo.first|upper }} - <strong>{{ veiculoalocado.veiculo.motorista_veiculo.first.pessoa.titulo_eleitoral }}</strong><br>
+                                    <span style="font-size: 10px"><strong>{{ veiculoalocado.veiculo.placa|upper }}</strong> - {{ veiculoalocado.veiculo|upper }}</span>
+                                </td>
+                                <td style="font-size: 12px; text-align: center;"><br>
+                                    Manhã: _____________________________________________<br><br>
+                                    Tarde: _____________________________________________
+                                </td>
+                            </tr>
+                        </table>
+                    {% endfor %}
+                    <table class="table table-bordered" style="width: 100%; margin-bottom: 10px;">
+                        <tr class="pagina">
+                            <td class="pagina" style="vertical-align: middle; font-size: 12px; width: 60%;">
+                                ___________________________________________________________________________<br><br>
+                                _______________________
+                            </td>
+                            <td style="font-size: 12px; text-align: center;"><br>
+                                Manhã: _____________________________________________<br><br>
+                                Tarde: _____________________________________________
+                            </td>
+                        </tr>
+                    </table>
                 </div>
-                <h4 style="font-size: 18px; text-align: center;">Frequência Motoristas</h4>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h5 class="panel-title" style="font-weight: bold;">{{ equipe }}</h5>
-                    </div>
-                    <div class="panel-body" style="padding: 0 15px">
-                        <div id="equipe-{{ equipe.pk }}">
-                            <h6 style="font-weight: 600">{{ local }}</h6>
-                            <table class="table table-bordered" style="width: 100%;">
-                                {% for veiculoalocado in local.veiculoalocado_set.all %}
-                                    <tr>
+            </div>
+        </div>
+
+        {% for local in dict_equipe.locais %}
+            <div id="cabecalho" class="center-block print">
+                <div align="center">
+                    <img src="{% static 'zona_eleitoral/img/brasao2.png' %}" width="50" height="50">
+                </div>
+                <div align="center">
+                    <small><strong>
+                        PODER JUDICIÁRIO
+                    </strong></small>
+                </div>
+                <div align="center">
+                    <small><strong>
+                        TRIBUNAL REGIONAL ELEITORAL DO TOCANTINS
+                    </strong></small>
+                </div>
+                <div align="center">
+                    <small><strong>
+                        29ª ZONA ELEITORAL - PALMAS - TO
+                    </strong></small>
+                </div>
+                <h4 style="font-size: 18px; text-align: center;">Frequência de Motoristas</h4>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h5 class="panel-title" style="font-weight: bold;">{{ dict_equipe.equipe }}</h5>
+                </div>
+                <div class="panel-body" style="padding: 0 15px">
+                    <div id="equipe-{{ dict_equipe.equipe.pk }}">
+                        <h6 style="font-weight: 600">{{ local.local }}</h6>
+                            {% for veiculoalocado in local.veiculos_local %}
+                                <table class="table table-bordered" style="width: 100%; margin-bottom: 10px;">
+                                    <tr class="pagina">
                                         <td style="vertical-align: middle; font-size: 12px; width: 60%;">
                                             {{ veiculoalocado.veiculo.motorista_veiculo.first|upper }} - <strong>{{ veiculoalocado.veiculo.motorista_veiculo.first.pessoa.titulo_eleitoral }}</strong><br>
                                             <span style="font-size: 10px"><strong>{{ veiculoalocado.veiculo.placa|upper }}</strong> - {{ veiculoalocado.veiculo|upper }}</span>
@@ -75,12 +184,48 @@
                                             Tarde: _____________________________________________
                                         </td>
                                     </tr>
-                                {% endfor %}
+                                </table>
+                            {% endfor %}
+                            <table class="table table-bordered" style="width: 100%;margin-bottom: 10px;">
+                                <tr class="pagina">
+                                    <td style="vertical-align: middle; font-size: 12px; width: 60%;">
+                                        ___________________________________________________________________________<br><br>
+                                        _______________________
+                                    </td>
+                                    <td style="font-size: 12px; text-align: center;"><br>
+                                        Manhã: _____________________________________________<br><br>
+                                        Tarde: _____________________________________________
+                                    </td>
+                                </tr>
                             </table>
-                        </div>
                     </div>
                 </div>
-            {% endif %}
+            </div>
         {% endfor %}
-    {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{%block extrascripts %}
+    <script src="{% static 'veiculos/js/vistoria/jquery.blockUI.min.js' %}"></script>
+    <script src="{% static 'bootstrap_datetimepicker/js/moment.min.js' %}"></script>
+    <script src="{% static 'bootstrap_datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script>
+        function block_screen(){
+            $.blockUI({ message: '<img src="/static/veiculos/img/loader.gif"/> <div class="loading-blockui">Processando...<br>Um momento por favor.</div>',
+                css: { 'z-index': '9991', 'border-radius': '10px', 'border-color': '#D1D1D1'},
+                overlayCSS: { 'z-index': '9990', 'background-color': '#F7F7F7'} });
+        }
+        $(function () {
+            var frequencia = $('#id_data_frequencia');
+            frequencia.datetimepicker({
+                pickTime: false,
+                language: 'pt-BR',
+                minDate: '1/1/2014',
+                showToday: true,
+                useCurrent: false
+            });
+
+	        frequencia.mask('99/99/9999');
+        });
+    </script>
 {% endblock %}

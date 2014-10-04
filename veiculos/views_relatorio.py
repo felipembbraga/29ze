@@ -5,11 +5,13 @@ Created on 07/08/2014
 @author: felipe
 '''
 import datetime
+from datetime import date
 from django.forms.models import modelform_factory
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.template import Context
+from veiculos.forms import FrequenciaForm
 import webodt
 from webodt.converters import converter
 from eleicao.models import Equipe
@@ -87,6 +89,7 @@ def relatorio_veiculo_alocado(request, id_veiculo):
     pdf = conv.convert(document, format='pdf')
     return HttpResponse(pdf, mimetype='application/pdf')
 
+
 def relatorio_veiculos_alocados(request, id_equipe=None):
 
     if id_equipe:
@@ -100,3 +103,36 @@ def relatorio_veiculos_alocados(request, id_equipe=None):
     form = Form({'equipe':id_equipe})
     form.fields['equipe'].widget.attrs.update({'class':'form-control'})
     return render(request, 'veiculos/report/veiculos_alocados.html', locals())
+
+
+@login_required
+@permission_required('veiculos.monitor_vistoria', raise_exception=True)
+def frequencia_motoristas(request):
+    if request.POST:
+        formulario = FrequenciaForm(request.POST)
+        dict_equipe = None
+
+        if formulario.is_valid():
+            data = formulario.cleaned_data['data_frequencia']
+            equipe = formulario.cleaned_data['equipe']
+            equipe = Equipe.objects.filter(veiculoalocado__perfil__cronograma_perfil__dt_apresentacao__range=(data, data.replace(day=data.day+1)), id=equipe.id).select_related()
+
+            if equipe:
+                equipe = equipe.first()
+                veiculos_alocados = equipe.veiculoalocado_set.filter(perfil__cronograma_perfil__dt_apresentacao__range=(data, data.replace(day=data.day+1)))
+                dict_equipe = {
+                    'equipe': equipe,
+                    'veiculos_equipe': veiculos_alocados.get_perfis_equipe(),
+                    'locais': []
+                }
+
+                for local in equipe.local_equipe.all().order_by('local__nome'):
+                    veiculos_alocados_local = veiculos_alocados.get_perfis_local().filter(local_votacao=local).order_by('veiculo__motorista_veiculo__pessoa__nome')
+
+                    if veiculos_alocados_local:
+                        dict_equipe['locais'].append({'local': local,
+                                                      'veiculos_local': veiculos_alocados_local})
+        return render(request, 'veiculos/report/frequencia_motoristas.html', {'dict_equipe': dict_equipe, 'form': formulario})
+
+    formulario = FrequenciaForm()
+    return render(request, 'veiculos/report/frequencia_motoristas.html', {'form': formulario})

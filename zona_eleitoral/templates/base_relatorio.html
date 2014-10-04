@@ -10,6 +10,10 @@
             padding-top:15px;
         }
 
+        .print,
+        .print-table{
+            display: none;
+        }
 
         @media print {
 
@@ -38,6 +42,14 @@
 
             .botoes, .no-print {
                 display: none;
+            }
+
+            .print {
+                display: block;
+            }
+
+            .table.print{
+                display: table-cell;
             }
 
             .table > tbody > tr > td{
