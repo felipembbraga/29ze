@@ -267,6 +267,9 @@ class Equipe(models.Model):
         total_agregado = self.alocacao_set.aggregate(soma_agregados=models.Sum('quantidade'))
         return total_agregado.get('soma_agregados') and total_agregado.get('soma_agregados') or 0
 
+    def veiculos_alocados_local(self):
+        return self.veiculoalocado_set.exclude(local_votacao=None)
+
     def veiculos_por_data(self, data):
         return self.veiculoalocado_set.filter(perfil__cronograma_perfil__dt_apresentacao__range=(data, data.replace(day=data.day+1)))
 
