@@ -1,14 +1,11 @@
 #-*- coding: utf-8 -*-
 from operator import itemgetter
-from apuracao.models import importar_dados, Cidade
-from dateutils import timezone
+from apuracao.models import importar_dados
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 from django.template.context import RequestContext
 from django.utils import timezone
 from django.utils.datetime_safe import datetime
-from eleicao.models import Equipe
-from django.db import models
 
 
 @login_required
