@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-from apuracao.models import importar_dados
+from apuracao.models import importar_dados, Cidade
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 from django.template.context import RequestContext
