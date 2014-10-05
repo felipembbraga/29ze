@@ -14,7 +14,7 @@ MY_APPS = (
     'selectable_select2',
     'dajaxice',
     'dajax',
-    'apuracao'
+    'apuracao',
 )
 
 WEBODT_CONVERTER = 'webodt.converters.abiword.AbiwordODFConverter'

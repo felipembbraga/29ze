@@ -36,7 +36,7 @@ def get_percentual_apuracao(locais, xml):
         cidade = locais.get(abrangencia.attrib['codigoAbrangencia'])
         if abrangencia.attrib['tipoAbrangencia'] == 'MU' and cidade is not None:
             dicionario = {}
-            dicionario['cidade'] = int(cidade[1]['codigo'])
+            dicionario['codigo'] = int(cidade[1]['codigo'])
             dicionario['cidade'] = cidade[1]['nome']
             dicionario['UF'] = cidade[0]
             dicionario['secoes'] = int(cidade[1]['secoes']) + int(cidade[1]['secoesVT'])
