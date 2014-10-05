@@ -19,7 +19,7 @@ def monta_monitoramento(request):
 
     for cidade in cidades:
         if cidade.apuracao_set.filter(turno=1).exists():
-            apuracao = cidade.apuracao_set.filter(turno=1).first()
+            apuracao = cidade.apuracao_set.filter(turno=1).order_by('-dt_atualizacao').first()
 
             if apuracao.percentual <= 25:
                 progress = 'danger'
