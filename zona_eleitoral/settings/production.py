@@ -58,6 +58,10 @@ DATABASES = {
     }
 }
 
+APURACAO_PATH = os.path.join(MEDIA_ROOT,'/dados_apuracao/2014/divulgacao/oficial/143/distribuicao/br')
+APURACAO_XML_LOCAIS = 'br-0000-e001431-f001'
+APURACAO_XML_ABRANGENCIA = 'br-0000-e001431-v'
+
 LOGIN_URL = 'acesso:login'
 LOGIN_REDIRECT_URL='home'
 AUTHENTICATION_BACKENDS = ('acesso.backends.OrgaoBackend',
