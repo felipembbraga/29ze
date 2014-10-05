@@ -1,0 +1,141 @@
+{% extends 'veiculos/vistoria/base.html' %}
+{% load static from staticfiles %}
+{% load dajaxice_templatetags %}
+
+{% block extrabreadcrumb %}
+    {{ block.super }}
+    <li><a href="{% url 'veiculo:vistoria:cadastrar' %}">Monitorar Vistoria</a></li>
+{% endblock %}
+
+{% block extrastyle %}
+    <style type="text/css">
+        body{
+            padding-top: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block container %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title" style="font-size: 20px">
+                Andamento da Vistoria
+                    <div class="pull-right" style="width: 310px;display: inline-block; font-size: 12px; text-align: right">
+                        Clique na cidade para mais detalhes
+                    </div>
+            </h3>
+        </div>
+        <div class="panel-body" style="padding: 0 15px">
+            <div id="monitor-detalhe" class="row">
+                {% include 'apuracao/monitor-detalhe-apuracao.html' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_modals %}
+    <div class="modal fade" id="modal-detalhe-apuracao" role="dialog" aria-labelledby="modal-detalhe-apuracao-title" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="modal-detalhe-apuracao-title">Detalhes da Apuração - <span id="val_nome_cidade"></span> </h4>
+                </div>
+                <div class="modal-body">
+                    <div style="display: inline-block">
+                        <label>Seções apuradas:</label> <span id="val_sessoes_apuradas">10.000</span><br>
+                        <label>Sessões restantes:</label> <span id="val_sessoes_restantes">10.000</span><br>
+                        <label>Total de sessões:</label> <span id="val_sessoes_total">10.000</span><br>
+                    </div>
+                    <div id="grafico-apuracao" style="margin-left: auto; margin-right: auto; width: 800px"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary pull-right" data-dismiss="modal">Fechar</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endblock %}
+
+{%block extrascripts %}
+    {% dajaxice_js_import %}
+    <script src="{% static "dajax/jquery.dajax.core.js" %}"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/highcharts-3d.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+	<script>
+        $(document).ready(function(){
+            function transition() {
+                Dajaxice.apuracao.recarregar_monitoramento(Dajax.process);
+            }
+
+            setInterval(transition, 20000);
+        });
+
+        function exibe_modal(sessoes_apuradas, sessoes_apurar, sessoes_total, nome_cidade){
+            var modal = $('#modal-detalhe-apuracao');
+            modal.find('#val_sessoes_apuradas').html(sessoes_apuradas);
+            modal.find('#val_sessoes_restantes').html(sessoes_apurar);
+            modal.find('#val_sessoes_total').html(sessoes_total);
+            modal.find('#val_nome_cidade').html(nome_cidade);
+            modal.modal('show');
+
+            $('#grafico-apuracao').highcharts({
+                chart: {
+                    type: 'pie',
+                    options3d: {
+                        enabled: true,
+                        alpha: 45,
+                        beta: 0
+                    }
+                },
+                title: {
+                    text: 'Apuração de Sessões'
+                },
+                subtitle: {
+                    text: 'Andamento da apuração das sessões'
+                },
+                tooltip: {
+                    pointFormat: '<b>{point.y} sessões</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        depth: 35,
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                        }
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    name: 'Percentual dos Votos',
+                    data: [
+                        {
+                            name: 'Sessões apuradas',
+                            y: sessoes_apuradas,
+                            sliced: true,
+                            selected: true
+                        },
+                        ['Sessões a apurar', sessoes_apurar]
+                    ]
+                }],
+                lang: {
+                    downloadJPEG: 'Efetuar Download JPEG',
+                    downloadPDF: 'Efetuar Download PDF',
+                    downloadPNG: 'Efetuar Download PNG',
+                    downloadSVG: 'Efetuar Download SVG',
+                    printChart: 'Imprimir Gráfico'
+                }
+            });
+        }
+        $(function () {
+
+        });
+	</script>
+{% endblock %}
