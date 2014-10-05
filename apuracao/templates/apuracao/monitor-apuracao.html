@@ -4,7 +4,7 @@
 
 {% block extrabreadcrumb %}
     {{ block.super }}
-    <li><a href="{% url 'veiculo:vistoria:cadastrar' %}">Monitorar Vistoria</a></li>
+    <li><a href="{% url 'apuracao:monitorar' %}">Monitorar Apuração</a></li>
 {% endblock %}
 
 {% block extrastyle %}
@@ -22,7 +22,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title" style="font-size: 20px">
-                Andamento da Vistoria
+                Andamento da apuração das seções
                     <div class="pull-right" style="width: 310px;display: inline-block; font-size: 12px; text-align: right">
                         Clique na cidade para mais detalhes
                     </div>

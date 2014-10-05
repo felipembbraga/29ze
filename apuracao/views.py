@@ -36,10 +36,11 @@ def monta_monitoramento(request):
                     'sessoes_restantes': apuracao.secoes_restantes,
                     'sessoes_apuradas': apuracao.secoes_totalizadas,
                     'percentual': apuracao.percentual,
+                    'data_conclusao' : apuracao.dt_finalizacao,
                     'progress': progress}
         else:
             dict = {}
 
         lista_cidades.append(dict)
 
-    return sorted(lista_cidades, key=itemgetter('percentual'), reverse=True)
+    return sorted(lista_cidades, key=itemgetter('data_conclusao', 'percentual'), reverse=True)
