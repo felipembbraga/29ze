@@ -1,5 +1,7 @@
 from django.db import models
-
+import os
+from utils.apuracao_xml import get_dados
+from django.conf import settings
 # Create your models here.
 from eleicao.models import Eleicao
 
@@ -18,3 +20,7 @@ class Apuracao(models.Model):
     dt_atualizacao = models.DateTimeField()
     finalizado = models.BooleanField()
     turno = models.IntegerField()
+
+def importar_dados():
+    importacao = get_dados(settings.APURACAO_XML_LOCAIS, settings.APURACAO_XML_ABRANGENCIA, settings.APURACAO_PATH)
+    return importacao
