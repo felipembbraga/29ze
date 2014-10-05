@@ -4,6 +4,7 @@ from apuracao.models import importar_dados, Cidade
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 from django.template.context import RequestContext
+from django.utils.datetime_safe import datetime
 from eleicao.models import Equipe
 from django.db import models
 
@@ -36,7 +37,7 @@ def monta_monitoramento(request):
                     'sessoes_restantes': apuracao.secoes_restantes,
                     'sessoes_apuradas': apuracao.secoes_totalizadas,
                     'percentual': apuracao.percentual,
-                    'data_conclusao' : apuracao.dt_finalizacao,
+                    'data_conclusao': apuracao.dt_finalizacao or datetime(1900, 01, 01),
                     'progress': progress}
         else:
             dict = {}
