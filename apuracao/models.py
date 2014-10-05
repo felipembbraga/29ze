@@ -26,6 +26,7 @@ class Apuracao(models.Model):
     dt_atualizacao = models.DateTimeField()
     finalizado = models.BooleanField()
     dt_finalizacao = models.DateTimeField(null=True, blank=True)
+    dt_fechamento = models.DateTimeField(null=True, blank=True)
     turno = models.IntegerField()
 
 def importar_dados():
@@ -36,19 +37,23 @@ def importar_dados():
         else:
             cidade = Cidade.objects.create(codigo=dicionario['codigo'], nome=dicionario['cidade'], uf=dicionario['UF'], secoes=dicionario['secoes'])
             print cidade
-        if Apuracao.objects.filter(cidade=cidade, dt_atualizacao=dicionario['dt_atualizacao']).exists():
-            continue
-        apuracao = Apuracao.objects.create(cidade=cidade,
-                                                  dt_atualizacao=dicionario['dt_atualizacao'],
-                                                    secoes_totalizadas=dicionario['secoes_totalizadas'],
-                                                     secoes_restantes=dicionario['secoes_restantes'],
-                                                     percentual=dicionario['percentual'],
-                                                     finalizado=dicionario['finalizado'],
-                                                     turno = int(dicionario['turno'])
-                                                     )
+        if not Apuracao.objects.filter(cidade=cidade, dt_atualizacao=dicionario['dt_atualizacao']).exists():
+            apuracao = Apuracao.objects.create(cidade=cidade,
+                                                      dt_atualizacao=dicionario['dt_atualizacao'],
+                                                        secoes_totalizadas=dicionario['secoes_totalizadas'],
+                                                         secoes_restantes=dicionario['secoes_restantes'],
+                                                         percentual=dicionario['percentual'],
+                                                         finalizado=dicionario['finalizado'],
+                                                         turno = int(dicionario['turno'])
+                                                         )
+        else:
+            apuracao = Apuracao.objects.filter(cidade=cidade, dt_atualizacao=dicionario['dt_atualizacao']).first()
         if apuracao.finalizado:
-            apuracao.dt_finalizacao = datetime.datetime.now()
-            apuracao.save()
+            apuracao.dt_fechamento = datetime.datetime.now()
+
+        if not apuracao.dt_finalizacao and apuracao.percentual>=100:
+            apuracao.dt_finalizacao = apuracao.dt_atualizacao
+        apuracao.save()
     return Cidade.objects.all()
 
 
