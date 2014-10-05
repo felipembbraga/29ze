@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 import os
 from utils.apuracao_xml import get_dados
@@ -15,6 +16,8 @@ class Cidade(models.Model):
     def __unicode__(self):
         return u'%s - %s'%(unicode(self.nome), unicode(self.uf))
 
+
+
 class Apuracao(models.Model):
     cidade = models.ForeignKey(Cidade)
     secoes_totalizadas = models.IntegerField()
@@ -22,6 +25,7 @@ class Apuracao(models.Model):
     percentual = models.FloatField()
     dt_atualizacao = models.DateTimeField()
     finalizado = models.BooleanField()
+    dt_finalizacao = models.DateTimeField(null=True, blank=True)
     turno = models.IntegerField()
 
 def importar_dados():
@@ -42,7 +46,9 @@ def importar_dados():
                                                      finalizado=dicionario['finalizado'],
                                                      turno = int(dicionario['turno'])
                                                      )
-
+        if apuracao.finalizado:
+            apuracao.dt_finalizacao = datetime.datetime.now()
+            apuracao.save()
     return Cidade.objects.all()
 
 
