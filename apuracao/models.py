@@ -26,6 +26,7 @@ class Apuracao(models.Model):
     dt_atualizacao = models.DateTimeField()
     finalizado = models.BooleanField()
     dt_finalizacao = models.DateTimeField(null=True, blank=True)
+    dt_fechamento = models.DateTimeField(null=True, blank=True)
     turno = models.IntegerField()
 
 def importar_dados():
@@ -47,8 +48,11 @@ def importar_dados():
                                                      turno = int(dicionario['turno'])
                                                      )
         if apuracao.finalizado:
-            apuracao.dt_finalizacao = datetime.datetime.now()
-            apuracao.save()
+            apuracao.dt_fechamento = datetime.datetime.now()
+
+        if not apuracao.dt_finalizacao and apuracao.percentual>=100:
+            apuracao.dt_finalizacao = apuracao.dt_atualizacao
+        apuracao.save()
     return Cidade.objects.all()
 
 
