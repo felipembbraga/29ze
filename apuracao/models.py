@@ -37,16 +37,17 @@ def importar_dados():
         else:
             cidade = Cidade.objects.create(codigo=dicionario['codigo'], nome=dicionario['cidade'], uf=dicionario['UF'], secoes=dicionario['secoes'])
             print cidade
-        if Apuracao.objects.filter(cidade=cidade, dt_atualizacao=dicionario['dt_atualizacao']).exists():
-            continue
-        apuracao = Apuracao.objects.create(cidade=cidade,
-                                                  dt_atualizacao=dicionario['dt_atualizacao'],
-                                                    secoes_totalizadas=dicionario['secoes_totalizadas'],
-                                                     secoes_restantes=dicionario['secoes_restantes'],
-                                                     percentual=dicionario['percentual'],
-                                                     finalizado=dicionario['finalizado'],
-                                                     turno = int(dicionario['turno'])
-                                                     )
+        if not Apuracao.objects.filter(cidade=cidade, dt_atualizacao=dicionario['dt_atualizacao']).exists():
+            apuracao = Apuracao.objects.create(cidade=cidade,
+                                                      dt_atualizacao=dicionario['dt_atualizacao'],
+                                                        secoes_totalizadas=dicionario['secoes_totalizadas'],
+                                                         secoes_restantes=dicionario['secoes_restantes'],
+                                                         percentual=dicionario['percentual'],
+                                                         finalizado=dicionario['finalizado'],
+                                                         turno = int(dicionario['turno'])
+                                                         )
+        else:
+            apuracao = Apuracao.objects.filter(cidade=cidade, dt_atualizacao=dicionario['dt_atualizacao']).first()
         if apuracao.finalizado:
             apuracao.dt_fechamento = datetime.datetime.now()
 
