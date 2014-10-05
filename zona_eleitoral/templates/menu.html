@@ -8,6 +8,7 @@
                     <li class="dropdown-header">Eleição</li>
                     {% if perms.eleicao.view_local_votacao %}<li><a href="{% url 'apuracao:monitorar' %}">Monitorar apuração </a></li>{% endif %}
                 {% endif %}
+                <li class="divider"></li>
                 {% if perms.eleicao.view_local_votacao or perms.eleicao.import_local_votacao %}
                     <li class="dropdown-header">Locais de Votação</li>
                     {% if perms.eleicao.view_local_votacao %}<li><a href="{% url 'local:index' %}">Listar</a></li>{% endif %}
