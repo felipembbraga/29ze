@@ -12,11 +12,14 @@ class Cidade(models.Model):
     uf = models.CharField(max_length=2)
     secoes = models.IntegerField()
 
+    def __unicode__(self):
+        return u'%s - %s'%(unicode(self.nome), unicode(self.uf))
+
 class Apuracao(models.Model):
     cidade = models.ForeignKey(Cidade)
     secoes_totalizadas = models.IntegerField()
     secoes_restantes = models.IntegerField()
-    percentual = models.DecimalField(max_digits=3, decimal_places=2)
+    percentual = models.FloatField()
     dt_atualizacao = models.DateTimeField()
     finalizado = models.BooleanField()
     turno = models.IntegerField()
@@ -40,7 +43,7 @@ def importar_dados():
                                                      turno = int(dicionario['turno'])
                                                      )
 
-    return Cidade.objects.all().order_by('apuracao__percentual')
+    return Cidade.objects.all()
 
 
 

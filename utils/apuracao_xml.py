@@ -1,4 +1,6 @@
 #-*- coding: utf-8 -*-
+from decimal import Decimal
+
 __author__ = 'felipe'
 
 
@@ -42,7 +44,7 @@ def get_percentual_apuracao(locais, xml):
             dicionario['secoes'] = int(cidade[1]['secoes']) + int(cidade[1]['secoesVT'])
             dicionario['secoes_totalizadas'] = float(abrangencia.attrib['secoesTotalizadas'])
             dicionario['secoes_restantes'] = int(abrangencia.attrib['secoesNaoTotalizadas'])
-            dicionario['percentual'] = float(dicionario['secoes_totalizadas']*100) / dicionario['secoes']
+            dicionario['percentual'] = Decimal((dicionario['secoes_totalizadas']*100) / dicionario['secoes']).quantize(Decimal('1.00'))
             dicionario['dt_atualizacao'] = parser.parse('%s %s'%(abrangencia.attrib['dataTotalizacao'], abrangencia.attrib['horaTotalizacao']) )
             dicionario['finalizado'] = abrangencia.attrib['totalizacaoFinal'] == 'S' and True or False
             dicionario['turno'] = int(xml.attrib['turno'])
