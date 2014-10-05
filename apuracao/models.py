@@ -52,7 +52,10 @@ def importar_dados():
             apuracao.dt_fechamento = datetime.datetime.now()
 
         if not apuracao.dt_finalizacao and apuracao.percentual>=100:
-            apuracao.dt_finalizacao = apuracao.dt_atualizacao
+            if Apuracao.objects.filter(cidade=cidade).exclude(dt_finalizacao=None).exists():
+                apuracao.dt_finalizacao = Apuracao.objects.filter(cidade=cidade).exclude(dt_finalizacao=None).order_by('dt_finalizacao').first().dt_finalizacao
+            else:
+                apuracao.dt_finalizacao = apuracao.dt_atualizacao
         apuracao.save()
     return Cidade.objects.all()
 
