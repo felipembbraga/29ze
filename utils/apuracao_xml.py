@@ -42,8 +42,8 @@ def get_percentual_apuracao(locais, xml):
             dicionario['cidade'] = cidade[1]['nome']
             dicionario['UF'] = cidade[0]
             dicionario['secoes'] = int(cidade[1]['secoes']) + int(cidade[1]['secoesVT'])
-            dicionario['secoes_totalizadas'] = float(abrangencia.attrib['secoesTotalizadas'])
-            dicionario['secoes_restantes'] = int(abrangencia.attrib['secoesNaoTotalizadas'])
+            dicionario['secoes_totalizadas'] = float(abrangencia.attrib['secoesTotalizadas']) + float(abrangencia.attrib['secoesTotalizadasVT'])
+            dicionario['secoes_restantes'] = int(abrangencia.attrib['secoesNaoTotalizadas']) + float(abrangencia.attrib['secoesNaoTotalizadasVT'])
             dicionario['percentual'] = Decimal((dicionario['secoes_totalizadas']*100) / dicionario['secoes']).quantize(Decimal('1.00'))
             dicionario['dt_atualizacao'] = parser.parse('%s %s'%(abrangencia.attrib['dataTotalizacao'], abrangencia.attrib['horaTotalizacao']) )
             dicionario['finalizado'] = abrangencia.attrib['totalizacaoFinal'] == 'S' and True or False
