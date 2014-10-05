@@ -49,4 +49,4 @@ def monta_monitoramento(request):
 
         lista_cidades.append(dict)
 
-    return sorted(lista_cidades, key=itemgetter('data_finalizacao', 'percentual'), reverse=True)
+    return sorted(sorted(lista_cidades, key=itemgetter('data_finalizacao')), key=itemgetter('percentual'), reverse=True)
