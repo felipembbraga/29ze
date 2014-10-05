@@ -12,9 +12,6 @@ class Cidade(models.Model):
     uf = models.CharField(max_length=2)
     secoes = models.IntegerField()
 
-    def __unicode__(self):
-        return u'%s - %s'()
-
 class Apuracao(models.Model):
     cidade = models.ForeignKey(Cidade)
     secoes_totalizadas = models.IntegerField()
