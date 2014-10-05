@@ -2,7 +2,6 @@ from django.db import models
 import os
 from utils.apuracao_xml import get_dados
 from django.conf import settings
-# Create your models here.
 from eleicao.models import Eleicao
 
 
@@ -12,6 +11,7 @@ class Cidade(models.Model):
     uf = models.CharField(max_length=2)
     secoes = models.IntegerField()
 
+
 class Apuracao(models.Model):
     cidade = models.ForeignKey(Cidade)
     secoes_totalizadas = models.IntegerField()
@@ -20,6 +20,7 @@ class Apuracao(models.Model):
     dt_atualizacao = models.DateTimeField()
     finalizado = models.BooleanField()
     turno = models.IntegerField()
+
 
 def importar_dados():
     importacao = get_dados(settings.APURACAO_XML_LOCAIS, settings.APURACAO_XML_ABRANGENCIA, settings.APURACAO_PATH)
