@@ -43,7 +43,7 @@ def importar_dados():
                                                      turno = int(dicionario['turno'])
                                                      )
 
-    return Cidade.objects.all().order_by('apuracao__percentual')
+    return Cidade.objects.all().order_by('nome')
 
 
 
