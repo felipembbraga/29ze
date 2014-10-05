@@ -16,7 +16,7 @@ class Apuracao(models.Model):
     cidade = models.ForeignKey(Cidade)
     secoes_totalizadas = models.IntegerField()
     secoes_restantes = models.IntegerField()
-    percentual = models.DecimalField(max_digits=3, decimal_places=2)
+    percentual = models.FloatField()
     dt_atualizacao = models.DateTimeField()
     finalizado = models.BooleanField()
     turno = models.IntegerField()
