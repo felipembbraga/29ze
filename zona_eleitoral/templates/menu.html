@@ -5,6 +5,10 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Eleição<span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
                 {% if perms.eleicao.view_local_votacao or perms.eleicao.import_local_votacao %}
+                    <li class="dropdown-header">Eleição</li>
+                    {% if perms.eleicao.view_local_votacao %}<li><a href="{% url 'apuracao:monitorar' %}">Monitorar apuração </a></li>{% endif %}
+                {% endif %}
+                {% if perms.eleicao.view_local_votacao or perms.eleicao.import_local_votacao %}
                     <li class="dropdown-header">Locais de Votação</li>
                     {% if perms.eleicao.view_local_votacao %}<li><a href="{% url 'local:index' %}">Listar</a></li>{% endif %}
                     {% if perms.eleicao.import_local_votacao %}<li><a href="{% url 'local:importar' %}">Importar locais</a></li>{% endif %}
