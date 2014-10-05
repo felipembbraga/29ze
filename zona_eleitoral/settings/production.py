@@ -14,6 +14,7 @@ MY_APPS = (
     'selectable_select2',
     'dajaxice',
     'dajax',
+    'apuracao',
 )
 
 INSTALLED_APPS = INSTALLED_APPS + MY_APPS
