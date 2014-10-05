@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
-from apuracao.models import importar_dados
+from operator import itemgetter
+from apuracao.models import importar_dados, Cidade
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 from django.template.context import RequestContext
@@ -41,4 +42,4 @@ def monta_monitoramento(request):
 
         lista_cidades.append(dict)
 
-    return lista_cidades
+    return sorted(lista_cidades, key=itemgetter('percentual'), reverse=True)

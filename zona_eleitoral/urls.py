@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     url(r'^custom_admin/', include(custom_admin.site.urls)),
     url(r'^eleicao/', include('eleicao.urls', app_name='eleicao')),
     url(r'^veiculos/', include('veiculos.urls',app_name='veiculos')),
-    url(r'^apuracao/', include('apuracao.urls',app_name='apuracao')),
+    url(r'^apuracao/', include('apuracao.urls', app_name='apuracao', namespace='apuracao')),
     url(r'^teste/', teste_odt),
     url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
     (r'^selectable/', include('selectable.urls'))
