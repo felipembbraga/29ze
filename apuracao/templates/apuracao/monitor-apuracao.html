@@ -1,4 +1,4 @@
-{% extends 'veiculos/vistoria/base.html' %}
+{% extends 'base.html' %}
 {% load static from staticfiles %}
 {% load dajaxice_templatetags %}
 
@@ -122,7 +122,7 @@
                             sliced: true,
                             selected: true
                         },
-                        ['Sessões a apurar', sessoes_apurar]
+                        ['Sessões restantes', sessoes_apurar]
                     ]
                 }],
                 lang: {

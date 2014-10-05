@@ -1,5 +1,5 @@
 {% for cidade in lista_cidades %}
-    <button type="button" class="col-md-2 btn" style=" background-color: #ffffff; border: 1px solid #ccc; margin: 10px; padding: 10px; width: 18.2%" onclick="exibe_modal({{ cidade.sessoes_apuradas }}, {{ cidade.sessoes_restantes }}, {{ cidade.total }}, '{{ cidade.cidade }}')">
+    <button type="button" class="col-md-2 btn" style=" background-color: #ffffff; border: 1px solid #ccc; margin: 10px; padding: 10px; width: 18.2%" onclick="exibe_modal({{ cidade.sessoes_apuradas|safe }}, {{ cidade.sessoes_restantes|safe }}, {{ cidade.total }}, '{{ cidade.cidade }}')">
         <strong>{{ cidade.cidade }}</strong>
         <div class="progress" style="margin-bottom: 0">
             <div class="progress-bar progress-bar-{{ cidade.progress }} progress-bar-striped" role="progressbar" aria-valuenow="{{ cidade.percentual }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ cidade.percentual|safe }}%; min-width: 0;">{{ cidade.percentual }}%</div>
