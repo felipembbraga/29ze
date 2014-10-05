@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-from apuracao.models import Cidade
+from apuracao.models import importar_dados
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 from django.template.context import RequestContext
@@ -14,7 +14,7 @@ def monitorar_apuracao(request):
 
 
 def monta_monitoramento(request):
-    cidades = Cidade.objects.all()
+    cidades = importar_dados()
     lista_cidades = []
 
     for cidade in cidades:
