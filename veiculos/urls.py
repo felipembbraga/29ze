@@ -5,7 +5,8 @@ Created on 05/08/2014
 '''
 from django.conf.urls import include, url, patterns
 from veiculos.views_relatorio import frequencia_motoristas, relatorio_motoristas_dia, \
-    relatorio_veiculos_alocados_por_perfil
+    relatorio_veiculos_alocados_por_perfil, relatorio_veiculos_alocados_por_orgao, \
+    relatorio_veiculos_nao_alocados_orgao
 from veiculos.views_relatorio import relatorio_veiculos, relatorio_admin_orgao_sem_veiculo, \
     relatorio_veiculos_requisitados, relatorio_veiculo_alocado, relatorio_veiculos_alocados
 
@@ -71,6 +72,10 @@ report_patterns = [
     url(r'^veiculos-alocados-perfil/(\d+)/$', relatorio_veiculos_alocados_por_perfil, name='veiculos-alocados-perfil'),
     url(r'^frequencia-motoristas/$', frequencia_motoristas, name='frequencia'),
     url(r'^motoristas-dia/$', relatorio_motoristas_dia, name='motoristas-dia'),
+    url(r'^veiculos-alocados-orgao/$', relatorio_veiculos_alocados_por_orgao, name='veiculos-alocados-orgao'),
+    url(r'^veiculos-alocados-orgao/(\d+)/$', relatorio_veiculos_alocados_por_orgao, name='veiculos-alocados-orgao'),
+    url(r'^veiculos-nao-alocados-orgao/$', relatorio_veiculos_nao_alocados_orgao, name='veiculos-nao-alocados-orgao'),
+    url(r'^veiculos-nao-alocados-orgao/(\d+)/$', relatorio_veiculos_nao_alocados_orgao, name='veiculos-nao-alocados-orgao'),
 ]
 
 urlpatterns = patterns('',

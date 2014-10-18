@@ -48,7 +48,6 @@ class OrgaoPublico(User):
         if self.nome_secretaria:
             self.nome_secretaria=self.nome_secretaria.upper()
         super(OrgaoPublico, self).save(*args, **kwargs)
-    
 @receiver(post_save, sender=OrgaoPublico)
 def orgao_publico_post_save(signal, instance, sender, **kwargs):
     

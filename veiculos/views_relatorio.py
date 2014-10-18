@@ -6,6 +6,7 @@ Created on 07/08/2014
 '''
 import datetime
 from datetime import date
+from django.db.models.query_utils import Q
 from django.forms.models import modelform_factory
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http.response import HttpResponse
@@ -180,3 +181,38 @@ def relatorio_motoristas_dia(request):
             return ExcelResponse(dados, 'motoristas_do_dia')
 
     return render(request, 'veiculos/report/motoristas_por_dia.html', {'form': formulario})
+
+def relatorio_veiculos_alocados_por_orgao(request, id_orgao=None):
+    titulo_relatorio = u'Veiculos Alocados por Órgão'
+    if id_orgao:
+        orgao = get_object_or_404(OrgaoPublico, pk=int(id_orgao))
+        veiculos = orgao.veiculo_orgao.filter(eleicao=request.eleicao_atual).exclude(veiculoalocado=None).order_by('motorista_veiculo__pessoa__nome')
+    else:
+        veiculos = Veiculo.objects.filter(eleicao=request.eleicao_atual).exclude(veiculoalocado=None).order_by('motorista_veiculo__pessoa__nome')
+    orgaos = OrgaoPublico.objects.all().order_by('nome_secretaria')
+    Form = modelform_factory(
+                Veiculo,
+                fields=('orgao',),
+                labels={u'orgao':u'Selecionar Órgão: '})
+    Form.base_fields['orgao'].queryset = orgaos
+    form = Form({'orgao':id_orgao})
+    form.fields['orgao'].widget.attrs.update({'class':'form-control'})
+    return render(request, 'veiculos/report/veiculos_alocados_orgao.html', locals())
+
+def relatorio_veiculos_nao_alocados_orgao(request, id_orgao=None):
+    titulo_relatorio = u'Veiculos Selecionados Não Alocados por Órgão'
+    if id_orgao:
+        orgao = get_object_or_404(OrgaoPublico, pk=int(id_orgao))
+        veiculos = orgao.veiculo_orgao.filter(eleicao=request.eleicao_atual, veiculoalocado=None).exclude(veiculo_selecionado=None).order_by('motorista_veiculo__pessoa__nome')
+    else:
+        veiculos = Veiculo.objects.filter(eleicao=request.eleicao_atual, veiculoalocado=None).exclude(veiculo_selecionado=None).order_by('motorista_veiculo__pessoa__nome')
+    orgaos = OrgaoPublico.objects.all().order_by('nome_secretaria')
+
+    Form = modelform_factory(
+                Veiculo,
+                fields=('orgao',),
+                labels={u'orgao':u'Selecionar Órgão: '})
+    Form.base_fields['orgao'].queryset = orgaos
+    form = Form({'orgao':id_orgao})
+    form.fields['orgao'].widget.attrs.update({'class':'form-control'})
+    return render(request, 'veiculos/report/veiculos_nao_alocados_orgao.html', locals())
