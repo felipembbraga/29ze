@@ -1,6 +1,6 @@
 {% extends 'base_relatorio.html' %}
 {% block botoes %}
-    <a href="{% url 'veiculo:vistoria:listar' %}" class="btn btn-default btn-xs">Voltar</a>
+    <button onclick="history.back();" class="btn btn-default btn-xs">Voltar</button>
     <button type="button" onclick="window.print()" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-print"></span>Imprimir</button>
 {% endblock %}
 {% block dropdown %}
@@ -12,13 +12,26 @@
 
 {% block report %}
     <h1>{{ titulo_relatorio }}</h1>
-    {% if orgao %}
-        <div class="page-header">
-            <h2>{{ orgao }}</h2>
+    {% if not id_orgao %}
+    <div class="row" style="padding-top: 20px">
+        <div class="col-md-6">
+            <strong>Total de veículos vistoriados: </strong> {{ count_veiculos }}
         </div>
+    </div>
+    {% endif %}
+    {% for orgao in orgaos %}
+        {% with orgao.get_veiculos_alocados.count as count %}
+        {% if count > 0 %}
+            <div class="page-header">
+                <h2>{{ orgao }}</h2>
+            </div>
+            <div class="row" style="padding-top: 20px; padding-bottom: 20px;">
+                <div class="col-md-6">
+                    <strong>Total de veículos vistoriados: </strong> {{ count }}
+                </div>
+            </div>
+            {% for veiculo in orgao.get_veiculos_alocados %}
 
-        {% for veiculo in veiculos %}
-            {% if veiculo.orgao == orgao %}
                 <table class="table table-bordered" >
                     <tbody>
                     <tr style="background-color:#EEE">
@@ -105,10 +118,14 @@
                     {% endif %}
                     </tbody>
                 </table>
-            {% endif %}
-        {% endfor %}
 
-    {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% if not forloop.last %}
+            <div class="quebra-pagina"></div>
+        {% endif %}
+    {% endfor %}
 {% endblock %}
 
 {%block extrascripts %}
