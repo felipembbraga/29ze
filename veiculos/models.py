@@ -89,10 +89,14 @@ class VeiculoSelecionado(models.Model):
     Veículo que foi requisitado pelo TRE
     Os campos local e administrador, no momento não estão sendo utilizados devido a mudança na lógica de cadastro
     """
-    veiculo = models.OneToOneField(Veiculo, related_name='veiculo_selecionado')
+    veiculo = models.ForeignKey(Veiculo, related_name='veiculo_selecionado')
     local = models.ForeignKey(LocalVotacao, related_name='local_veiculo', null=True, blank=True)
     administrador = models.BooleanField(default=False, blank=True)
     requisitado_vistoria = models.BooleanField('Requisitado durante vistoria', default=False)
+    segundo_turno = models.BooleanField(u'2° Turno', default=False)
+
+    class Meta:
+        unique_together = ('veiculo', 'segundo_turno')
 
     def __unicode__(self):
         return unicode(self.veiculo)
@@ -102,16 +106,18 @@ class Motorista(models.Model):
     pessoa = models.ForeignKey('core.Pessoa')
     veiculo = models.ForeignKey(Veiculo, related_name='motorista_veiculo', null=True)
     eleicao = models.ForeignKey(Eleicao, related_name='motorista_eleicao')
+    segundo_turno = models.BooleanField(u'2° Turno', default=False)
 
     def tel_residencial(self):
         return '/'.join(unicode(telefone) for telefone in self.pessoa.telefones_set.filter(tipo=0))
+
     def tel_celular(self):
         return '/'.join(unicode(telefone) for telefone in self.pessoa.telefones_set.filter(tipo=2))
 
     class Meta:
         verbose_name = u'Motorista'
         verbose_name_plural = u'Motoristas'
-        unique_together = ('pessoa', 'eleicao')
+        unique_together = ('pessoa', 'eleicao', 'segundo_turno')
 
     def __unicode__(self):
         return unicode(self.pessoa.nome)
@@ -137,6 +143,7 @@ class CronogramaVeiculo(models.Model):
     dt_apresentacao = models.DateTimeField(u'Data da Apresentação')
     dia_montagem = models.BooleanField('Dia de montagem', default=False)
     eleicao = models.ForeignKey(Eleicao)
+    segundo_turno = models.BooleanField(u'2° Turno', default=False)
 
 
 @receiver(post_save, sender=Motorista)
@@ -167,9 +174,11 @@ class Alocacao(models.Model):
     equipe = models.ForeignKey(Equipe)
     local_votacao = models.ForeignKey(LocalVotacao, null=True, blank=True)
     quantidade = models.PositiveIntegerField()
+    segundo_turno = models.BooleanField(u'2° Turno', default=False)
     objects = AlocacaoManager()
+
     class Meta:
-        unique_together = ('perfil_veiculo', 'equipe', 'local_votacao')
+        unique_together = ('perfil_veiculo', 'equipe', 'local_votacao', 'segundo_turno')
 
     def get_veiculos_alocados(self):
         return self.perfil_veiculo.veiculoalocado_set.filter(equipe=self.equipe, perfil=self.perfil_veiculo, local_votacao=self.local_votacao)
@@ -198,11 +207,15 @@ class VeiculoAlocadoManager(models.Manager):
 
 
 class VeiculoAlocado(models.Model):
-    veiculo = models.OneToOneField(Veiculo, verbose_name=u'Veículo')
+    veiculo = models.ForeignKey(Veiculo, verbose_name=u'Veículo')
     perfil = models.ForeignKey(PerfilVeiculo, verbose_name='Perfil')
     equipe = models.ForeignKey(Equipe, verbose_name=u"Equipe")
-    local_votacao = models.ForeignKey(LocalVotacao, verbose_name=u"Local de Votação" , null=True, blank=True)
+    local_votacao = models.ForeignKey(LocalVotacao, verbose_name=u"Local de Votação", null=True, blank=True)
+    segundo_turno = models.BooleanField(u'2° Turno', default=False)
     objects = VeiculoAlocadoManager()
+
+    class Meta:
+        unique_together = ('veiculo', 'segundo_turno')
 
     def __unicode__(self):
         return unicode(self.veiculo)
