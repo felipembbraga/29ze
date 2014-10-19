@@ -184,35 +184,42 @@ def relatorio_motoristas_dia(request):
 
 def relatorio_veiculos_alocados_por_orgao(request, id_orgao=None):
     titulo_relatorio = u'Veiculos Alocados por Órgão'
+    lista_orgaos = OrgaoPublico.objects.exclude(nome_secretaria__icontains='teste').order_by('nome_secretaria')
     if id_orgao:
         orgao = get_object_or_404(OrgaoPublico, pk=int(id_orgao))
-        veiculos = orgao.veiculo_orgao.filter(eleicao=request.eleicao_atual).exclude(veiculoalocado=None).order_by('motorista_veiculo__pessoa__nome')
+        orgaos = [orgao,]
     else:
-        veiculos = Veiculo.objects.filter(eleicao=request.eleicao_atual).exclude(veiculoalocado=None).order_by('motorista_veiculo__pessoa__nome')
-    orgaos = OrgaoPublico.objects.all().order_by('nome_secretaria')
+        orgaos = lista_orgaos
+    count_veiculos = 0
+    for o in orgaos:
+        o.eleicao = request.eleicao_atual
+        count_veiculos += o.get_veiculos_alocados().count()
     Form = modelform_factory(
                 Veiculo,
                 fields=('orgao',),
                 labels={u'orgao':u'Selecionar Órgão: '})
-    Form.base_fields['orgao'].queryset = orgaos
+    Form.base_fields['orgao'].queryset = lista_orgaos
     form = Form({'orgao':id_orgao})
     form.fields['orgao'].widget.attrs.update({'class':'form-control'})
     return render(request, 'veiculos/report/veiculos_alocados_orgao.html', locals())
 
 def relatorio_veiculos_nao_alocados_orgao(request, id_orgao=None):
-    titulo_relatorio = u'Veiculos Selecionados Não Alocados por Órgão'
+    titulo_relatorio = u'Veiculos requisitados não vistoriados'
+    lista_orgaos = OrgaoPublico.objects.exclude(nome_secretaria__icontains='teste').order_by('nome_secretaria')
     if id_orgao:
         orgao = get_object_or_404(OrgaoPublico, pk=int(id_orgao))
-        veiculos = orgao.veiculo_orgao.filter(eleicao=request.eleicao_atual, veiculoalocado=None).exclude(veiculo_selecionado=None).order_by('motorista_veiculo__pessoa__nome')
+        orgaos = [orgao,]
     else:
-        veiculos = Veiculo.objects.filter(eleicao=request.eleicao_atual, veiculoalocado=None).exclude(veiculo_selecionado=None).order_by('motorista_veiculo__pessoa__nome')
-    orgaos = OrgaoPublico.objects.all().order_by('nome_secretaria')
-
+        orgaos = lista_orgaos
+    count_veiculos = 0
+    for o in orgaos:
+        o.eleicao = request.eleicao_atual
+        count_veiculos += o.get_veiculos_nao_alocados().count()
     Form = modelform_factory(
                 Veiculo,
                 fields=('orgao',),
                 labels={u'orgao':u'Selecionar Órgão: '})
-    Form.base_fields['orgao'].queryset = orgaos
+    Form.base_fields['orgao'].queryset = lista_orgaos
     form = Form({'orgao':id_orgao})
     form.fields['orgao'].widget.attrs.update({'class':'form-control'})
     return render(request, 'veiculos/report/veiculos_nao_alocados_orgao.html', locals())

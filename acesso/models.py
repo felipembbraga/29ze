@@ -48,6 +48,20 @@ class OrgaoPublico(User):
         if self.nome_secretaria:
             self.nome_secretaria=self.nome_secretaria.upper()
         super(OrgaoPublico, self).save(*args, **kwargs)
+
+    def get_veiculos_alocados(self):
+        qs = self.veiculo_orgao.exclude(veiculoalocado=None).order_by('motorista_veiculo__pessoa__nome')
+        if hasattr(self, 'eleicao'):
+            qs = qs.filter(eleicao=self.eleicao)
+        return qs
+
+
+    def get_veiculos_nao_alocados(self):
+        qs = self.veiculo_orgao.filter(veiculoalocado=None).exclude(veiculo_selecionado=None).order_by('motorista_veiculo__pessoa__nome')
+        if hasattr(self, 'eleicao'):
+            qs = qs.filter(eleicao=self.eleicao)
+        return qs
+
 @receiver(post_save, sender=OrgaoPublico)
 def orgao_publico_post_save(signal, instance, sender, **kwargs):
     
