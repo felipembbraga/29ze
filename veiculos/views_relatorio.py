@@ -198,7 +198,7 @@ def relatorio_veiculos_alocados_por_orgao(request, id_orgao=None):
                 Veiculo,
                 fields=('orgao',),
                 labels={u'orgao':u'Selecionar Órgão: '})
-    Form.base_fields['orgao'].queryset = orgaos
+    Form.base_fields['orgao'].queryset = lista_orgaos
     form = Form({'orgao':id_orgao})
     form.fields['orgao'].widget.attrs.update({'class':'form-control'})
     return render(request, 'veiculos/report/veiculos_alocados_orgao.html', locals())
