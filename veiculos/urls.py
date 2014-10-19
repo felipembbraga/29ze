@@ -56,8 +56,8 @@ cronograma_veiculo_patterns = [
 ]
 
 alocacao_patterns = [
-    url(r'^editar/(\d+)/(\d+)/$', alocacao_editar, name='editar'),
-    url(r'^editar/(\d+)/(\d+)/(\d+)/$', alocacao_editar, name='editar'),
+    url(r'^editar/(True|False)/(\d+)/(\d+)/$', alocacao_editar, name='editar'),
+    url(r'^editar/(True|False)/(\d+)/(\d+)/(\d+)/$', alocacao_editar, name='editar'),
 ]
 
 report_patterns = [

@@ -329,7 +329,7 @@ def cronograma_excluir(request, id_cronograma):
         messages.error(request, u'Erro ao remover o cronograma')
         return redirect('perfil-veiculo:detalhar', perfil.pk)
 
-def alocacao_editar(request, id_equipe, id_perfil, id_local=None):
+def alocacao_editar(request, turno, id_equipe, id_perfil, id_local=None):
     total_veiculos = Veiculo.objects.filter(eleicao = request.eleicao_atual).exclude(veiculo_selecionado=None).count()
     equipes = Equipe.objects.filter(eleicao=request.eleicao_atual)
     veiculos_alocados = 0

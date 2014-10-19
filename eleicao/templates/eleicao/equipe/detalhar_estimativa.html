@@ -20,7 +20,7 @@
                             {{ perfil|upper }} <span class="badge">{% total_veiculos perfil equipe %}</span>
 
                             <div class="btn-group btn-group-xs pull-right" style="margin-right:5px;">
-                                <a class="btn btn-primary btn-xs" href="{% url 'alocacao-veiculo:editar' equipe.pk perfil.pk %}" data-id="457">
+                                <a class="btn btn-primary btn-xs" href="{% url 'alocacao-veiculo:editar' True equipe.pk perfil.pk %}" data-id="457">
                                     <span class="glyphicon glyphicon-check"></span>
                                     Editar
                                 </a>
@@ -60,7 +60,7 @@
                                                 {{ perfil|upper }} <span class="badge">{% total_veiculos perfil equipe local %}</span>
 
                                                 <div class="btn-group btn-group-xs pull-right" style="margin-right:5px;">
-                                                    <a class="btn btn-primary btn-xs" href="{% url 'alocacao-veiculo:editar' equipe.pk perfil.pk local.pk %}" data-id="457">
+                                                    <a class="btn btn-primary btn-xs" href="{% url 'alocacao-veiculo:editar' True equipe.pk perfil.pk local.pk %}" data-id="457">
                                                         <span class="glyphicon glyphicon-check"></span>
                                                         Editar
                                                     </a>
