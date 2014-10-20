@@ -10,7 +10,8 @@
         <li class="active"><a href="#locais" role="tab" data-toggle="tab">Locais</a></li>
         {% comment %}<li><a href="#membros" role="tab" data-toggle="tab">Membros</a></li>{% endcomment %}
         <li><a href="#rotas" role="tab" data-toggle="tab">Rotas</a></li>
-        <li><a href="#estimativa" role="tab" data-toggle="tab">Quantidade de veículos</a></li>
+        <li><a href="#estimativa1" role="tab" data-toggle="tab">Quantidade de veículos - 1º Turno</a></li>
+    <li><a href="#estimativa2" role="tab" data-toggle="tab">Quantidade de veículos - 2º Turno</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active navbar" id="locais">
@@ -24,8 +25,11 @@
         <div class="tab-pane" id="rotas">
             {% include 'eleicao/equipe/detalhar_rotas.html' %}
         </div>
-        <div class="tab-pane" id="estimativa">
+        <div class="tab-pane" id="estimativa1">
             {% include 'eleicao/equipe/detalhar_estimativa.html' %}
+        </div>
+        <div class="tab-pane" id="estimativa2">
+            {% include 'eleicao/equipe/detalhar_estimativa2.html' %}
         </div>
     </div>
 {% endblock %}

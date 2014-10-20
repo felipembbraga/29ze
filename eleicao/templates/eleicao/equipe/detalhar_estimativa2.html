@@ -1,7 +1,7 @@
 {% load perfil_veiculo %}
 <div class="row">
 
-    <a href="{% url 'eleicao-report:equipe-estimativa' equipe.pk False %}" class="btn btn-primary botao pull-right">
+    <a href="{% url 'eleicao-report:equipe-estimativa' equipe.pk True %}" class="btn btn-primary botao pull-right">
         Relatório
     </a>
 </div>
@@ -17,10 +17,10 @@
                 <ul class="bs-list">
                     {% for perfil in equipe.get_perfis_equipe %}
                         <li>
-                            {{ perfil|upper }} <span class="badge">{% total_veiculos False perfil equipe %}</span>
+                            {{ perfil|upper }} <span class="badge">{% total_veiculos True perfil equipe %}</span>
 
                             <div class="btn-group btn-group-xs pull-right" style="margin-right:5px;">
-                                <a class="btn btn-primary btn-xs" href="{% url 'alocacao-veiculo:editar' False equipe.pk perfil.pk %}" data-id="457">
+                                <a class="btn btn-primary btn-xs" href="{% url 'alocacao-veiculo:editar' True equipe.pk perfil.pk %}" data-id="457">
                                     <span class="glyphicon glyphicon-check"></span>
                                     Editar
                                 </a>
@@ -57,10 +57,10 @@
                                     <ul class="bs-list">
                                         {% for perfil in local.get_perfis_local %}
                                             <li>
-                                                {{ perfil|upper }} <span class="badge">{% total_veiculos False perfil equipe local %}</span>
+                                                {{ perfil|upper }} <span class="badge">{% total_veiculos True perfil equipe local %}</span>
 
                                                 <div class="btn-group btn-group-xs pull-right" style="margin-right:5px;">
-                                                    <a class="btn btn-primary btn-xs" href="{% url 'alocacao-veiculo:editar' False equipe.pk perfil.pk local.pk %}" data-id="457">
+                                                    <a class="btn btn-primary btn-xs" href="{% url 'alocacao-veiculo:editar' True equipe.pk perfil.pk local.pk %}" data-id="457">
                                                         <span class="glyphicon glyphicon-check"></span>
                                                         Editar
                                                     </a>

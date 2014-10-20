@@ -61,6 +61,16 @@ class Veiculo(models.Model):
     def get_ano(self):
         return unicode(self.ano)
 
+    def get_requisicao(self):
+        veiculos = self.veiculo_selecionado.all()
+        def turno(object):
+            if object.segundo_turno:
+                return u'2º'
+            return u'1º'
+        lista_turnos = map(turno, veiculos)
+        return (veiculos.count() > 0 and ' e '.join(map(turno, veiculos)) + ' turno(s)' or 'Nenhum')
+
+
     def veiculo_with_popover(self):
         if self.observacao:
             html = u'''<span  class="tooltip-iniciar"

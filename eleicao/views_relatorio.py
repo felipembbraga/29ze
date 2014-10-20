@@ -109,8 +109,9 @@ def relatorio_equipe_rotas(request, id_equipe):
     return render(request, 'eleicao/reports/equipe_rotas.html', locals())
 
 
-def relatorio_equipe_estimativa(request, id_equipe):
+def relatorio_equipe_estimativa(request, id_equipe, segundo_turno):
     equipe = get_object_or_404(Equipe, pk=int(id_equipe))
+    segundo_turno=eval(segundo_turno)
     return render(request, 'eleicao/reports/equipe_estimativa.html', locals())
 
 

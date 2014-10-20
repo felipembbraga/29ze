@@ -263,9 +263,14 @@ class Equipe(models.Model):
     def get_perfis_local(self):
         return self.perfilveiculo_set.filter(perfil_equipe=False)
 
-    def total_veiculos_estimados(self):
-        total_agregado = self.alocacao_set.aggregate(soma_agregados=models.Sum('quantidade'))
+    def total_veiculos_estimados_turno1(self):
+        total_agregado = self.alocacao_set.filter(segundo_turno=False).aggregate(soma_agregados=models.Sum('quantidade'))
         return total_agregado.get('soma_agregados') and total_agregado.get('soma_agregados') or 0
+
+    def total_veiculos_estimados_turno2(self):
+        total_agregado = self.alocacao_set.filter(segundo_turno=True).aggregate(soma_agregados=models.Sum('quantidade'))
+        return total_agregado.get('soma_agregados') and total_agregado.get('soma_agregados') or 0
+
 
     def veiculos_alocados_local(self):
         return self.veiculoalocado_set.exclude(local_votacao=None)
