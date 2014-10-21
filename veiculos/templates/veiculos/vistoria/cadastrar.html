@@ -16,7 +16,16 @@
 {% block container %}
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title">Efetuar vistoria de veículo</h3>
+            <h3 class="panel-title">
+                Efetuar vistoria de veículo
+                <span class="pull-right">
+                    <label for="turno">Turno:</label>
+                    <select id="turno" class="form-control" style="display: inline-block; width: auto; height: 25px; padding: 0;">
+                        <option value="0" {% if not segundo_turno %}selected="selected"{% endif %}>1°</option>
+                        <option value="1" {% if segundo_turno %}selected="selected"{% endif %}>2°</option>
+                    </select>
+                </span>
+            </h3>
         </div>
         <div class="panel-body">
             <div id="consultar-veiculo" style="width: 30%;">
@@ -62,7 +71,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" onclick="nova_busca($('#modal-novo-veiculo'))">Buscar outro veículo</button>
-                    <button type="button" class="btn btn-primary" onclick="add_veiculo()">Adicionar</button>
+                    <button type="button" class="btn btn-primary" onclick="add_veiculo({})">Adicionar</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -80,7 +89,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="Dajaxice.veiculos.cadastrar_veiculo(Dajax.process, {'placa':$('#placa-veiculo').val(), 'formulario': $('#add_veiculo_form').serialize(true)})">Salvar</button>
+                    <button type="button" class="btn btn-primary" onclick="add_veiculo($('#add_veiculo_form').serialize(true))">Salvar</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -98,7 +107,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Não</button>
-                    <button type="button" class="btn btn-primary" onclick="Dajaxice.veiculos.requisitar_veiculo(Dajax.process, {'placa': $('#placa-veiculo').val()})">Sim</button>
+                    <button type="button" class="btn btn-primary" onclick="requisitar_veiculo()">Sim</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

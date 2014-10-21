@@ -1,4 +1,5 @@
 from acesso.models import OrgaoPublico
+from core.models import Pessoa
 from eleicao.models import EquipesAlocacao, LocalVotacao
 from selectable.base import ModelLookup, LookupBase
 from selectable.registry import registry
@@ -7,20 +8,20 @@ from django.db import models
 
 
 class MotoristaLookup(ModelLookup):
-    model = Motorista
-    search_fields = ('pessoa__nome__icontains', 'pessoa__titulo_eleitoral__icontains')
-    filters = {'pessoa__nome__isnull': False, 'pessoa__titulo_eleitoral__isnull': False}
+    model = Pessoa
+    search_fields = ('nome__icontains', 'titulo_eleitoral__icontains')
+    filters = {'nome__isnull': False, 'titulo_eleitoral__isnull': False}
 
     def get_item_value(self, item):
-        return "%s - %s" % (item.pessoa.titulo_eleitoral, item.pessoa.nome.upper())
+        return "%s - %s" % (item.titulo_eleitoral, item.nome.upper())
 
     def get_item_label(self, item):
-        return "%s - %s" % (item.pessoa.titulo_eleitoral, item.pessoa.nome.upper())
+        return "%s - %s" % (item.titulo_eleitoral, item.nome.upper())
 
     def get_queryset(self):
         qs = self.model._default_manager.get_query_set()
         if self.filters:
-            qs = qs.filter(**self.filters).order_by('pessoa__nome')
+            qs = qs.filter(**self.filters).order_by('nome')
         return qs
 
 

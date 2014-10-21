@@ -214,6 +214,7 @@ class VistoriaForm(Select2DependencyForm):
                                                                      placeholder=u"Selecione uma função"),
                                     label=u'Função do Veículo', required=False)
     alocacao_manual = forms.BooleanField(label=u'Escolher equipe manualmente', required=False)
+    alocacao_2_turno = forms.BooleanField(label=u'Alterar dados da alocação', required=False)
     equipe_manual = forms.ModelChoiceField(queryset=EquipeManualLookup().get_queryset(),
                                            widget=AutoCompleteSelect2Widget(EquipeManualLookup,
                                                                             placeholder="Selecione uma equipe"),

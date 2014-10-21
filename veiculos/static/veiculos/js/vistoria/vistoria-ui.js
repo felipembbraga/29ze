@@ -10,10 +10,21 @@ function block_screen(){
                 overlayCSS: { 'z-index': '9990', 'background-color': '#F7F7F7'} });
 }
 
-function add_veiculo(){
+function requisitar_veiculo(){
+    block_screen();
+    var turno = false;
+    if (parseInt($('#turno').val()) > 0)
+        turno = true;
+    Dajaxice.veiculos.requisitar_veiculo(default_callback, {'placa':$('#placa-veiculo').val(), 'turno': turno});
+}
+
+function add_veiculo(formulario){
     $('#modal-novo-veiculo').modal('toggle');
     block_screen();
-    Dajaxice.veiculos.cadastrar_veiculo(default_callback, {'placa':$('#placa-veiculo').val(), 'formulario': {}});
+    var turno = false;
+    if (parseInt($('#turno').val()) > 0)
+        turno = true;
+    Dajaxice.veiculos.cadastrar_veiculo(default_callback, {'placa':$('#placa-veiculo').val(), 'formulario': formulario, 'turno': turno});
 }
 
 function buscar_placa(val){
@@ -21,7 +32,10 @@ function buscar_placa(val){
     if (val != '') {
         block_screen();
         error.hide();
-        Dajaxice.veiculos.consultar_veiculo(default_callback, {'placa': val});
+        var turno = false;
+        if (parseInt($('#turno').val()) > 0)
+            turno = true;
+        Dajaxice.veiculos.consultar_veiculo(default_callback, {'placa': val, 'turno': turno});
     }else{
         error.show();
         error.html('Informe um valor válido!');
@@ -35,12 +49,18 @@ function change_marca(val){
 
 function change_motorista(val){
     block_screen();
-    Dajaxice.veiculos.consulta_motorista(default_callback, {'id_motorista': val});
+    var turno = false;
+    if (parseInt($('#turno').val()) > 0)
+        turno = true;
+    Dajaxice.veiculos.consulta_motorista(default_callback, {'id_motorista': val, 'turno': turno});
 }
 
 function salva_vistoria(val){
     block_screen();
-    Dajaxice.veiculos.cadastrar_vistoria(default_callback, {'formulario': val});
+    var turno = false;
+    if (parseInt($('#turno').val()) > 0)
+        turno = true;
+    Dajaxice.veiculos.cadastrar_vistoria(default_callback, {'formulario': val, 'turno': turno});
 }
 
 function aplica_mascaras(){
@@ -124,6 +144,18 @@ $(document).ready(function(){
             perfil_manual_sl2.find('span.select2-chosen').html('Selecione uma função');
             perfil_manual_sl2.removeClass('select2-allowclear');
             perfil_manual.val('');
+        }
+    });
+
+    $('body').on('click', '#id_alocacao_2_turno', function() {
+        var div_dados_1_turno = $('#detalhes_alocacao_1_turno');
+        var div_dados_alocacao = $('#dados_alocacao');
+        if ($(this).is(':checked')) {
+            div_dados_alocacao.show();
+            div_dados_1_turno.hide();
+        }else{
+            div_dados_alocacao.hide();
+            div_dados_1_turno.show();
         }
     });
 

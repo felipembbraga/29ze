@@ -359,24 +359,29 @@ def index_vistoria(request):
 @login_required
 @permission_required('veiculos.inspection_veiculo', raise_exception=True)
 def veiculo_vistoria(request):
-    return render(request, 'veiculos/vistoria/cadastrar.html')
+    segundo_turno = False if datetime.date.today() <= request.eleicao_atual.data_turno_1 else True
+    return render(request, 'veiculos/vistoria/cadastrar.html', {'segundo_turno': segundo_turno})
 
 
 @login_required
 @permission_required('veiculos.inspection_veiculo', raise_exception=True)
 def veiculo_vistoria_listagem(request, id_equipe=None):
-
     if id_equipe:
         equipe = Equipe.objects.get(pk=int(id_equipe))
-        queryset = VeiculoAlocado.objects.filter(veiculo__eleicao = request.eleicao_atual, equipe=equipe)
-
+        queryset = VeiculoAlocado.objects.filter(veiculo__eleicao=request.eleicao_atual, equipe=equipe)
     else:
-        queryset = VeiculoAlocado.objects.filter(veiculo__eleicao = request.eleicao_atual)
+        queryset = VeiculoAlocado.objects.filter(veiculo__eleicao=request.eleicao_atual)
+
     total_veiculos = queryset.count()
     lista_veiculos = queryset.order_by('equipe__nome', 'veiculo__marca__nome', 'veiculo__modelo__nome')
     pesquisar = request.GET.get('pesquisar') and request.GET.get('pesquisar') or ''
+    turno = None if not request.GET.get('turno') else True if int(request.GET.get('turno')) > 0 else False
+
     if pesquisar != '':
        lista_veiculos = lista_veiculos.filter(Q(veiculo__motorista_veiculo__pessoa__nome__icontains=pesquisar) | Q(veiculo__placa__icontains=pesquisar))
+
+    if turno is not None:
+        lista_veiculos = lista_veiculos.filter(segundo_turno=turno)
 
     #filtro = VeiculoAlocadoFilter(request.GET, queryset = lista_veiculos)
     #total_com_motorista = filtro.qs.exclude(motorista_titulo_eleitoral=None).count()
@@ -386,6 +391,7 @@ def veiculo_vistoria_listagem(request, id_equipe=None):
     num_por_pagina = form_pagina.is_valid() and int(form_pagina.cleaned_data['num_por_pagina']) or 10
     paginator = Paginator(lista_veiculos, num_por_pagina)
     pagina = request.GET.get('pagina')
+
     try:
         veiculos = paginator.page(pagina)
     except PageNotAnInteger:
@@ -394,17 +400,19 @@ def veiculo_vistoria_listagem(request, id_equipe=None):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         veiculos = paginator.page(paginator.num_pages)
+
     equipes = Equipe.objects.filter(eleicao=request.eleicao_atual).exclude(veiculoalocado=None).order_by('nome')
-    formequipe = modelform_factory(
-                VeiculoAlocado,
-                fields=('equipe',),
-                labels={'equipe':u'Selecionar uma equipe: '})
+    formequipe = modelform_factory(VeiculoAlocado,
+                                   fields=('equipe',),
+                                   labels={'equipe': u'Selecionar uma equipe: '})
     formequipe.base_fields['equipe'].queryset = equipes
+
     if id_equipe:
-        form = formequipe({'equipe':id_equipe})
+        form = formequipe({'equipe': id_equipe})
     else:
         form = formequipe()
-    form.fields['equipe'].widget.attrs.update({'class':'form-control'})
+
+    form.fields['equipe'].widget.attrs.update({'class': 'form-control'})
     return render(request, 'veiculos/vistoria/listar.html', locals())
 
 
@@ -415,24 +423,25 @@ def monitorar_vistoria(request):
 
 
 def monta_monitoramento(request):
+    turno = True
     equipes = Equipe.objects.all().select_related()
     equipe_monitoracao = []
     for equipe in equipes:
-        if equipe.equipesalocacao_set.all():
-            dict = {'equipe': equipe,
-                    'total_estimado': equipe.equipesalocacao_set.first().total_estimativa,
-                    'estimado': equipe.equipesalocacao_set.first().total_estimativa - equipe.equipesalocacao_set.first().veiculos_alocados,
-                    'alocado': equipe.equipesalocacao_set.first().veiculos_alocados,
-                    'percentual_alocado': (100 * equipe.equipesalocacao_set.first().veiculos_alocados) / equipe.equipesalocacao_set.first().total_estimativa}
+        if equipe.equipesalocacao_set.filter(segundo_turno=turno):
+            dicionario = {'equipe': equipe,
+                          'total_estimado': equipe.equipesalocacao_set.first().total_estimativa,
+                          'estimado': equipe.equipesalocacao_set.first().total_estimativa - equipe.equipesalocacao_set.filter(segundo_turno=turno).first().veiculos_alocados,
+                          'alocado': equipe.equipesalocacao_set.filter(segundo_turno=turno).first().veiculos_alocados,
+                          'percentual_alocado': (100 * equipe.equipesalocacao_set.filter(segundo_turno=turno).first().veiculos_alocados) / equipe.equipesalocacao_set.first().total_estimativa}
         else:
-            dict = {'equipe': equipe,
-                    'total_estimado': equipe.alocacao_set.aggregate(models.Sum('quantidade')).get('quantidade__sum'),
-                    'estimado': 0,
-                    'alocado': equipe.veiculoalocado_set.count(),
-                    'percentual_alocado': 100}
+            dicionario = {'equipe': equipe,
+                          'total_estimado': equipe.alocacao_set.aggregate(models.Sum('quantidade')).get('quantidade__sum'),
+                          'estimado': 0,
+                          'alocado': equipe.veiculoalocado_set.count(),
+                          'percentual_alocado': 100}
 
-        dict['percentual_estimado'] = 100 - dict['percentual_alocado']
+        dicionario['percentual_estimado'] = 100 - dicionario['percentual_alocado']
 
-        equipe_monitoracao.append(dict)
+        equipe_monitoracao.append(dicionario)
 
     return equipe_monitoracao

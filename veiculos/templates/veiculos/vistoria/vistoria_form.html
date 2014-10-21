@@ -40,7 +40,7 @@
     </div>
 </div>
 
-<div style="border-bottom: 1px solid #ccc; margin-bottom: 10px; font-size: 16px">Dados da vistoria</div>
+<div style="border-bottom: 1px solid #ccc; margin-bottom: 10px; font-size: 16px">Dados do motorista</div>
 
 <form id="vistoria_veiculo_form" role="form" method="post" class="form-horizontal">
     {% csrf_token %}
@@ -124,145 +124,192 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-3 campo-modal">
-            <div class="form-group{% if form_vistoria.alocacao.errors %} has-error{% endif %}">
-                <label for="{{form_vistoria.alocacao.id_for_label}}">
-                    {{ form_vistoria.alocacao.label }}{% if form_vistoria.alocacao.field.required %}*{% endif %}
-                </label>
-                {% if form_vistoria.alocacao.is_hidden %}
-                    <p class="form-control-static">{{ form_vistoria.alocacao.value|upper }}<p>
+    {% if veiculo_alocado %}
+        <div id="detalhes_alocacao_1_turno">
+            <div style="border-bottom: 1px solid #ccc; margin-bottom: 10px; font-size: 16px">Dados da alocação do 1º turno</div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label>Equipe</label>
+                    <p class="form-control-static">{{ veiculo_alocado.equipe|upper }}<p>
+                </div>
+                {% if veiculo_alocado.local_votacao %}
+                    <div class="col-md-5">
+                        <label>Local de Votação</label>
+                        <p class="form-control-static">{{ veiculo_alocado.local_votacao|upper }}<p>
+                    </div>
                 {% endif %}
-                {{ form_vistoria.alocacao }}
-                {% if not form_vistoria.alocacao.is_hidden %}
-                    <p class="help-block">{{ form_vistoria.alocacao.help_text }}</p>
-                {% endif %}
-                {% if form_vistoria.alocacao.errors %}
-                    <label class="control-label" for="{{form_vistoria.alocacao.id_for_label}}">
-                        {{form_vistoria.alocacao.errors.as_text}}
-                    </label><br />
-                {% endif %}
+                <div class="col-md-4">
+                    <label>Função do veículo</label>
+                    <p class="form-control-static">{{ veiculo_alocado.perfil|upper }}<p>
+                </div>
             </div>
         </div>
-        <div id="choice-alocacao-manual">
-            <div class="col-md-9 campo-modal">
-                <div class="form-group{% if form_vistoria.alocacao_manual.errors %} has-error{% endif %}"><br>
-                    <label for="{{form_vistoria.alocacao_manual.id_for_label}}">
-                        {{ form_vistoria.alocacao_manual.label }}{% if form_vistoria.alocacao_manual.field.required %}*{% endif %}
+        <div class="row">
+            <div class="col-md-6 campo-modal">
+                <div class="form-group{% if form_vistoria.alocacao_2_turno.errors %} has-error{% endif %}"><br>
+                    <label for="{{form_vistoria.alocacao_2_turno.id_for_label}}">
+                        {{ form_vistoria.alocacao_2_turno.label }}{% if form_vistoria.alocacao_2_turno.field.required %}*{% endif %}
                     </label>
-                    {% if form_vistoria.alocacao_manual.is_hidden %}
-                        <p class="form-control-static">{{ form_vistoria.alocacao_manual.value|upper }}<p>
+                    {% if form_vistoria.alocacao_2_turno.is_hidden %}
+                        <p class="form-control-static">{{ form_vistoria.alocacao_2_turno.value|upper }}<p>
                     {% endif %}
-                    {{ form_vistoria.alocacao_manual }}
-                    {% if not form_vistoria.alocacao_manual.is_hidden %}
-                        <p class="help-block">{{ form_vistoria.alocacao_manual.help_text }}</p>
+                    {{ form_vistoria.alocacao_2_turno }}
+                    {% if not form_vistoria.alocacao_2_turno.is_hidden %}
+                        <p class="help-block">{{ form_vistoria.alocacao_2_turno.help_text }}</p>
                     {% endif %}
-                    {% if form_vistoria.alocacao_manual.errors %}
-                        <label class="control-label" for="{{form_vistoria.alocacao_manual.id_for_label}}">
-                            {{form_vistoria.alocacao_manual.errors.as_text}}
+                    {% if form_vistoria.alocacao_2_turno.errors %}
+                        <label class="control-label" for="{{form_vistoria.alocacao_2_turno.id_for_label}}">
+                            {{form_vistoria.alocacao_2_turno.errors.as_text}}
                         </label><br />
                     {% endif %}
                 </div>
             </div>
-            <div id="div-equipe-manual" style="display: none">
-                <div class="col-md-3 campo-modal">
-                    <div class="form-group{% if form_vistoria.equipe_manual.errors %} has-error{% endif %}">
-                        <label for="{{form_vistoria.equipe_manual.id_for_label}}">
-                            {{ form_vistoria.equipe_manual.label }}{% if form_vistoria.equipe_manual.field.required %}*{% endif %}
-                        </label>
-                        {% if form_vistoria.equipe_manual.is_hidden %}
-                            <p class="form-control-static">{{ form_vistoria.equipe_manual.value|upper }}<p>
-                        {% endif %}
-                        {{ form_vistoria.equipe_manual }}
-                        {% if not form_vistoria.equipe_manual.is_hidden %}
-                            <p class="help-block">{{ form_vistoria.equipe_manual.help_text }}</p>
-                        {% endif %}
-                        {% if form_vistoria.equipe_manual.errors %}
-                            <label class="control-label" for="{{form_vistoria.equipe_manual.id_for_label}}">
-                                {{form_vistoria.equipe_manual.errors.as_text}}
-                            </label><br />
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="col-md-3 campo-modal">
-                    <div class="form-group{% if form_vistoria.local_manual.errors %} has-error{% endif %}">
-                        <label for="{{form_vistoria.local_manual.id_for_label}}">
-                            {{ form_vistoria.local_manual.label }}{% if form_vistoria.local_manual.field.required %}*{% endif %}
-                        </label>
-                        {% if form_vistoria.local_manual.is_hidden %}
-                            <p class="form-control-static">{{ form_vistoria.local_manual.value|upper }}<p>
-                        {% endif %}
-                        {{ form_vistoria.local_manual }}
-                        {% if not form_vistoria.local_manual.is_hidden %}
-                            <p class="help-block">{{ form_vistoria.local_manual.help_text }}</p>
-                        {% endif %}
-                        {% if form_vistoria.local_manual.errors %}
-                            <label class="control-label" for="{{form_vistoria.local_manual.id_for_label}}">
-                                {{form_vistoria.local_manual.errors.as_text}}
-                            </label><br />
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="col-md-3 campo-modal">
-                    <div class="form-group{% if form_vistoria.perfil_manual.errors %} has-error{% endif %}">
-                        <label for="{{form_vistoria.perfil_manual.id_for_label}}">
-                            {{ form_vistoria.perfil_manual.label }}{% if form_vistoria.perfil_manual.field.required %}*{% endif %}
-                        </label>
-                        {% if form_vistoria.perfil_manual.is_hidden %}
-                            <p class="form-control-static">{{ form_vistoria.perfil_manual.value|upper }}<p>
-                        {% endif %}
-                        {{ form_vistoria.perfil_manual }}
-                        {% if not form_vistoria.perfil_manual.is_hidden %}
-                            <p class="help-block">{{ form_vistoria.perfil_manual.help_text }}</p>
-                        {% endif %}
-                        {% if form_vistoria.perfil_manual.errors %}
-                            <label class="control-label" for="{{form_vistoria.perfil_manual.id_for_label}}">
-                                {{form_vistoria.perfil_manual.errors.as_text}}
-                            </label><br />
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
         </div>
-    </div>
-    <div id="alocacao-por-equipe" style="display: none">
+    <div id="dados_alocacao" style="display: none">
+    {% else %}
+    <div id="dados_alocacao">
+    {% endif %}
+        <div style="border-bottom: 1px solid #ccc; margin-bottom: 10px; font-size: 16px">Dados da alocação</div>
         <div class="row">
             <div class="col-md-3 campo-modal">
-                <div class="form-group{% if form_vistoria.equipe.errors %} has-error{% endif %}">
-                    <label for="{{form_vistoria.equipe.id_for_label}}">
-                        {{ form_vistoria.equipe.label }}{% if form_vistoria.equipe.field.required %}*{% endif %}
+                <div class="form-group{% if form_vistoria.alocacao.errors %} has-error{% endif %}">
+                    <label for="{{form_vistoria.alocacao.id_for_label}}">
+                        {{ form_vistoria.alocacao.label }}{% if form_vistoria.alocacao.field.required %}*{% endif %}
                     </label>
-                    {% if form_vistoria.equipe.is_hidden %}
-                        <p class="form-control-static">{{ form_vistoria.equipe.value|upper }}<p>
+                    {% if form_vistoria.alocacao.is_hidden %}
+                        <p class="form-control-static">{{ form_vistoria.alocacao.value|upper }}<p>
                     {% endif %}
-                    {{ form_vistoria.equipe }}
-                    {% if not form_vistoria.equipe.is_hidden %}
-                        <p class="help-block">{{ form_vistoria.equipe.help_text }}</p>
+                    {{ form_vistoria.alocacao }}
+                    {% if not form_vistoria.alocacao.is_hidden %}
+                        <p class="help-block">{{ form_vistoria.alocacao.help_text }}</p>
                     {% endif %}
-                    {% if form_vistoria.equipe.errors %}
-                        <label class="control-label" for="{{form_vistoria.equipe.id_for_label}}">
-                            {{form_vistoria.equipe.errors.as_text}}
+                    {% if form_vistoria.alocacao.errors %}
+                        <label class="control-label" for="{{form_vistoria.alocacao.id_for_label}}">
+                            {{form_vistoria.alocacao.errors.as_text}}
                         </label><br />
                     {% endif %}
                 </div>
             </div>
-            <div class="col-md-3 campo-modal">
-                <div class="form-group{% if form_vistoria.perfil.errors %} has-error{% endif %}">
-                    <label for="{{form_vistoria.perfil.id_for_label}}">
-                        {{ form_vistoria.perfil.label }}{% if form_vistoria.perfil.field.required %}*{% endif %}
-                    </label>
-                    {% if form_vistoria.perfil.is_hidden %}
-                        <p class="form-control-static">{{ form_vistoria.perfil.value|upper }}<p>
-                    {% endif %}
-                    {{ form_vistoria.perfil }}
-                    {% if not form_vistoria.perfil.is_hidden %}
-                        <p class="help-block">{{ form_vistoria.perfil.help_text }}</p>
-                    {% endif %}
-                    {% if form_vistoria.perfil.errors %}
-                        <label class="control-label" for="{{form_vistoria.perfil.id_for_label}}">
-                            {{form_vistoria.perfil.errors.as_text}}
-                        </label><br />
-                    {% endif %}
+            <div id="choice-alocacao-manual">
+                <div class="col-md-9 campo-modal">
+                    <div class="form-group{% if form_vistoria.alocacao_manual.errors %} has-error{% endif %}"><br>
+                        <label for="{{form_vistoria.alocacao_manual.id_for_label}}">
+                            {{ form_vistoria.alocacao_manual.label }}{% if form_vistoria.alocacao_manual.field.required %}*{% endif %}
+                        </label>
+                        {% if form_vistoria.alocacao_manual.is_hidden %}
+                            <p class="form-control-static">{{ form_vistoria.alocacao_manual.value|upper }}<p>
+                        {% endif %}
+                        {{ form_vistoria.alocacao_manual }}
+                        {% if not form_vistoria.alocacao_manual.is_hidden %}
+                            <p class="help-block">{{ form_vistoria.alocacao_manual.help_text }}</p>
+                        {% endif %}
+                        {% if form_vistoria.alocacao_manual.errors %}
+                            <label class="control-label" for="{{form_vistoria.alocacao_manual.id_for_label}}">
+                                {{form_vistoria.alocacao_manual.errors.as_text}}
+                            </label><br />
+                        {% endif %}
+                    </div>
+                </div>
+                <div id="div-equipe-manual" style="display: none">
+                    <div class="col-md-3 campo-modal">
+                        <div class="form-group{% if form_vistoria.equipe_manual.errors %} has-error{% endif %}">
+                            <label for="{{form_vistoria.equipe_manual.id_for_label}}">
+                                {{ form_vistoria.equipe_manual.label }}{% if form_vistoria.equipe_manual.field.required %}*{% endif %}
+                            </label>
+                            {% if form_vistoria.equipe_manual.is_hidden %}
+                                <p class="form-control-static">{{ form_vistoria.equipe_manual.value|upper }}<p>
+                            {% endif %}
+                            {{ form_vistoria.equipe_manual }}
+                            {% if not form_vistoria.equipe_manual.is_hidden %}
+                                <p class="help-block">{{ form_vistoria.equipe_manual.help_text }}</p>
+                            {% endif %}
+                            {% if form_vistoria.equipe_manual.errors %}
+                                <label class="control-label" for="{{form_vistoria.equipe_manual.id_for_label}}">
+                                    {{form_vistoria.equipe_manual.errors.as_text}}
+                                </label><br />
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-3 campo-modal">
+                        <div class="form-group{% if form_vistoria.local_manual.errors %} has-error{% endif %}">
+                            <label for="{{form_vistoria.local_manual.id_for_label}}">
+                                {{ form_vistoria.local_manual.label }}{% if form_vistoria.local_manual.field.required %}*{% endif %}
+                            </label>
+                            {% if form_vistoria.local_manual.is_hidden %}
+                                <p class="form-control-static">{{ form_vistoria.local_manual.value|upper }}<p>
+                            {% endif %}
+                            {{ form_vistoria.local_manual }}
+                            {% if not form_vistoria.local_manual.is_hidden %}
+                                <p class="help-block">{{ form_vistoria.local_manual.help_text }}</p>
+                            {% endif %}
+                            {% if form_vistoria.local_manual.errors %}
+                                <label class="control-label" for="{{form_vistoria.local_manual.id_for_label}}">
+                                    {{form_vistoria.local_manual.errors.as_text}}
+                                </label><br />
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-3 campo-modal">
+                        <div class="form-group{% if form_vistoria.perfil_manual.errors %} has-error{% endif %}">
+                            <label for="{{form_vistoria.perfil_manual.id_for_label}}">
+                                {{ form_vistoria.perfil_manual.label }}{% if form_vistoria.perfil_manual.field.required %}*{% endif %}
+                            </label>
+                            {% if form_vistoria.perfil_manual.is_hidden %}
+                                <p class="form-control-static">{{ form_vistoria.perfil_manual.value|upper }}<p>
+                            {% endif %}
+                            {{ form_vistoria.perfil_manual }}
+                            {% if not form_vistoria.perfil_manual.is_hidden %}
+                                <p class="help-block">{{ form_vistoria.perfil_manual.help_text }}</p>
+                            {% endif %}
+                            {% if form_vistoria.perfil_manual.errors %}
+                                <label class="control-label" for="{{form_vistoria.perfil_manual.id_for_label}}">
+                                    {{form_vistoria.perfil_manual.errors.as_text}}
+                                </label><br />
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="alocacao-por-equipe" style="display: none">
+            <div class="row">
+                <div class="col-md-3 campo-modal">
+                    <div class="form-group{% if form_vistoria.equipe.errors %} has-error{% endif %}">
+                        <label for="{{form_vistoria.equipe.id_for_label}}">
+                            {{ form_vistoria.equipe.label }}{% if form_vistoria.equipe.field.required %}*{% endif %}
+                        </label>
+                        {% if form_vistoria.equipe.is_hidden %}
+                            <p class="form-control-static">{{ form_vistoria.equipe.value|upper }}<p>
+                        {% endif %}
+                        {{ form_vistoria.equipe }}
+                        {% if not form_vistoria.equipe.is_hidden %}
+                            <p class="help-block">{{ form_vistoria.equipe.help_text }}</p>
+                        {% endif %}
+                        {% if form_vistoria.equipe.errors %}
+                            <label class="control-label" for="{{form_vistoria.equipe.id_for_label}}">
+                                {{form_vistoria.equipe.errors.as_text}}
+                            </label><br />
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-3 campo-modal">
+                    <div class="form-group{% if form_vistoria.perfil.errors %} has-error{% endif %}">
+                        <label for="{{form_vistoria.perfil.id_for_label}}">
+                            {{ form_vistoria.perfil.label }}{% if form_vistoria.perfil.field.required %}*{% endif %}
+                        </label>
+                        {% if form_vistoria.perfil.is_hidden %}
+                            <p class="form-control-static">{{ form_vistoria.perfil.value|upper }}<p>
+                        {% endif %}
+                        {{ form_vistoria.perfil }}
+                        {% if not form_vistoria.perfil.is_hidden %}
+                            <p class="help-block">{{ form_vistoria.perfil.help_text }}</p>
+                        {% endif %}
+                        {% if form_vistoria.perfil.errors %}
+                            <label class="control-label" for="{{form_vistoria.perfil.id_for_label}}">
+                                {{form_vistoria.perfil.errors.as_text}}
+                            </label><br />
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>

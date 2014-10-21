@@ -281,7 +281,7 @@ class Equipe(models.Model):
 
     def save(self, *args, **kwargs):
         if self.nome:
-            self.nome=self.nome.upper()
+            self.nome = self.nome.upper()
         super(Equipe, self).save(*args, **kwargs)
 
 
