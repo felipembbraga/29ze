@@ -28,13 +28,43 @@
         <div class="row">
             <h3>Filtrar por: <small><a href="javascript:void(0);" id="limpar-filtro">Limpar filtros</a></small></h3>
 
-            {% for field in filtro.form %}
-                <div class="form-group col-md-2">
-                    <label for="{{field.id_for_label}}">{{ field.label }}</label>
-                    {{ field }}
 
-                </div>
-            {% endfor %}
+            <div class="form-group col-md-2">
+                <label for="{{filtro.form.estado.id_for_label}}">{{ filtro.form.estado.label }}</label>
+                {{ filtro.form.estado }}
+
+            </div>
+            <div class="form-group col-md-2">
+                <label for="{{filtro.form.tipo.id_for_label}}">{{ filtro.form.tipo.label }}</label>
+                {{ filtro.form.tipo }}
+
+            </div>
+            <div class="form-group col-md-2">
+                <label for="{{filtro.form.ano.id_for_label}}">{{ filtro.form.ano.label }}</label>
+                {{ filtro.form.ano }}
+
+            </div>
+            <div class="form-group col-md-1">
+                <label for="{{filtro.form.motorista.id_for_label}}">{{ filtro.form.motorista.label }}</label>
+                {{ filtro.form.motorista }}
+
+            </div>
+            <div class="form-group col-md-1">
+                <label for="{{filtro.form.requisitado.id_for_label}}">{{ filtro.form.requisitado.label }}</label>
+                {{ filtro.form.requisitado }}
+
+            </div>
+            <div class="form-group col-md-2">
+                <label for="{{filtro.form.requisitado_em_vistoria.id_for_label}}">{{ filtro.form.requisitado_em_vistoria.label }}</label>
+                {{ filtro.form.requisitado_em_vistoria }}
+
+            </div>
+            <div class="form-group col-md-2">
+                <label for="{{filtro.form.turno.id_for_label}}">{{ filtro.form.turno.label }}</label>
+                {{ filtro.form.turno }}
+
+            </div>
+
         </div>
         <div class="row">
             <div class="col-md-12">
@@ -147,11 +177,11 @@
                 location.href = url + '?' + $('#form-filtro').serialize();
             });
             $('#limpar-filtro').click(function(){
-                $('#id_estado, #id_ano, #id_tipo').val('');
+                $('#id_estado, #id_ano, #id_tipo, #id_turno').val('');
                 $(' #id_motorista, #id_requisitado, #id_requisitado_em_vistoria').val(1);
                 $('#id_estado, #id_ano, #id_tipo, #id_motorista, #id_requisitado, #id_requisitado_em_vistoria').trigger('change');
             });
-            $('#id_estado, #id_ano, #id_tipo, #id_motorista, #id_num_por_pagina, #id_requisitado, #id_requisitado_em_vistoria').change(function(){
+            $('#id_estado, #id_ano, #id_tipo, #id_motorista, #id_num_por_pagina, #id_requisitado, #id_requisitado_em_vistoria, #id_turno').change(function(){
                 $('#pagina').val(1);
                 $('#form-filtro').submit();
             });

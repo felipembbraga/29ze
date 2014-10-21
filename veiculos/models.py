@@ -160,7 +160,7 @@ class CronogramaVeiculo(models.Model):
 def motorista_post_save(signal, instance, sender, **kwargs):
     if instance.veiculo:
         veiculo = instance.veiculo
-        motoristas = veiculo.motorista_veiculo.all()
+        motoristas = veiculo.motorista_veiculo.filter(segundo_turno=instance.segundo_turno)
         for m in motoristas:
             if m.pk == instance.pk:
                 continue
