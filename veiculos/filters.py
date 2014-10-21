@@ -9,7 +9,7 @@ from veiculos.models import VeiculoAlocado
 class FilterNullBooleanSelect(forms.NullBooleanSelect):
     def __init__(self, *args, **kwargs):
         super(FilterNullBooleanSelect, self).__init__(*args, **kwargs)
-        self.choices = (('1', 'Selecione'),
+        self.choices = (('1', '-----------'),
                    ('2', 'Sim'),
                    ('3', u'Não'))
         
@@ -31,7 +31,7 @@ class FiltroForm(forms.ModelForm):
                 self.fields[key].widget.attrs.update({'class': 'form-control'})
             if isinstance(self.fields[key].widget, forms.Select):
                 if hasattr(self.fields[key], 'choices'):
-                    self.fields[key].choices = [('', 'Selecione'),] + list(self.fields[key].choices)
+                    self.fields[key].choices = [('', '-----------'),] + list(self.fields[key].choices)
 
 def get_ano_choices():
     ano_atual = datetime.date.today().year
@@ -56,18 +56,26 @@ def filter_motorista(queryset, value):
     
 def filter_selecionado(queryset, value):
     if value:
-        return queryset.exclude(veiculo_selecionado=None)
+        return queryset.exclude(veiculo_selecionado=None).distinct()
     return queryset.filter(veiculo_selecionado=None)
 
 def filter_selecionado_em_vistoria(queryset, value):
     if value:
-        return queryset.exclude(veiculo_selecionado=None).filter(veiculo_selecionado__requisitado_vistoria=True)
-    return queryset.filter(veiculo_selecionado=None).exclude(veiculo_selecionado__requisitado_vistoria=True)
+        return queryset.filter(veiculo_selecionado__requisitado_vistoria=True).distinct()
+    return queryset.exclude(veiculo_selecionado__requisitado_vistoria=True).distinct()
+
+def filter_turno(queryset, value):
+    if value=='1':
+        return queryset.filter(veiculo_selecionado__segundo_turno=False).distinct()
+    if value=='2':
+        return queryset.filter(veiculo_selecionado__segundo_turno=True).distinct()
+    return queryset
 
 class VeiculoFilter(django_filters.FilterSet):
     ano = django_filters.ChoiceFilter(choices=get_ano_choices(), action=filter_ano)
     motorista = MyBooleanFilter(action=filter_motorista)
     requisitado = MyBooleanFilter(action=filter_selecionado)
+    turno = django_filters.ChoiceFilter(choices=((1,u'1º turno'),(2,u'2º turno')), action=filter_turno)
     requisitado_em_vistoria = MyBooleanFilter(action=filter_selecionado_em_vistoria)
     class Meta:
         model = Veiculo

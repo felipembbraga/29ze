@@ -8,12 +8,18 @@
 {% block container %}
    <form role="form" method="post" class="form-horizontal col-md-4"> {% csrf_token %}
     {% for field in form %}
+        {% if field.name == 'segundo_turno' or field.name == 'dia_montagem' %}
+            <div class="checkbox">
+                <label> {{ field }} {{ field.label }} </label>
+            </div>
+        {% else %}
         <div class="form-group{% if field.errors %} has-error{% endif %}">
              {% if field.errors %}<label class="control-label" for="{{field.id_for_label}}">{{field.errors.as_text}}</label><br />{% endif %}
             <label for="{{field.id_for_label}}">{{ field.label }}</label>
                 {{ field }}
             <p class="help-block">{{ field.help_text }}</p>
         </div>
+        {% endif %}
     
     {% endfor %}
     <div class="divisor"></div>

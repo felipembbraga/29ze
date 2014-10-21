@@ -140,20 +140,23 @@ class CronogramaForm(forms.ModelForm):
     
     class Meta:
         model = CronogramaVeiculo
-        fields= ('local', 'data', 'hora', 'dia_montagem')
+        fields= ('local', 'data', 'hora', 'dia_montagem', 'segundo_turno')
 
     def __init__(self, data=None, instance=None, *args, **kwargs):
-        if instance.pk and not data:
-            data = {}
-            data.update({
-                'data': '{:%d/%m/%Y}'.format(instance.dt_apresentacao),
-                'hora': '{:%H:%M:%S}'.format(instance.dt_apresentacao),
-                'local': instance.local,
-                'dia_montagem': instance.dia_montagem
-            })
+        if instance:
+            if instance.pk and not data:
+                data = {}
+                data.update({
+                    'data': '{:%d/%m/%Y}'.format(instance.dt_apresentacao),
+                    'hora': '{:%H:%M:%S}'.format(instance.dt_apresentacao),
+                    'local': instance.local,
+                    'dia_montagem': instance.dia_montagem,
+                    'segundo_turno': instance.segundo_turno
+                })
         super(CronogramaForm, self).__init__(data=data, instance=instance, *args, **kwargs)
+
         for key in self.fields:
-            if not isinstance(self.fields[key].widget, forms.CheckboxInput) or not isinstance(self.fields[key].widget, forms.SplitDateTimeWidget):
+            if (not isinstance(self.fields[key].widget, forms.CheckboxInput)) and (not isinstance(self.fields[key].widget, forms.SplitDateTimeWidget)):
                 self.fields[key].widget.attrs.update({
                     'class': ' '.join([i for i in ['form-control', self.fields[key].widget.attrs.get('class')] if i])
                 })

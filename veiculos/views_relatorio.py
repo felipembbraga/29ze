@@ -69,7 +69,7 @@ def relatorio_veiculo_alocado(request, id_veiculo):
             else:
                 c.dt_apresentacao = datetime.datetime(c.dt_apresentacao.year, c.dt_apresentacao.month,c.dt_apresentacao.day, 7,0)
         return c
-    cronogramas = map(cronograma_local, veiculo.perfil.cronograma_perfil.filter(eleicao = request.eleicao_atual).order_by('dt_apresentacao'))
+    cronogramas = map(cronograma_local, veiculo.perfil.cronograma_perfil.filter(eleicao = request.eleicao_atual, segundo_turno=veiculo.segundo_turno).order_by('dt_apresentacao'))
     telefones = '/'.join(unicode(telefone) for telefone in motorista.pessoa.telefones_set.all()) if motorista else ''
 
     context = dict(
