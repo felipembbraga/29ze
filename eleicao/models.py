@@ -3,26 +3,24 @@ from django.db import models
 from core.models import Pessoa, Local
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-# Create your models here.
+
 
 class Eleicao(models.Model):
     
-    nome = models.CharField(u'Nome da eleição', max_length = 30)
+    nome = models.CharField(u'Nome da eleição', max_length=30)
     data_turno_1 = models.DateField('Data do primeiro turno')
-    data_turno_2 = models.DateField('Data do segundo turno', null = True, blank = True)
-    atual = models.BooleanField(default = True)
-    eleitores = models.ManyToManyField(Pessoa, through = 'Eleitor', related_name='eleicao_eleitores')
-    locais = models.ManyToManyField(Local, through = 'LocalVotacao', related_name='eleicao_locais')
+    data_turno_2 = models.DateField('Data do segundo turno', null=True, blank=True)
+    atual = models.BooleanField(default=True)
+    eleitores = models.ManyToManyField(Pessoa, through='Eleitor', related_name='eleicao_eleitores')
+    locais = models.ManyToManyField(Local, through='LocalVotacao', related_name='eleicao_locais')
     
     class Meta:
-        permissions = [
-                       ('view_eleicao', u'Visualizar Eleições'),
-                       ('view_old_eleicao', u'Visualizar Eleição Anterior'),
-                       ]
+        permissions = [('view_eleicao', u'Visualizar Eleições'),
+                       ('view_old_eleicao', u'Visualizar Eleição Anterior'), ]
     
     @models.permalink
     def get_absolute_url(self):
-        return ('eleicao:editar', [str(self.id)])
+        return 'eleicao:editar', [str(self.id)]
     
     def __unicode__(self):
         return self.nome
@@ -67,7 +65,7 @@ class LocalVotacao(models.Model):
     def __unicode__(self):
         return unicode(self.local.nome)
     
-    def get_secoes(self, delimitador = u', '):
+    def get_secoes(self, delimitador=u', '):
         return delimitador.join([s.unicode_agregadas() for s in list(self.secao_set.secao_pai())])
     
     def get_count_secao_agregadas(self):
@@ -82,13 +80,15 @@ class LocalVotacao(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('local:detalhar', [str(self.id)])
+        return 'local:detalhar', [str(self.id)]
 
     def get_perfis_local(self):
         return self.equipe.perfilveiculo_set.filter(perfil_equipe=False)
 
     def get_veiculos_alocados(self):
         return self.veiculoalocado_set.all()
+
+
 class SecaoManager(models.Manager):
     
     def secao_pai(self):
@@ -103,13 +103,12 @@ class SecaoManager(models.Manager):
     
 class Secao(models.Model):
     objects = SecaoManager()
-    
     num_secao = models.IntegerField()
     eleicao = models.ForeignKey(Eleicao)
     local_votacao = models.ForeignKey(LocalVotacao)
     num_eleitores = models.IntegerField()
     principal = models.BooleanField(default=False)
-    especial = models.BooleanField(default = False)
+    especial = models.BooleanField(default=False)
     secoes_agregadas = models.ForeignKey('Secao', related_name='secao_secoes_agregadas', null=True, blank=True)
     
     class Meta:
@@ -124,7 +123,7 @@ class Secao(models.Model):
     def __str__(self):
         return str(self.num_secao) + (self.especial and '*' or '')
     
-    def unicode_agregadas(self, especial = True):
+    def unicode_agregadas(self, especial=True):
         agregadas = list(self.secao_secoes_agregadas.all_ordenado())
         if especial:
             return u'+'.join([unicode(s) for s in ([self, ] + agregadas)])
@@ -145,14 +144,12 @@ class Secao(models.Model):
             return self.local_votacao.local.bairro
         return self.secoes_agregadas.local_votacao.local.bairro
         
-            
-        
     def desagregarSecoes(self):
         secoes = self.secao_secoes_agregadas.all()
         for secao in secoes:
             secao.secoes_agregadas = None
             secao.save()
-        self.principal=False
+        self.principal = False
         self.save()
 
     def secao_with_popover(self, principal=False):
@@ -163,12 +160,14 @@ class Secao(models.Model):
         
         especial = self.especial and '<br /><label>especial</label>' or ''
         local = ''
+
         if self.secoes_agregadas:
             if self.local_votacao.pk != self.secoes_agregadas.local_votacao.pk:
                 local = '<br /><label>Local de origem:&nbsp;</label>' + self.local_votacao.local.nome
+
         if self.principal or principal:
-            return html%{'num_secao': '<strong>' +  str(self)  + '</strong>', 'num_eleitores':self.num_eleitores, 'especial' : especial, 'local': local}
-        return html%{'num_secao':str(self), 'num_eleitores':self.num_eleitores, 'especial' : especial, 'local': local}
+            return html % {'num_secao': '<strong>' + str(self) + '</strong>', 'num_eleitores': self.num_eleitores, 'especial': especial, 'local': local}
+        return html % {'num_secao': str(self), 'num_eleitores': self.num_eleitores, 'especial': especial, 'local': local}
     
     def get_total_eleitores(self):
         total_agregado = self.secao_secoes_agregadas.aggregate(soma_agregados=models.Sum('num_eleitores'))
@@ -186,9 +185,11 @@ class Eleitor(models.Model):
     eleitor = models.ForeignKey(Pessoa, related_name='eleitor_eleitor')
     secao = models.ForeignKey(Secao, related_name='eleitor_secao')
 
+
 class Coligacao(models.Model):
     nome = models.CharField(max_length=100)
     eleicao = models.ForeignKey(Eleicao, related_name='coligacao_eleicao')
+
 
 class Partido(models.Model):
     nome = models.CharField(max_length=100)
@@ -197,10 +198,12 @@ class Partido(models.Model):
     coligacao = models.ForeignKey(Coligacao)
     eleicao = models.ForeignKey(Eleicao, related_name='partido_eleicao')
 
+
 class EquipeManager(models.Manager):
     def all(self):
         qs = super(EquipeManager, self).all()
         return qs.order_by('nome')
+
 
 class Equipe(models.Model):
     nome = models.CharField(max_length=100)
@@ -209,19 +212,16 @@ class Equipe(models.Model):
     sigla = models.CharField(max_length=4)
     objects = EquipeManager()
 
-    
     class Meta:
-        permissions=[
-                     ('view_equipe', 'Visualizar Equipes'),
-                     ('alocar_veiculos', 'Estimar veículos da equipe'),
-                     ]
+        permissions = [('view_equipe', 'Visualizar Equipes'),
+                       ('alocar_veiculos', 'Estimar veículos da equipe'), ]
     
     def __unicode__(self):
         return unicode(self.nome)
     
     @models.permalink
     def get_absolute_url(self):
-        return ('equipe:detalhar', [str(self.id)])
+        return 'equipe:detalhar', [str(self.id)]
     
     def get_total_secoes(self):
         soma = 0
@@ -260,6 +260,7 @@ class Equipe(models.Model):
 
     def get_perfis_equipe(self):
         return self.perfilveiculo_set.filter(perfil_equipe=True)
+
     def get_perfis_local(self):
         return self.perfilveiculo_set.filter(perfil_equipe=False)
 
@@ -282,20 +283,22 @@ class Equipe(models.Model):
 class EquipesAlocacao(models.Model):
     equipe = models.ForeignKey(Equipe, primary_key=True)
     eleicao = models.ForeignKey(Eleicao)
+    segundo_turno = models.BooleanField()
     total_estimativa = models.IntegerField()
     estimativa_equipe = models.IntegerField()
     estimativa_local = models.IntegerField()
     veiculos_alocados = models.IntegerField()
     veiculos_alocados_equipe = models.IntegerField()
     veiculos_alocados_local = models.IntegerField()
+
     class Meta:
         managed = False
-        db_table=u'vw_equipes_alocacao'
+        db_table = u'vw_equipes_alocacao'
 
 
 class Montagem(models.Model):
     local = models.OneToOneField(LocalVotacao, related_name='local_montagem')
-    turno = models.CharField(max_length=1, choices=(('m', 'matutino'),('v', 'vespertino')))
+    turno = models.CharField(max_length=1, choices=(('m', 'matutino'), ('v', 'vespertino')))
     ordem = models.IntegerField()
 
 
