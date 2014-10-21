@@ -2,7 +2,7 @@
 {% load perfil_veiculo %}
 {% block report %}
     <div class="page-header">
-        <h2>Quantidade de Veículos - {{ equipe }}</h2>
+        <h2>Quantidade de Veículos - {{ equipe }} ({% if segundo_turno %}2{% else %}1{% endif %}º Turno)</h2>
     </div>
     <table class="table table-bordered">
         <tbody>
@@ -16,7 +16,7 @@
                         {{ perfil|upper }}
 
                     </td>
-                    <td width="10%">{% total_veiculos perfil equipe %}</td>
+                    <td width="10%">{% total_veiculos segundo_turno perfil equipe %}</td>
                 </tr>
             {% endfor %}
         {% endif %}
@@ -50,7 +50,7 @@
                                         <td width="90%">
                                             {{ perfil|upper }}
                                         </td>
-                                        <td width="10%">{% total_veiculos perfil equipe local %}</td>
+                                        <td width="10%">{% total_veiculos segundo_turno perfil equipe local %}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

@@ -329,22 +329,22 @@ def cronograma_excluir(request, id_cronograma):
         messages.error(request, u'Erro ao remover o cronograma')
         return redirect('perfil-veiculo:detalhar', perfil.pk)
 
-def alocacao_editar(request, id_equipe, id_perfil, id_local=None):
-    total_veiculos = Veiculo.objects.filter(eleicao = request.eleicao_atual).exclude(veiculo_selecionado=None).count()
+def alocacao_editar(request, segundo_turno, id_equipe, id_perfil, id_local=None):
+    total_veiculos = Veiculo.objects.filter(eleicao = request.eleicao_atual,veiculo_selecionado__segundo_turno=segundo_turno).count()
     equipes = Equipe.objects.filter(eleicao=request.eleicao_atual)
     veiculos_alocados = 0
     for e in equipes:
-        veiculos_alocados += e.total_veiculos_estimados()
+        veiculos_alocados += eval(segundo_turno) and e.total_veiculos_estimados_turno2() or e.total_veiculos_estimados_turno1()
 
     equipe = get_object_or_404(Equipe, pk = int(id_equipe))
     perfil_veiculo = get_object_or_404(PerfilVeiculo, pk = int(id_perfil))
     local = id_local and get_object_or_404(LocalVotacao, pk=int(id_local)) or None
-    alocacao = get_object_or_404(Alocacao, perfil_veiculo = perfil_veiculo, equipe=equipe, local_votacao=local)
+    alocacao = get_object_or_404(Alocacao, perfil_veiculo = perfil_veiculo, equipe=equipe, local_votacao=local, segundo_turno=eval(segundo_turno))
     if request.method=='POST':
         form = AlocacaoForm(request.POST, instance=alocacao, eleicao = request.eleicao_atual)
         if form.is_valid():
             form.save()
-            return redirect('equipe:detalhar-estimativa', equipe.pk)
+            return redirect('equipe:detalhar-estimativa' + (eval(segundo_turno) and '2' or '1') , equipe.pk)
     else:
         form = AlocacaoForm(instance=alocacao, eleicao = request.eleicao_atual)
     return render(request, 'veiculos/alocacao/form.html', locals())

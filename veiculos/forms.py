@@ -45,6 +45,12 @@ class VeiculoForm(forms.ModelForm):
         return self.cleaned_data.get('placa')
 
 
+class SelecaoVeiculoForm(forms.Form):
+    id_veiculo = forms.IntegerField(widget=forms.HiddenInput)
+    primeiro_turno = forms.BooleanField(required=False)
+    segundo_turno = forms.BooleanField(required=False)
+
+
 class VeiculoVistoriaForm(Select2DependencyModelForm):
     # orgao = forms.ModelChoiceField(queryset=OrgaoPublico.objects.all().order_by('nome_secretaria'))
     placa = forms.RegexField(r'[A-Za-z]{3}-\d{4}', max_length=8, help_text='Ex.:ABC-1234',
@@ -175,7 +181,8 @@ class AlocacaoForm(forms.ModelForm):
         widgets = {
             'equipe': forms.HiddenInput,
             'local_votacao': forms.HiddenInput,
-            'perfil_veiculo': forms.HiddenInput
+            'perfil_veiculo': forms.HiddenInput,
+            'segundo_turno': forms.HiddenInput,
         }
 
     def __init__(self,  data=None, eleicao=None, *args, **kwargs):
@@ -186,11 +193,11 @@ class AlocacaoForm(forms.ModelForm):
                 self.fields[key].widget.attrs.update({'class': 'form-control'})
 
     def clean_quantidade(self):
-        total_veiculos = Veiculo.objects.filter(eleicao=self.eleicao).exclude(veiculo_selecionado=None).count()
+        total_veiculos = Veiculo.objects.filter(eleicao=self.eleicao, veiculo_selecionado__segundo_turno=self.instance.segundo_turno).count()
         equipes = Equipe.objects.filter(eleicao=self.eleicao)
         veiculos_alocados = 0
         for equipe in equipes:
-            veiculos_alocados += equipe.total_veiculos_estimados()
+            veiculos_alocados += self.instance.segundo_turno and equipe.total_veiculos_estimados_turno2() or equipe.total_veiculos_estimados_turno1()
         if (veiculos_alocados + self.cleaned_data['quantidade']) - self.instance.quantidade > total_veiculos:
             raise forms.ValidationError(u'Quantidade de veiculos supera o número total de veículos requisitados')
         return self.cleaned_data['quantidade']

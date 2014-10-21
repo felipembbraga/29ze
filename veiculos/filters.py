@@ -58,10 +58,17 @@ def filter_selecionado(queryset, value):
     if value:
         return queryset.exclude(veiculo_selecionado=None)
     return queryset.filter(veiculo_selecionado=None)
+
+def filter_selecionado_em_vistoria(queryset, value):
+    if value:
+        return queryset.exclude(veiculo_selecionado=None).filter(veiculo_selecionado__requisitado_vistoria=True)
+    return queryset.filter(veiculo_selecionado=None).exclude(veiculo_selecionado__requisitado_vistoria=True)
+
 class VeiculoFilter(django_filters.FilterSet):
     ano = django_filters.ChoiceFilter(choices=get_ano_choices(), action=filter_ano)
     motorista = MyBooleanFilter(action=filter_motorista)
     requisitado = MyBooleanFilter(action=filter_selecionado)
+    requisitado_em_vistoria = MyBooleanFilter(action=filter_selecionado_em_vistoria)
     class Meta:
         model = Veiculo
         fields = ['tipo', 'estado']

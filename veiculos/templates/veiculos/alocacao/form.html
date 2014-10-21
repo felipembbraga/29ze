@@ -7,10 +7,13 @@
 {% endblock %}
 {% load extra_tags %}
 {% block container %}
-    <div class="row"><h3>{{ perfil_veiculo.nome|upper }}{% if local %} - {% endif %}{% firstof local '' %} ({{ equipe.nome|upper }})</h3></div>
+    <div class="row">
+        <h3>{{ perfil_veiculo.nome|upper }}{% if local %} - {% endif %}{% firstof local '' %} ({{ equipe.nome|upper }})</h3>
+    <h3>{% if segundo_turno == 'True' %}2{% else %}1{% endif %}º Turno</h3>
+    </div>
     <form role="form" method="post" class="form-horizontal"> {% csrf_token %}
         {% for field in form %}
-            <div class="row"">
+            <div class="row">
             {% if field.is_hidden %}
                 {{ field }}
             {% else %}
@@ -29,14 +32,18 @@
                 <strong>Total de Veiculos: </strong> {{ total_veiculos }}<br />
                 <strong>Veículos já estimados: </strong> <span id="veiculos_alocados">{{ veiculos_alocados }}</span><br />
                 <strong>Veículos restantes: </strong> <span id="veiculos_restantes">{{ total_veiculos|diferenca:veiculos_alocados }}</span><br />
-                <strong>Total de Veiculos estimados na Equipe: </strong> <span id="veiculos_alocados_equipe">{{ equipe.total_veiculos_estimados }}</span><br />
-
+                <strong>Total de Veiculos estimados na Equipe: </strong> <span id="veiculos_alocados_equipe">
+                {% if segundo_turno %}
+                    {{ equipe.total_veiculos_estimados_turno2 }}
+                {% else %}
+                    {{ equipe.total_veiculos_estimados_turno1 }}
+                {% endif %}</span><br />
             </div>
         </div>
         <div class="divisor"></div>
         <p class="botao-grupo">
             <button type="submit" class="btn btn-primary botao">Salvar</button>
-            <button type="button" class="btn btn-default botao" onclick="window.location = '{% url 'equipe:detalhar-estimativa' equipe.pk %}';">Cancelar</button>
+            <button type="button" class="btn btn-default botao" onclick="window.location = '{% if segundo_turno == 'True' %}{% url 'equipe:detalhar-estimativa2' equipe.pk %}{% else %}{% url 'equipe:detalhar-estimativa1' equipe.pk %}{% endif %}';">Cancelar</button>
         </p>
     </form>
 

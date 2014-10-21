@@ -9,8 +9,8 @@ from eleicao.models import LocalVotacao, Equipe
 register = Library()
 
 @register.simple_tag
-def total_veiculos( perfil, equipe, local=None):
-    qs = Alocacao.objects.filter(perfil_veiculo=perfil, equipe=equipe)
+def total_veiculos(segundo_turno, perfil, equipe, local=None):
+    qs = Alocacao.objects.filter(perfil_veiculo=perfil, equipe=equipe, segundo_turno=segundo_turno)
     if local:
         qs = qs.filter(local_votacao=local)
     if qs.exists():

@@ -9,11 +9,58 @@ from django.template.context import RequestContext
 from django.template.loader import render_to_string
 from eleicao.models import Equipe, EquipesAlocacao
 from models import Veiculo, Motorista
-from veiculos.forms import VeiculoVistoriaForm, VistoriaForm, MotoristaVistoriaForm
+from veiculos.forms import VeiculoVistoriaForm, VistoriaForm, MotoristaVistoriaForm, SelecaoVeiculoForm
 from veiculos.models import VeiculoSelecionado, VeiculoAlocado
 from django.db import models
 from veiculos.views import monta_monitoramento
 
+@dajaxice_register()
+def requisicao_veiculo(request, id_veiculo, formulario):
+    dajax = Dajax()
+    try:
+        veiculo = Veiculo.objects.get(pk=int(id_veiculo))
+    except Exception, e:
+        dajax.assign('#requisicao-veiculo-txt', 'innerHTML', 'Veiculo nao encontrado')
+        return dajax.json()
+    tem_pt = veiculo.veiculo_selecionado.filter(segundo_turno=False).exists()
+    tem_st = veiculo.veiculo_selecionado.filter(segundo_turno=True).exists()
+    if request.is_ajax():
+        initial = {
+            'id_veiculo': id_veiculo,
+            'primeiro_turno': tem_pt,
+            'segundo_turno': tem_st
+        }
+
+        if formulario:
+            # Caso esteja sendo enviado o formulário
+            formulario = deserialize_form(formulario)
+
+            form = SelecaoVeiculoForm(formulario)
+            if form.is_valid():
+                if form.cleaned_data.get('primeiro_turno'):
+                    if not tem_pt:
+                        veiculo.veiculo_selecionado.create(veiculo=veiculo, segundo_turno=False)
+                else:
+                    if veiculo.veiculoalocado_set.filter(segundo_turno=False).exists():
+                        dajax.script('$.notify({theme:"erro", title:"Veiculo ja alocado para primeiro turno!"});')
+                        return dajax.json()
+                    veiculo.veiculo_selecionado.filter(segundo_turno=False).delete()
+                if form.cleaned_data.get('segundo_turno'):
+                    if not tem_st:
+                        veiculo.veiculo_selecionado.create(veiculo=veiculo, segundo_turno=True)
+                else:
+                    if veiculo.veiculoalocado_set.filter(segundo_turno=True).exists():
+                        dajax.script('$.notify({theme:"sucesso", title:"Veiculo ja alocado"});')
+
+                        return dajax.json()
+                    veiculo.veiculo_selecionado.filter(segundo_turno=True).delete()
+                dajax.script('location.reload();')
+                return dajax.json()
+        else:
+            form = SelecaoVeiculoForm(initial=initial)
+        render = render_to_string('veiculos/veiculo/requisicao_veiculo_form.html', {'form': form})
+        dajax.assign('#requisicao-veiculo-txt', 'innerHTML', render)
+    return dajax.json()
 
 @dajaxice_register()
 def consultar_veiculo(request, placa):

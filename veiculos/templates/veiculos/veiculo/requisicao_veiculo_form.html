@@ -1,0 +1,14 @@
+<form id="requisicao_veiculo_form" role="form" method="post" class="form-horizontal">
+    {% csrf_token %}
+    {{ form.id_veiculo }}
+    <div class="checkbox">
+    <label>
+      {{ form.primeiro_turno }} {{ form.primeiro_turno.label }}
+    </label>
+  </div>
+    <div class="checkbox">
+    <label>
+      {{ form.segundo_turno }} {{ form.segundo_turno.label }}
+    </label>
+  </div>
+</form>
