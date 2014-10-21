@@ -107,7 +107,7 @@
                                 {% if veiculo.veiculo_selecionado.exists %}</b>{% endif %}
                             </td>
                             <td class="text-center"><span class="glyphicon
-	                   glyphicon-{% if veiculo.motorista_titulo_eleitoral  %}ok color-green{% else %}remove color-red{% endif %}"></span>
+	                   glyphicon-{% if veiculo.motorista_veiculo.exists  %}ok color-green{% else %}remove color-red{% endif %}"></span>
                             </td>
                             <td>
                                 {% if veiculo.veiculo_selecionado.exists %}<b>{% endif %}
