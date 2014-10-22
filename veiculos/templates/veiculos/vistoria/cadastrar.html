@@ -132,7 +132,7 @@
     </div><!-- /.modal -->
 
     <div class="modal fade" id="modal-veiculo-alocado" tabindex="-1" role="dialog" aria-labelledby="modal-veiculo-alocado-title" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -140,10 +140,11 @@
                 </div>
                 <div class="modal-body">
                     <p id="veiculo-alocado-txt"></p>
+                    <input id="id_veiculo_alocado" type="hidden">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" onclick="nova_busca($('#modal-veiculo-alocado'))">Buscar outro veículo</button>
-                    <button type="button" class="btn btn-primary" onclick="$('#cadastrar-vistoria').show()" data-dismiss="modal">Editar</button>
+                    <button type="button" class="btn btn-primary" onclick="desalocar_veiculo()" data-dismiss="modal">Desalocar veículo</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

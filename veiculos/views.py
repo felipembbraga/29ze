@@ -413,17 +413,19 @@ def veiculo_vistoria_listagem(request, id_equipe=None):
         form = formequipe()
 
     form.fields['equipe'].widget.attrs.update({'class': 'form-control'})
+
+    today = datetime.date.today()
     return render(request, 'veiculos/vistoria/listar.html', locals())
 
 
 @login_required
 @permission_required('veiculos.monitor_vistoria', raise_exception=True)
 def monitorar_vistoria(request):
-    return render(request, 'veiculos/vistoria/monitor.html', RequestContext(request, {'equipes_monitoracao': monta_monitoramento(request)}))
+    segundo_turno = False if datetime.date.today() <= request.eleicao_atual.data_turno_1 else True
+    return render(request, 'veiculos/vistoria/monitor.html', RequestContext(request, {'equipes_monitoracao': monta_monitoramento(request, segundo_turno), 'segundo_turno': segundo_turno}))
 
 
-def monta_monitoramento(request):
-    turno = True
+def monta_monitoramento(request, turno):
     equipes = Equipe.objects.all().select_related()
     equipe_monitoracao = []
     for equipe in equipes:

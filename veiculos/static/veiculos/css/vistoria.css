@@ -38,3 +38,14 @@
 #vistoria_veiculo_form .select2-container{
     width: 100% !important;
 }
+
+.titulo_secao_vistoria{
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.secao_vistoria{
+    border-bottom: 1px solid #ccc;margin-bottom: 10px;
+}

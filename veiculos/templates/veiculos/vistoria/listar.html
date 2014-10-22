@@ -111,8 +111,8 @@
                                                 <span class="glyphicon glyphicon-print"></span>
 
                                             </a>
-                                            <a data-id="{{veiculo.pk}}" href="javascript:void(0);"
-                                               class="btn btn-danger btn-xs bt-desalocar">
+                                            <a data-id="{{veiculo.pk}}" data-turno="{% if veiculo.segundo_turno %}true{% else %}false{% endif %}" href="javascript:void(0);"
+                                               class="btn btn-danger btn-xs bt-desalocar {% if not veiculo.segundo_turno and today >= eleicao_atual.data_turno_1 or veiculo.segundo_turno and today >= eleicao_atual.data_turno_2 %}disabled{% endif %}">
                                                 <span class="glyphicon glyphicon-log-out"></span>
 
                                             </a>
@@ -219,9 +219,7 @@
                 $(this).confirmar({
                     message: "Você deseja desalocar este veículo?",
                     onConfirm: function() {
-                        Dajaxice.veiculos.desalocar_veiculo(Dajax.process, {'id_veiculo': $(self).data('id')});
-                        window.setTimeout('location.reload()', 3000);
-
+                        Dajaxice.veiculos.desalocar_veiculo(Dajax.process, {'id_veiculo': $(self).data('id'), 'turno': $(self).data('turno')});
                     }
                 })
             });

@@ -63,6 +63,14 @@ function salva_vistoria(val){
     Dajaxice.veiculos.cadastrar_vistoria(default_callback, {'formulario': val, 'turno': turno});
 }
 
+function desalocar_veiculo(val){
+    block_screen();
+    var turno = false;
+    if (parseInt($('#turno').val()) > 0)
+        turno = true;
+    Dajaxice.veiculos.desalocar_veiculo(default_callback, {'id_veiculo': $('#id_veiculo_alocado').val(), 'exibe_vistoria': true, 'turno': turno})
+}
+
 function aplica_mascaras(){
 	$('input[id*="placa"]').mask('aaa-9999');
 }
@@ -106,6 +114,15 @@ $(document).ready(function(){
 
     $('body').on('change', '#id_marca', function() {
         change_marca($(this).val());
+    });
+
+    $('body').on('change', '#turno', function() {
+        $('#message-status').hide();
+        var vistoria = $('#cadastrar-vistoria');
+        vistoria.hide();
+        vistoria.find('.panel-body').html('');
+        var field_placa = $('#placa-veiculo');
+        field_placa.focus();
     });
 
     $('body').on('change', '#id_alocacao', function() {

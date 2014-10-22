@@ -25,7 +25,7 @@
         <div class="panel-heading">
             <h3 class="panel-title" style="font-size: 20px">
                 Andamento da Vistoria
-                    <div class="pull-right" style="width: 310px;display: inline-block; font-size: 15px">
+                    <div class="pull-right" style="width: 410px;display: inline-block; font-size: 15px">
                         Como realizar a leitura:
                         <div class="progress" style="margin: 0;width: 150px;display: inline-block;">
                             <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
@@ -35,6 +35,13 @@
                                 Restante
                             </div>
                         </div>
+                        <span class="pull-right">
+                            <label for="turno">Turno:</label>
+                            <select id="turno" class="form-control" style="display: inline-block; width: auto; height: 25px; padding: 0;" onchange="transition()">
+                                <option value="0" {% if not segundo_turno %}selected="selected"{% endif %}>1°</option>
+                                <option value="1" {% if segundo_turno %}selected="selected"{% endif %}>2°</option>
+                            </select>
+                        </span>
                     </div>
             </h3>
         </div>
@@ -50,11 +57,13 @@
     {% dajaxice_js_import %}
     <script src="{% static "dajax/jquery.dajax.core.js" %}"></script>
 	<script>
+        function transition() {
+            var turno = false;
+            if (parseInt($('#turno').val()) > 0)
+                turno = true;
+            Dajaxice.veiculos.recarregar_monitoramento(Dajax.process, {'turno': turno});
+        }
         $(document).ready(function(){
-            function transition() {
-                console.log('aqui');
-                Dajaxice.veiculos.recarregar_monitoramento(Dajax.process);
-            }
 
             setInterval(transition, 20000);
         });
