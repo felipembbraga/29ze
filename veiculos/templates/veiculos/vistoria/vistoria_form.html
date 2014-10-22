@@ -1,7 +1,7 @@
 {% load static from staticfiles %}
-<div style="border-bottom: 1px solid #ccc; margin-bottom: 10px; font-size: 16px;">Detalhes do veículo</div>
+<div class="titulo_secao_vistoria">Detalhes do veículo</div>
 
-<div id="dados-veiculo" style="border-bottom: 1px solid #ccc;margin-bottom: 10px;">
+<div id="dados-veiculo" class="secao_vistoria">
     <div class="row">
         <div class="col-md-2">
             <label>Placa</label>
@@ -40,93 +40,95 @@
     </div>
 </div>
 
-<div style="border-bottom: 1px solid #ccc; margin-bottom: 10px; font-size: 16px">Dados do motorista</div>
+<div class="titulo_secao_vistoria">Dados do motorista</div>
 
 <form id="vistoria_veiculo_form" role="form" method="post" class="form-horizontal">
     {% csrf_token %}
-    <div class="row">
-        <div class="col-md-5 campo-modal" id="id-motorista-selector">
-            <div class="form-group{% if form_motorista.motorista.errors %} has-error{% endif %}">
-                <label for="{{form_motorista.motorista.id_for_label}}">
-                    {{ form_motorista.motorista.label }}{% if form_motorista.motorista.field.required %}*{% endif %}
-                </label>
-                {% if form_motorista.motorista.is_hidden %}
-                    <p class="form-control-static">{{ form_motorista.motorista.value|upper }}<p>
-                {% endif %}
-                <br>{{ form_motorista.motorista }}
-                {% if not form_motorista.motorista.is_hidden %}
-                    <p class="help-block">{{ form_motorista.motorista.help_text }}</p>
-                {% endif %}
-                {% if form_motorista.motorista.errors %}
-                    <label class="control-label" for="{{form_motorista.motorista.id_for_label}}">
-                        {{form_motorista.motorista.errors.as_text}}
-                    </label><br />
-                {% endif %}
+    <div class="secao_vistoria">
+        <div class="row">
+            <div class="col-md-5 campo-modal" id="id-motorista-selector">
+                <div class="form-group{% if form_motorista.motorista.errors %} has-error{% endif %}">
+                    <label for="{{form_motorista.motorista.id_for_label}}">
+                        {{ form_motorista.motorista.label }}{% if form_motorista.motorista.field.required %}*{% endif %}
+                    </label>
+                    {% if form_motorista.motorista.is_hidden %}
+                        <p class="form-control-static">{{ form_motorista.motorista.value|upper }}<p>
+                    {% endif %}
+                    <br>{{ form_motorista.motorista }}
+                    {% if not form_motorista.motorista.is_hidden %}
+                        <p class="help-block">{{ form_motorista.motorista.help_text }}</p>
+                    {% endif %}
+                    {% if form_motorista.motorista.errors %}
+                        <label class="control-label" for="{{form_motorista.motorista.id_for_label}}">
+                            {{form_motorista.motorista.errors.as_text}}
+                        </label><br />
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3 campo-modal">
-            <div class="form-group{% if form_motorista.titulo_eleitoral.errors %} has-error{% endif %}">
-                <label for="{{form_motorista.titulo_eleitoral.id_for_label}}">
-                    {{ form_motorista.titulo_eleitoral.label }}{% if form_motorista.titulo_eleitoral.field.required %}*{% endif %}
-                </label>
-                {% if form_motorista.titulo_eleitoral.is_hidden %}
-                    <p class="form-control-static">{{ form_motorista.titulo_eleitoral.value|upper }}<p>
-                {% endif %}
-                <br>{{ form_motorista.titulo_eleitoral }}
-                {% if not form_motorista.titulo_eleitoral.is_hidden %}
-                    <p class="help-block">{{ form_motorista.titulo_eleitoral.help_text }}</p>
-                {% endif %}
-                {% if form_motorista.titulo_eleitoral.errors %}
-                    <label class="control-label" for="{{form_motorista.titulo_eleitoral.id_for_label}}">
-                        {{form_motorista.titulo_eleitoral.errors.as_text}}
-                    </label><br />
-                {% endif %}
+        <div class="row">
+            <div class="col-md-3 campo-modal">
+                <div class="form-group{% if form_motorista.titulo_eleitoral.errors %} has-error{% endif %}">
+                    <label for="{{form_motorista.titulo_eleitoral.id_for_label}}">
+                        {{ form_motorista.titulo_eleitoral.label }}{% if form_motorista.titulo_eleitoral.field.required %}*{% endif %}
+                    </label>
+                    {% if form_motorista.titulo_eleitoral.is_hidden %}
+                        <p class="form-control-static">{{ form_motorista.titulo_eleitoral.value|upper }}<p>
+                    {% endif %}
+                    <br>{{ form_motorista.titulo_eleitoral }}
+                    {% if not form_motorista.titulo_eleitoral.is_hidden %}
+                        <p class="help-block">{{ form_motorista.titulo_eleitoral.help_text }}</p>
+                    {% endif %}
+                    {% if form_motorista.titulo_eleitoral.errors %}
+                        <label class="control-label" for="{{form_motorista.titulo_eleitoral.id_for_label}}">
+                            {{form_motorista.titulo_eleitoral.errors.as_text}}
+                        </label><br />
+                    {% endif %}
+                </div>
             </div>
-        </div>
-        <div class="col-md-4 campo-modal">
-            <div class="form-group{% if form_motorista.nome.errors %} has-error{% endif %}">
-                <label for="{{form_motorista.nome.id_for_label}}">
-                    {{ form_motorista.nome.label }}{% if form_motorista.nome.field.required %}*{% endif %}
-                </label>
-                {% if form_motorista.nome.is_hidden %}
-                    <p class="form-control-static">{{ form_motorista.nome.value|upper }}<p>
-                {% endif %}
-                <br>{{ form_motorista.nome }}
-                {% if not form_motorista.nome.is_hidden %}
-                    <p class="help-block">{{ form_motorista.nome.help_text }}</p>
-                {% endif %}
-                {% if form_motorista.nome.errors %}
-                    <label class="control-label" for="{{form_motorista.nome.id_for_label}}">
-                        {{form_motorista.nome.errors.as_text}}
-                    </label><br />
-                {% endif %}
+            <div class="col-md-4 campo-modal">
+                <div class="form-group{% if form_motorista.nome.errors %} has-error{% endif %}">
+                    <label for="{{form_motorista.nome.id_for_label}}">
+                        {{ form_motorista.nome.label }}{% if form_motorista.nome.field.required %}*{% endif %}
+                    </label>
+                    {% if form_motorista.nome.is_hidden %}
+                        <p class="form-control-static">{{ form_motorista.nome.value|upper }}<p>
+                    {% endif %}
+                    <br>{{ form_motorista.nome }}
+                    {% if not form_motorista.nome.is_hidden %}
+                        <p class="help-block">{{ form_motorista.nome.help_text }}</p>
+                    {% endif %}
+                    {% if form_motorista.nome.errors %}
+                        <label class="control-label" for="{{form_motorista.nome.id_for_label}}">
+                            {{form_motorista.nome.errors.as_text}}
+                        </label><br />
+                    {% endif %}
+                </div>
             </div>
-        </div>
-        <div class="col-md-5 campo-modal">
-            <div class="form-group{% if form_motorista.endereco.errors %} has-error{% endif %}">
-                <label for="{{form_motorista.endereco.id_for_label}}">
-                    {{ form_motorista.endereco.label }}{% if form_motorista.endereco.field.required %}*{% endif %}
-                </label>
-                {% if form_motorista.endereco.is_hidden %}
-                    <p class="form-control-static">{{ form_motorista.endereco.value|upper }}<p>
-                {% endif %}
-                {{ form_motorista.endereco }}
-                {% if not form_motorista.endereco.is_hidden %}
-                    <p class="help-block">{{ form_motorista.endereco.help_text }}</p>
-                {% endif %}
-                {% if form_motorista.endereco.errors %}
-                    <label class="control-label" for="{{form_motorista.endereco.id_for_label}}">
-                        {{form_motorista.endereco.errors.as_text}}
-                    </label><br />
-                {% endif %}
+            <div class="col-md-5 campo-modal">
+                <div class="form-group{% if form_motorista.endereco.errors %} has-error{% endif %}">
+                    <label for="{{form_motorista.endereco.id_for_label}}">
+                        {{ form_motorista.endereco.label }}{% if form_motorista.endereco.field.required %}*{% endif %}
+                    </label>
+                    {% if form_motorista.endereco.is_hidden %}
+                        <p class="form-control-static">{{ form_motorista.endereco.value|upper }}<p>
+                    {% endif %}
+                    {{ form_motorista.endereco }}
+                    {% if not form_motorista.endereco.is_hidden %}
+                        <p class="help-block">{{ form_motorista.endereco.help_text }}</p>
+                    {% endif %}
+                    {% if form_motorista.endereco.errors %}
+                        <label class="control-label" for="{{form_motorista.endereco.id_for_label}}">
+                            {{form_motorista.endereco.errors.as_text}}
+                        </label><br />
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
     {% if veiculo_alocado %}
-        <div id="detalhes_alocacao_1_turno">
-            <div style="border-bottom: 1px solid #ccc; margin-bottom: 10px; font-size: 16px">Dados da alocação do 1º turno</div>
+        <div id="detalhes_alocacao_1_turno" class="secao_vistoria">
+            <div class="titulo_secao_vistoria">Dados da alocação do 1º turno</div>
             <div class="row">
                 <div class="col-md-3">
                     <label>Equipe</label>
@@ -165,11 +167,11 @@
                 </div>
             </div>
         </div>
-    <div id="dados_alocacao" style="display: none">
+    <div id="dados_alocacao" class="secao_vistoria" style="display: none">
     {% else %}
-    <div id="dados_alocacao">
+    <div id="dados_alocacao" class="secao_vistoria">
     {% endif %}
-        <div style="border-bottom: 1px solid #ccc; margin-bottom: 10px; font-size: 16px">Dados da alocação</div>
+        <div class="titulo_secao_vistoria">Dados da alocação</div>
         <div class="row">
             <div class="col-md-3 campo-modal">
                 <div class="form-group{% if form_vistoria.alocacao.errors %} has-error{% endif %}">

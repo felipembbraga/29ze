@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
 from core.models import Modelo, Pessoa
@@ -83,21 +84,13 @@ def consultar_veiculo(request, placa, turno):
                 # Caso o veículo exista no sistema
                 veiculo = Veiculo.objects.get(placa__iexact=placa, eleicao=request.eleicao_atual)
                 if veiculo.veiculoalocado_set.filter(segundo_turno=turno).exists():
-                    msg = u'O veículo consultado já foi alocado!'
-                    modal = 'msg'
-                    # dajax = process_modal(dajax, 'veiculo-alocado',
-                    #                       u'O veículo consultado já foi alocado. Deseja alterar sua alocação?', True)
-                    # veiculo_alocado = veiculo.veiculoalocado_set.filter(segundo_turno=turno).first()
-                    # if veiculo_alocado.local_votacao:
-                    #     form_vistoria = VistoriaForm()
-                    # else:
-                    #     form_vistoria = VistoriaForm(initial={'alocacao': 1, 'equipe': veiculo_alocado.equipe,
-                    #                                           'perfil': veiculo_alocado.perfil})
-                    # motorista = veiculo.motorista_veiculo.filter(segundo_turno=turno).first()
-                    # form_motorista = MotoristaVistoriaForm(initial={'motorista': motorista.pessoa,
-                    #                                                 'id': motorista.pessoa.id},
-                    #                                        instance=motorista.pessoa)
-                    # dajax = process_form_vistoria(dajax, veiculo, True, request, form_vistoria, form_motorista, True, segundo_turno=turno)
+                    if turno and datetime.date.today() > request.eleicao_atual.data_turno_2 or not turno and datetime.date.today() > request.eleicao_atual.data_turno_1:
+                        msg = u'O veículo consultado já foi alocado!'
+                        modal = 'msg'
+                    else:
+                        msg = u'O veículo consultado já foi alocado!<br>Desaloque o veículo para efetuar uma nova alocação ou consulte um novo veículo.'
+                        modal = 'veiculo-alocado'
+                        dajax.assign('#id_veiculo_alocado', 'value', veiculo.veiculoalocado_set.filter(segundo_turno=turno).first().id)
                 else:
                     dajax = message_status(dajax, 'success', u"Veículo encontrado!", True)
                     dajax = process_form_vistoria(dajax, veiculo, True, request, segundo_turno=turno)
@@ -400,8 +393,8 @@ def cadastrar_vistoria(request, formulario, turno):
 
                     if not Motorista.objects.filter(pessoa=pessoa_motorista, veiculo=veiculo,
                                                     eleicao=request.eleicao_atual, segundo_turno=turno).exists():
-                        motorista = Motorista.objects.create(pessoa=pessoa_motorista, veiculo=veiculo,
-                                                             eleicao=request.eleicao_atual, segundo_turno=turno)
+                        Motorista.objects.create(pessoa=pessoa_motorista, veiculo=veiculo,
+                                                 eleicao=request.eleicao_atual, segundo_turno=turno)
                     else:
                         motorista = Motorista.objects.filter(pessoa=pessoa_motorista, eleicao=request.eleicao_atual,
                                                              segundo_turno=turno).first()
@@ -492,16 +485,30 @@ def cadastrar_vistoria(request, formulario, turno):
     return dajax.json()
 
 @dajaxice_register()
-def desalocar_veiculo(request, id_veiculo):
+def desalocar_veiculo(request, id_veiculo, exibe_vistoria=False, turno=None):
     dajax = Dajax()
 
     if request.is_ajax():
         try:
-            veiculo = get_object_or_404(VeiculoAlocado, pk=int(id_veiculo))
-            placa = veiculo.veiculo.placa
-            veiculo.delete()
-            dajax.script("$.notify({theme:'sucesso', title:'Veiculo da placa %s desalocado com sucesso!'});"%placa.upper())
+            if turno and datetime.date.today() > request.eleicao_atual.data_turno_2 or not turno and datetime.date.today() > request.eleicao_atual.data_turno_1:
+                dajax = process_modal(dajax, 'msg',
+                                      u"Não é possivel desalocar esse veículo, o turno referente a essa alocação já passou.",
+                                      True)
+            else:
+                veiculo_alocado = get_object_or_404(VeiculoAlocado, pk=int(id_veiculo))
+                veiculo = veiculo_alocado.veiculo
+                placa = veiculo.placa
+                veiculo_alocado.delete()
 
+                if exibe_vistoria:
+                    motorista = veiculo.motorista_veiculo.filter(segundo_turno=turno).first()
+                    form_motorista = MotoristaVistoriaForm(initial={'motorista': motorista.pessoa, 'id': motorista.pessoa.id},
+                                                           instance=motorista.pessoa)
+                    dajax = process_form_vistoria(dajax=dajax, veiculo=veiculo, exibe=True, request=request,
+                                                  form_motorista=form_motorista, segundo_turno=turno)
+
+                dajax.script("$.notify({theme:'sucesso', title:'Veiculo da placa %s desalocado com sucesso!'});" % placa.upper())
+                dajax.script("window.setTimeout('location.reload()', 3000);")
         except Exception, e:
             dajax = process_modal(dajax, 'msg',
                                   "Ocorreu um erro: <strong>%s</strong><br>Favor entrar em contato com o departamento de TI." % e,
@@ -510,14 +517,14 @@ def desalocar_veiculo(request, id_veiculo):
 
 
 @dajaxice_register()
-def recarregar_monitoramento(request):
+def recarregar_monitoramento(request, turno):
     """
     Atualiza o select dos modelos de acordo com a marca selecionada
     """
     dajax = Dajax()
     if request.is_ajax():
         try:
-            monitoramento = monta_monitoramento(request)
+            monitoramento = monta_monitoramento(request, turno)
             render = render_to_string('veiculos/vistoria/monitor-detalhe.html', RequestContext(request, {'equipes_monitoracao': monitoramento}))
             dajax.assign('#monitor-detalhe', 'innerHTML', render)
         except Exception, e:
