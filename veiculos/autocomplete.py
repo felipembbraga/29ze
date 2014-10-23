@@ -75,10 +75,10 @@ class EquipeLookup(ModelLookup):
     search_fields = ('equipe__nome__icontains', )
 
     def get_item_value(self, item):
-        return "%s" % item.equipe.nome
+        return "%s - %s vagas" % (item.equipe.nome, item.estimativa_equipe - item.veiculos_alocados_equipe)
 
     def get_item_label(self, item):
-        return "%s" % item.equipe.nome
+        return "%s - %s vagas" % (item.equipe.nome, item.estimativa_equipe - item.veiculos_alocados_equipe)
 
     def get_queryset(self):
         qs = super(EquipeLookup, self).get_queryset()
@@ -86,7 +86,7 @@ class EquipeLookup(ModelLookup):
 
     def get_query(self, request, term):
         qs = super(EquipeLookup, self).get_query(request, term)
-        return filter(equipes_c_vagas, qs.filter(segundo_turno=True).order_by('equipe__nome'))
+        return filter(equipes_c_vagas, qs.filter(segundo_turno=True).order_by('equipe__nome').extra(select={'estimativa_falta': 'estimativa_equipe - veiculos_alocados_equipe'}, order_by=['-estimativa_falta', ]))
 
 
 class PerfilChainedEquipeLookup(ModelLookup, LookupBase):
@@ -119,10 +119,10 @@ class EquipeManualLookup(ModelLookup):
     search_fields = ('equipe__nome__icontains', )
 
     def get_item_value(self, item):
-        return "%s" % item.equipe.nome
+        return "%s - %s vagas" % (item.equipe.nome, item.estimativa_local - item.veiculos_alocados_local)
 
     def get_item_label(self, item):
-        return "%s" % item.equipe.nome
+        return "%s - %s vagas" % (item.equipe.nome, item.estimativa_local - item.veiculos_alocados_local)
 
     def get_queryset(self):
         qs = super(EquipeManualLookup, self).get_queryset()
@@ -130,7 +130,9 @@ class EquipeManualLookup(ModelLookup):
 
     def get_query(self, request, term):
         qs = super(EquipeManualLookup, self).get_query(request, term)
-        return filter(equipes_c_vagas_locais, qs.filter(segundo_turno=True).order_by('equipe__nome'))
+        for item in qs:
+            print item.equipe, item.estimativa_local, item.veiculos_alocados_local
+        return filter(equipes_c_vagas_locais, qs.filter(segundo_turno=True).order_by('equipe__nome').extra(select={'estimativa_falta_local': 'estimativa_local - veiculos_alocados_local'}, order_by=['-estimativa_falta_local', ]))
 
 
 def locais_c_vagas(local):
