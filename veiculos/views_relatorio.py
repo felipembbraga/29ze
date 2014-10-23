@@ -56,7 +56,7 @@ def relatorio_veiculos_requisitados(request, id_orgao=None):
 
 def relatorio_veiculo_alocado(request, id_veiculo):
     veiculo = get_object_or_404(VeiculoAlocado, pk=int(id_veiculo))
-    motorista = veiculo.veiculo.motorista_veiculo.first()
+    motorista = veiculo.veiculo.motorista_veiculo.filter(segundo_turno=veiculo.segundo_turno).first()
     data = datetime.datetime.now()
     def cronograma_local(c):
         if not c.local:
