@@ -373,7 +373,7 @@ def veiculo_vistoria_listagem(request, id_equipe=None):
     total_veiculos = queryset.count()
     lista_veiculos = queryset.order_by('equipe__nome', 'veiculo__marca__nome', 'veiculo__modelo__nome')
     pesquisar = request.GET.get('pesquisar') and request.GET.get('pesquisar') or ''
-    turno = None if not request.GET.get('turno') else True if request.GET.get('turno') == 'true' else False
+    turno = None if not request.GET.get('turno') else True if int(request.GET.get('turno')) > 0 else False
 
     if pesquisar != '':
        lista_veiculos = lista_veiculos.filter(Q(veiculo__motorista_veiculo__pessoa__nome__icontains=pesquisar) | Q(veiculo__placa__icontains=pesquisar))

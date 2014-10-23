@@ -182,11 +182,7 @@
                 if($('#id_equipe').val()!='')
                     url = url + $('#id_equipe').val() + '/';
 
-                var turno = false;
-                if (parseInt($('#id_turno').val()) > 0)
-                    turno = true;
-
-                location.href = url + '?pagina=' + {{ veiculos.number }} + '&num_por_pagina=' + $('#id_num_por_pagina').val() + '&pesquisar=' + $("#pesquisar").val() + '&turno=' + turno;
+                location.href = url + '?pagina=' + {{ veiculos.number }} + '&num_por_pagina=' + $('#id_num_por_pagina').val() + '&pesquisar=' + $("#pesquisar").val() + '&turno=' + $('#id_turno').val();
             });
 
             $('#pesquisar').keypress(function(event) {
@@ -199,11 +195,7 @@
                 if($('#id_equipe').val()!='')
                     url = url + $('#id_equipe').val() + '/';
 
-                var turno = false;
-                if (parseInt($('#id_turno').val()) > 0)
-                    turno = true;
-
-                location.href = url + '?pagina=' + {{ veiculos.number }} + '&num_por_pagina=' + $(this).val() + '&pesquisar=' + $("#pesquisar").val() + '&turno=' + turno;
+                location.href = url + '?pagina=' + {{ veiculos.number }} + '&num_por_pagina=' + $(this).val() + '&pesquisar=' + $("#pesquisar").val() + '&turno=' + $('#id_turno').val();
             });
 
             $('#id_turno').change(function(){
