@@ -60,11 +60,14 @@ function salva_vistoria(val){
     var turno = false;
     if (parseInt($('#turno').val()) > 0)
         turno = true;
-
-    var alocacao_2_turno = false;
-    if ($('#id_alocacao_2_turno').is(':checked'))
-        alocacao_2_turno = true;
-    Dajaxice.veiculos.cadastrar_vistoria(default_callback, {'formulario': val, 'turno': turno, 'alocacao_2_turno': alocacao_2_turno});
+    if ($('#id_alocacao_2_turno').length) {
+        var alocacao_2_turno = false;
+        if ($('#id_alocacao_2_turno').is(':checked'))
+            alocacao_2_turno = true;
+        alert('oi');
+        Dajaxice.veiculos.cadastrar_vistoria(default_callback, {'formulario': val, 'turno': turno, 'alocacao_2_turno': alocacao_2_turno});
+    }else
+        Dajaxice.veiculos.cadastrar_vistoria(default_callback, {'formulario': val, 'turno': turno});
 }
 
 function desalocar_veiculo(val){
