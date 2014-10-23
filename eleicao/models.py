@@ -88,6 +88,8 @@ class LocalVotacao(models.Model):
     def get_veiculos_alocados(self):
         return self.veiculoalocado_set.all()
 
+    def get_veiculos_alocados_turno2(self):
+        return self.veiculoalocado_set.filter(segundo_turno=True)
 
 class SecaoManager(models.Manager):
     
@@ -272,9 +274,14 @@ class Equipe(models.Model):
         total_agregado = self.alocacao_set.filter(segundo_turno=True).aggregate(soma_agregados=models.Sum('quantidade'))
         return total_agregado.get('soma_agregados') and total_agregado.get('soma_agregados') or 0
 
+    def get_alocacoes_turno2(self):
+        return self.alocacao_set.get_perfis_equipe().filter(segundo_turno=True)
 
     def veiculos_alocados_local(self):
         return self.veiculoalocado_set.exclude(local_votacao=None)
+    def veiculos_alocados_local_turno2(self):
+        return self.veiculoalocado_set.filter(segundo_turno=True).exclude(local_votacao=None)
+
 
     def veiculos_por_data(self, data):
         return self.veiculoalocado_set.filter(perfil__cronograma_perfil__dt_apresentacao__range=(data, data.replace(day=data.day+1)))

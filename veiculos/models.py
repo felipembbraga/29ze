@@ -195,8 +195,14 @@ class Alocacao(models.Model):
     def get_veiculos_alocados(self):
         return self.perfil_veiculo.veiculoalocado_set.filter(equipe=self.equipe, perfil=self.perfil_veiculo, local_votacao=self.local_votacao)
 
+    def get_veiculos_alocados_turno2(self):
+        return self.perfil_veiculo.veiculoalocado_set.filter(equipe=self.equipe, perfil=self.perfil_veiculo, local_votacao=self.local_votacao, segundo_turno=True)
+
     def perfil_com_veiculos_alocados(self):
         return self.perfil_veiculo.veiculoalocado_set.filter(perfil=self.perfil_veiculo, equipe=self.equipe, local_votacao=self.local_votacao).exists()
+
+    def get_veiculos_alocados(self):
+        return self.perfil_veiculo.veiculoalocado_set.filter(equipe=self.equipe, perfil=self.perfil_veiculo, local_votacao=self.local_votacao)
 
 
 class VeiculoAlocadoQuerySet(QuerySet):

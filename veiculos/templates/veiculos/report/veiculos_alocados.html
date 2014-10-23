@@ -18,8 +18,8 @@
         </div>
 
 
-        {% for alocacao in equipe.alocacao_set.get_perfis_equipe %}
-            {% if alocacao.get_veiculos_alocados.exists %}
+        {% for alocacao in equipe.get_alocacoes_turno2 %}
+            {% if alocacao.get_veiculos_alocados_turno2.exists %}
                 <div class="pagina">
                     <div class="titulo">
                         <h3>{{ alocacao.perfil_veiculo.nome }}</h3>
@@ -27,7 +27,7 @@
                     <div class="row">
                         <div class="col-md-2"></div>
                         <div class="col-md-8">
-                            {% for veiculo in alocacao.get_veiculos_alocados %}
+                            {% for veiculo in alocacao.get_veiculos_alocados_turno2 %}
                                 <div class="titulo">
                                     <h5>Veículo de equipe {{ forloop.counter }}</h5>
                                 </div>
@@ -83,29 +83,29 @@
                                             <p class="form-control-static text-center" style="padding:0;"><strong>DADOS DO MOTORISTA</strong></p>
                                         </td>
                                     </tr>
-                                    {% if veiculo.veiculo.motorista_veiculo %}
+                                    {% if veiculo.motorista_segundo_turno %}
                                         <tr>
                                             <td colspan="2">
                                                 <label style="margin-bottom:3px;"><small>Nº Título Eleitoral</small></label>
-                                                <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.motorista_veiculo.first.pessoa.titulo_eleitoral }}</p>
+                                                <p class="form-control-static" style="padding:0;">{{ veiculo.motorista_segundo_turno.pessoa.titulo_eleitoral }}</p>
                                             </td>
                                             <td colspan="2">
                                                 <label style="margin-bottom:3px;"><small>Nome</small></label>
-                                                <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.motorista_veiculo.first.pessoa.nome|upper }}</p>
+                                                <p class="form-control-static" style="padding:0;">{{ veiculo.motorista_segundo_turno.pessoa.nome|upper }}</p>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colspan="2">
                                                 <label style="margin-bottom:3px;"><small>Endereço</small></label>
-                                                <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.motorista_veiculo.first.pessoa.endereco|upper }}</p>
+                                                <p class="form-control-static" style="padding:0;">{{ veiculo.motorista_segundo_turno.pessoa.endereco|upper }}</p>
                                             </td>
                                             <td>
                                                 <label style="margin-bottom:3px;"><small>Telefone Residencial</small></label>
-                                                <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.motorista_veiculo.first.pessoa.tel_residencial }}</p>
+                                                <p class="form-control-static" style="padding:0;">{{ veiculo.motorista_segundo_turno.pessoa.tel_residencial }}</p>
                                             </td>
                                             <td>
                                                 <label style="margin-bottom:3px;"><small>Telefone Celular</small></label>
-                                                <p class="form-control-static" style="padding:0;">{{ veiculo.veiculo.motorista_veiculo.first.pessoa.tel_celular }}</p>
+                                                <p class="form-control-static" style="padding:0;">{{ veiculo.motorista_segundo_turno.pessoa.tel_celular }}</p>
                                             </td>
                                         </tr>
                                     {% else %}
@@ -123,12 +123,12 @@
                 </div>
             {% endif %}
         {% endfor %}
-        {% if equipe.veiculos_alocados_local.exists %}
+        {% if equipe.veiculos_alocados_local_turno2.exists %}
             <div class="page-header">
                 <h3>Locais</h3>
             </div>
             {% for local in equipe.local_equipe.all %}
-                {% if local.get_veiculos_alocados.exists %}
+                {% if local.get_veiculos_alocados_turno2.exists %}
                     <div class="pagina">
                         <div class="titulo">
                             <h3>{{ local.local.nome }}</h3>
