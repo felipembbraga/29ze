@@ -337,7 +337,7 @@ def consulta_motorista(request, id_motorista, turno):
                                         segundo_turno=turno).exists():
                 motorista = Motorista.objects.get(pessoa__pk=int(id_motorista), eleicao=request.eleicao_atual,
                                                   segundo_turno=turno)
-                if hasattr(motorista, 'veiculo') and motorista.veiculo.veiculoalocado_set.filter(segundo_turno=turno).exists():
+                if hasattr(motorista, 'veiculo') and motorista.veiculo and motorista.veiculo.veiculoalocado_set.filter(segundo_turno=turno).exists():
                     dajax = process_modal(dajax, 'msg',
                                           u'Não é possivel selecionar esse motorista. O mesmo se encontra vinculado a veículo já alocado.', True)
                     dajax.assign('#s2id_id_motorista span.select2-chosen', 'innerHTML', u'Selecione uma equipe')
