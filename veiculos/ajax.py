@@ -379,6 +379,8 @@ def cadastrar_vistoria(request, formulario, turno):
     if request.is_ajax():
         try:
             if formulario:
+                import pdb
+                pdb.set_trace()
                 # Caso esteja sendo enviado o formulário
                 formulario = deserialize_form(formulario)
                 veiculo = Veiculo.objects.get(placa__iexact=formulario.get('placa_veiculo_vist'))
@@ -410,7 +412,7 @@ def cadastrar_vistoria(request, formulario, turno):
                         cont += 1
                         if (tipo_alocacao == '0' and filter(equipes_c_vagas_locais, EquipesAlocacao.objects.filter(eleicao=request.eleicao_atual, segundo_turno=turno))) \
                                 or (tipo_alocacao == '1' and filter(equipes_c_vagas, EquipesAlocacao.objects.filter(eleicao=request.eleicao_atual, segundo_turno=turno))):
-                            if not form_vistoria.cleaned_data.get('alocacao_2_turno'):
+                            if 'alocacao_2_turno' in formulario and not form_vistoria.cleaned_data.get('alocacao_2_turno'):
                                 veiculo_alocado = veiculo.veiculoalocado_set.filter(segundo_turno=turno).first()
                                 perfil = veiculo_alocado.perfil
                                 equipe = veiculo_alocado.equipe
