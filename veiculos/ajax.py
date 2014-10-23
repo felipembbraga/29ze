@@ -304,8 +304,8 @@ def process_form_vistoria(dajax, veiculo=None, exibe=False, request=None, form_v
         else:
             form_motorista = MotoristaVistoriaForm()
 
-        if segundo_turno and veiculo.veiculoalocado_set.filter(segundo_turno=False).exists():
-            veiculo_alocado = veiculo.veiculoalocado_set.filter(segundo_turno=False).first()
+        if segundo_turno and veiculo.veiculoalocado_set.filter(segundo_turno=segundo_turno).exists():
+            veiculo_alocado = veiculo.veiculoalocado_set.filter(segundo_turno=segundo_turno).first()
         else:
             veiculo_alocado = None
 
@@ -411,7 +411,7 @@ def cadastrar_vistoria(request, formulario, turno):
                         if (tipo_alocacao == '0' and filter(equipes_c_vagas_locais, EquipesAlocacao.objects.filter(eleicao=request.eleicao_atual, segundo_turno=turno))) \
                                 or (tipo_alocacao == '1' and filter(equipes_c_vagas, EquipesAlocacao.objects.filter(eleicao=request.eleicao_atual, segundo_turno=turno))):
                             if not form_vistoria.cleaned_data.get('alocacao_2_turno'):
-                                veiculo_alocado = veiculo.veiculoalocado_set.filter(segundo_turno=False).first()
+                                veiculo_alocado = veiculo.veiculoalocado_set.filter(segundo_turno=turno).first()
                                 perfil = veiculo_alocado.perfil
                                 equipe = veiculo_alocado.equipe
                                 local_votacao = veiculo_alocado.local_votacao
