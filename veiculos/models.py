@@ -133,6 +133,8 @@ class Motorista(models.Model):
         return unicode(self.pessoa.nome)
 
 
+
+
 class PerfilVeiculo(models.Model):
     nome = models.CharField(max_length=50)
     perfil_equipe = models.BooleanField(u'É perfil para equipe?', default=False)
@@ -216,6 +218,7 @@ class VeiculoAlocadoManager(models.Manager):
         return self.get_queryset().get_perfis_local()
 
 
+
 class VeiculoAlocado(models.Model):
     veiculo = models.ForeignKey(Veiculo, verbose_name=u'Veículo')
     perfil = models.ForeignKey(PerfilVeiculo, verbose_name='Perfil')
@@ -229,6 +232,12 @@ class VeiculoAlocado(models.Model):
 
     def __unicode__(self):
         return unicode(self.veiculo)
+
+    def motorista_primeiro_turno(self):
+        return self.veiculo.motorista_veiculo.filter(segundo_turno=False).first()
+
+    def motorista_segundo_turno(self):
+        return self.veiculo.motorista_veiculo.filter(segundo_turno=True).first()
 
 
 @receiver(post_save, sender=PerfilVeiculo)

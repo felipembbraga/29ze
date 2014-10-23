@@ -77,8 +77,12 @@
                                         {{veiculo.veiculo.veiculo_with_popover|safe}}
                                     </td>
                                     <td>
+                                        {% if veiculo.segundo_turno %}
 
-                                        {%  firstof veiculo.veiculo.motorista_veiculo.first.pessoa.nome.upper 'SEM MOTORISTA' %}
+                                        {%  firstof veiculo.motorista_segundo_turno|upper 'SEM MOTORISTA' %}
+                                        {% else %}
+                                            {%  firstof veiculo.motorista_primeiro_turno|upper 'SEM MOTORISTA' %}
+                                        {% endif %}
 
                                     </td>
                                     <td>
