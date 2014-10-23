@@ -80,9 +80,13 @@ class EquipeLookup(ModelLookup):
     def get_item_label(self, item):
         return "%s" % item.equipe.nome
 
+    def get_queryset(self):
+        qs = super(EquipeLookup, self).get_queryset()
+        return qs.filter(segundo_turno=True)
+
     def get_query(self, request, term):
         qs = super(EquipeLookup, self).get_query(request, term)
-        return filter(equipes_c_vagas, qs.order_by('equipe__nome'))
+        return filter(equipes_c_vagas, qs.filter(segundo_turno=True).order_by('equipe__nome'))
 
 
 class PerfilChainedEquipeLookup(ModelLookup, LookupBase):
@@ -120,9 +124,13 @@ class EquipeManualLookup(ModelLookup):
     def get_item_label(self, item):
         return "%s" % item.equipe.nome
 
+    def get_queryset(self):
+        qs = super(EquipeManualLookup, self).get_queryset()
+        return qs.filter(segundo_turno=True)
+
     def get_query(self, request, term):
         qs = super(EquipeManualLookup, self).get_query(request, term)
-        return filter(equipes_c_vagas_locais, qs.order_by('equipe__nome'))
+        return filter(equipes_c_vagas_locais, qs.filter(segundo_turno=True).order_by('equipe__nome'))
 
 
 def locais_c_vagas(local):
@@ -151,7 +159,7 @@ class LocalManualChainedEquipeManualLookup(ModelLookup, LookupBase):
 
 
 def alocacao_c_vagas(alocacao):
-    total_veiculos = alocacao.local_votacao.veiculoalocado_set.filter(perfil=alocacao.perfil_veiculo).count()
+    total_veiculos = alocacao.local_votacao.veiculoalocado_set.filter(perfil=alocacao.perfil_veiculo, segundo_turno=alocacao.segundo_turno).count()
     return alocacao.quantidade - total_veiculos > 0
 
 
@@ -171,7 +179,7 @@ class PerfilManualChainedLocalManualLookup(ModelLookup, LookupBase):
         local = request.GET.get('local_manual', '')
 
         if local:
-            return filter(alocacao_c_vagas, results.filter(local_votacao=local).order_by('perfil_veiculo__nome'))
+            return filter(alocacao_c_vagas, results.filter(local_votacao=local, segundo_turno=True).order_by('perfil_veiculo__nome'))
         return []
 
 

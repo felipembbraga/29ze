@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+from django.db.models.expressions import F
 from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
 from core.models import Modelo, Pessoa
@@ -373,7 +374,6 @@ def cadastrar_vistoria(request, formulario, turno):
     """
     dajax = Dajax()
 
-
     if request.is_ajax():
         try:
             if formulario:
@@ -403,8 +403,9 @@ def cadastrar_vistoria(request, formulario, turno):
 
                     alocacao_concluida = False
                     tipo_alocacao = form_vistoria.cleaned_data.get('alocacao')
-
+                    cont = 0
                     while not alocacao_concluida:
+                        cont += 1
                         if (tipo_alocacao == '0' and filter(equipes_c_vagas_locais, EquipesAlocacao.objects.filter(eleicao=request.eleicao_atual, segundo_turno=turno))) \
                                 or (tipo_alocacao == '1' and filter(equipes_c_vagas, EquipesAlocacao.objects.filter(eleicao=request.eleicao_atual, segundo_turno=turno))):
                             if not form_vistoria.cleaned_data.get('alocacao_2_turno'):
@@ -417,20 +418,20 @@ def cadastrar_vistoria(request, formulario, turno):
                                     import random
 
                                     # verifica se o servidor marcou o campo de alocação manual, e pega a equipe selecionada
-                                    if form_vistoria.cleaned_data.get('alocacao_manual'):
+                                    if form_vistoria.cleaned_data.get('alocacao_manual') and form_vistoria.cleaned_data.get('equipe_manual') is not None:
                                         equipe_auto = form_vistoria.cleaned_data.get('equipe_manual')
                                     else:
                                         equipe_auto = random.choice(filter(equipes_c_vagas_locais, EquipesAlocacao.objects.filter(eleicao=request.eleicao_atual, segundo_turno=turno).order_by('equipe__nome')))
                                     equipe_auto = equipe_auto.equipe
 
                                     # verifica se o servidor marcou o campo de alocação manual, e pega o local selecionado
-                                    if form_vistoria.cleaned_data.get('alocacao_manual'):
+                                    if form_vistoria.cleaned_data.get('alocacao_manual') and form_vistoria.cleaned_data.get('local_manual') is not None:
                                         local_auto = form_vistoria.cleaned_data.get('local_manual')
                                     else:
                                         local_auto = random.choice(filter(locais_c_vagas, equipe_auto.local_equipe.all()))
 
                                     # verifica se o servidor marcou o campo de alocação manual, e pega o perfil selecionado
-                                    if form_vistoria.cleaned_data.get('alocacao_manual'):
+                                    if form_vistoria.cleaned_data.get('alocacao_manual') and form_vistoria.cleaned_data.get('perfil_manual') is not None:
                                         alocacao = form_vistoria.cleaned_data.get('perfil_manual')
                                     else:
                                         alocacao = random.choice(filter(alocacao_c_vagas, local_auto.alocacao_set.filter(segundo_turno=turno)))
@@ -442,9 +443,9 @@ def cadastrar_vistoria(request, formulario, turno):
                                     perfil = form_vistoria.cleaned_data.get('perfil')
                                     equipe = form_vistoria.cleaned_data.get('equipe').equipe
                                     local_votacao = None
-                            # raise Exception('teste')
-                            if (tipo_alocacao == '0' and local_votacao in filter(locais_c_vagas, equipe.local_equipe.all())) \
-                                    or tipo_alocacao == '1':
+
+                            if (local_votacao and perfil in [perf.perfil_veiculo for perf in filter(alocacao_c_vagas, local_votacao.alocacao_set.filter(segundo_turno=turno))]) or \
+                                    (local_votacao is None and EquipesAlocacao.objects.filter(equipe=equipe, eleicao=request.eleicao_atual, estimativa_equipe__gt=F('veiculos_alocados_equipe'), segundo_turno=turno)):
                                 if not VeiculoAlocado.objects.filter(veiculo=veiculo, segundo_turno=turno).exists():
                                     veiculo_alocado = VeiculoAlocado.objects.create(veiculo=veiculo, perfil=perfil,
                                                                                     equipe=equipe,
@@ -458,10 +459,28 @@ def cadastrar_vistoria(request, formulario, turno):
                                     veiculo_alocado.save()
 
                                 alocacao_concluida = True
+                            elif not form_vistoria.cleaned_data.get('alocacao_2_turno') or tipo_alocacao != '0' or form_vistoria.cleaned_data.get('alocacao_manual'):
+                                dajax = process_modal(dajax, 'msg', u'Não existem vagas para a opção selecionada!', True)
+                                dajax = process_form_vistoria(dajax)
+                                if not form_vistoria.cleaned_data.get('alocacao_2_turno'):
+                                    form_vistoria._errors["alocacao_2_turno"] = form_vistoria.error_class([u'Não existem vagas para a opção selecionada!'])
+                                    del form_vistoria.cleaned_data["alocacao_2_turno"]
+                                else:
+                                    form_vistoria._errors["alocacao"] = form_vistoria.error_class([u'Não existem vagas para a opção selecionada!'])
+                                    del form_vistoria.cleaned_data["alocacao"]
+                                alocacao_concluida = True
                         else:
                             form_vistoria._errors["alocacao"] = form_vistoria.error_class([u'Não existem equipes com vagas disponíveis!'])
                             del form_vistoria.cleaned_data["alocacao"]
                             alocacao_concluida = True
+
+                        if cont >= 1000:
+                            dajax = process_modal(dajax, 'msg', u'Limite máximo de iterações atingido! Caso o erro persista, contate o suporte do sistema.', True)
+                            dajax = process_form_vistoria(dajax)
+                            form_vistoria._errors["alocacao_2_turno"] = form_vistoria.error_class([u'Limite máximo de iterações atingido! Caso o erro persista, contate o suporte do sistema.'])
+                            del form_vistoria.cleaned_data["alocacao_2_turno"]
+                            alocacao_concluida = True
+
 
                     if form_vistoria.is_valid():
                         # dajax = message_status(dajax, 'success', u"Vistoria efetuada com sucesso!", True)
@@ -471,7 +490,7 @@ def cadastrar_vistoria(request, formulario, turno):
                         return dajax.json()
 
                 dajax = process_form_vistoria(dajax, veiculo=veiculo, exibe=True, request=request,
-                                              form_vistoria=form_vistoria, form_motorista=form_pessoa_motorista)
+                                              form_vistoria=form_vistoria, form_motorista=form_pessoa_motorista, segundo_turno=turno)
             else:
             # Caso contrário, exibe mensagem de erro
                 dajax = process_modal(dajax, 'msg', u"Ocorreu um erro no envio do modal", True)
@@ -545,6 +564,7 @@ def locais_c_vagas(local):
     total_veiculos = local.veiculoalocado_set.count()
     return soma_estimativa - total_veiculos > 0
 
+
 def alocacao_c_vagas(alocacao):
-    total_veiculos = alocacao.local_votacao.veiculoalocado_set.filter(perfil=alocacao.perfil_veiculo).count()
+    total_veiculos = alocacao.local_votacao.veiculoalocado_set.filter(perfil=alocacao.perfil_veiculo, segundo_turno=alocacao.segundo_turno).count()
     return alocacao.quantidade - total_veiculos > 0
