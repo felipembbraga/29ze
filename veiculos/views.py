@@ -431,15 +431,15 @@ def monta_monitoramento(request, turno):
     for equipe in equipes:
         if equipe.equipesalocacao_set.filter(segundo_turno=turno):
             dicionario = {'equipe': equipe,
-                          'total_estimado': equipe.equipesalocacao_set.first().total_estimativa,
-                          'estimado': equipe.equipesalocacao_set.first().total_estimativa - equipe.equipesalocacao_set.filter(segundo_turno=turno).first().veiculos_alocados,
+                          'total_estimado': equipe.equipesalocacao_set.filter(segundo_turno=turno).first().total_estimativa,
+                          'estimado': equipe.equipesalocacao_set.filter(segundo_turno=turno).first().total_estimativa - equipe.equipesalocacao_set.filter(segundo_turno=turno).first().veiculos_alocados,
                           'alocado': equipe.equipesalocacao_set.filter(segundo_turno=turno).first().veiculos_alocados,
-                          'percentual_alocado': (100 * equipe.equipesalocacao_set.filter(segundo_turno=turno).first().veiculos_alocados) / equipe.equipesalocacao_set.first().total_estimativa}
+                          'percentual_alocado': (100 * equipe.equipesalocacao_set.filter(segundo_turno=turno).first().veiculos_alocados) / equipe.equipesalocacao_set.filter(segundo_turno=turno).first().total_estimativa}
         else:
             dicionario = {'equipe': equipe,
-                          'total_estimado': equipe.alocacao_set.aggregate(models.Sum('quantidade')).get('quantidade__sum'),
+                          'total_estimado': equipe.alocacao_set.filter(segundo_turno=turno).aggregate(models.Sum('quantidade')).get('quantidade__sum'),
                           'estimado': 0,
-                          'alocado': equipe.veiculoalocado_set.count(),
+                          'alocado': equipe.veiculoalocado_set.filter(segundo_turno=turno).count(),
                           'percentual_alocado': 100}
 
         dicionario['percentual_estimado'] = 100 - dicionario['percentual_alocado']
