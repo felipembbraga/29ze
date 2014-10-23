@@ -370,7 +370,7 @@ def consulta_motorista(request, id_motorista, turno):
 
 
 @dajaxice_register()
-def cadastrar_vistoria(request, formulario, turno):
+def cadastrar_vistoria(request, formulario, turno, alocacao_2_turno=None):
     """
     Efetua o cadastro da vistoria
     """
@@ -380,14 +380,14 @@ def cadastrar_vistoria(request, formulario, turno):
         try:
             if formulario:
                 # Caso esteja sendo enviado o formulário
-                formulario = deserialize_form(formulario)
-                veiculo = Veiculo.objects.get(placa__iexact=formulario.get('placa_veiculo_vist'))
-                if formulario.get('id'):
-                    pessoa_motorista = Pessoa.objects.get(id=int(formulario.get('id')))
-                    form_pessoa_motorista = MotoristaVistoriaForm(formulario, instance=pessoa_motorista)
+                form = deserialize_form(formulario)
+                veiculo = Veiculo.objects.get(placa__iexact=form.get('placa_veiculo_vist'))
+                if form.get('id'):
+                    pessoa_motorista = Pessoa.objects.get(id=int(form.get('id')))
+                    form_pessoa_motorista = MotoristaVistoriaForm(form, instance=pessoa_motorista)
                 else:
-                    form_pessoa_motorista = MotoristaVistoriaForm(formulario)
-                form_vistoria = VistoriaForm(formulario)
+                    form_pessoa_motorista = MotoristaVistoriaForm(form)
+                form_vistoria = VistoriaForm(form)
 
                 if form_pessoa_motorista.is_valid() and form_vistoria.is_valid():
                     # Se os formulários forem válidos
@@ -410,8 +410,8 @@ def cadastrar_vistoria(request, formulario, turno):
                         cont += 1
                         if (tipo_alocacao == '0' and filter(equipes_c_vagas_locais, EquipesAlocacao.objects.filter(eleicao=request.eleicao_atual, segundo_turno=turno))) \
                                 or (tipo_alocacao == '1' and filter(equipes_c_vagas, EquipesAlocacao.objects.filter(eleicao=request.eleicao_atual, segundo_turno=turno))):
-                            if 'alocacao_2_turno' in formulario and not form_vistoria.cleaned_data.get('alocacao_2_turno'):
-                                veiculo_alocado = veiculo.veiculoalocado_set.filter(segundo_turno=turno).first()
+                            if alocacao_2_turno is not None and not alocacao_2_turno and not form_vistoria.cleaned_data.get('alocacao_2_turno'):
+                                veiculo_alocado = veiculo.veiculoalocado_set.filter(segundo_turno=False).first()
                                 perfil = veiculo_alocado.perfil
                                 equipe = veiculo_alocado.equipe
                                 local_votacao = veiculo_alocado.local_votacao

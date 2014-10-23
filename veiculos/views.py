@@ -380,14 +380,18 @@ def veiculo_vistoria_listagem(request, id_equipe=None):
 
     if turno is not None:
         lista_veiculos = lista_veiculos.filter(segundo_turno=turno)
-
     #filtro = VeiculoAlocadoFilter(request.GET, queryset = lista_veiculos)
     #total_com_motorista = filtro.qs.exclude(motorista_titulo_eleitoral=None).count()
     #total_sem_motorista = filtro.qs.filter(motorista_titulo_eleitoral=None).count()
 
+    new_lista_veiculos = []
+    for veiculo in lista_veiculos:
+        if veiculo not in new_lista_veiculos:
+            new_lista_veiculos.append(veiculo)
+
     form_pagina = NumPorPaginaForm(request.GET)
     num_por_pagina = form_pagina.is_valid() and int(form_pagina.cleaned_data['num_por_pagina']) or 10
-    paginator = Paginator(lista_veiculos, num_por_pagina)
+    paginator = Paginator(new_lista_veiculos, num_por_pagina)
     pagina = request.GET.get('pagina')
 
     try:
