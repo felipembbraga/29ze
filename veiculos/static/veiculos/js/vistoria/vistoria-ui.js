@@ -64,7 +64,6 @@ function salva_vistoria(val){
         var alocacao_2_turno = false;
         if ($('#id_alocacao_2_turno').is(':checked'))
             alocacao_2_turno = true;
-        alert('oi');
         Dajaxice.veiculos.cadastrar_vistoria(default_callback, {'formulario': val, 'turno': turno, 'alocacao_2_turno': alocacao_2_turno});
     }else
         Dajaxice.veiculos.cadastrar_vistoria(default_callback, {'formulario': val, 'turno': turno});
