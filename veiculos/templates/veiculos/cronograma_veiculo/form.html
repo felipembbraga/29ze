@@ -1,5 +1,12 @@
 {% extends 'veiculos/perfil_veiculo/base.html' %}
 {% load static from staticfiles %}
+{% block extrastyle %}
+    <style>
+    #id_dt_apresentacao_1{
+        margin-top:5px;
+    }
+    </style>
+{% endblock %}
 {% block extrabreadcrumb %}
     {{ block.super }}
     <li><a href="{% url 'perfil-veiculo:detalhar' perfil.pk%}">{{ perfil.nome|upper }}</a></li>
@@ -34,4 +41,10 @@
 {%block extrascripts %}
     <script src="{% static 'zona_eleitoral/js/misc/jquery_meio_mask.js' %}"></script>
     <script src="{% static 'zona_eleitoral/js/misc/glDatePicker/glDatePicker.js' %}"></script>
+    <script>
+    $(document).ready(function() {
+        $(' #id_dt_apresentacao_0').mask('99/99/9999');
+        $(' #id_dt_apresentacao_1').mask('99:99:99');
+    });
+    </script>
 {% endblock %}

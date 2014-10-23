@@ -5,13 +5,6 @@
 {% block container %}
     <form id="form-filtro" method="GET">
         <div class="row">
-            <div class="col-md-4">
-                <strong>Total de veículos requisitados{% if id_orgao %} da secretaria{%endif%}: </strong>{{ total_requisitados }} <br />
-                <strong>Total de veículos listados: </strong>{{ filtro.qs.count }} <br />
-                <strong>Total de veículos com motorista: </strong>{{ total_com_motorista }} <br />
-                <strong>Total de veículos sem motorista: </strong>{{ total_sem_motorista }} <br />
-
-            </div>
             <div class="col-md-5">
                 <div class="form-group">
                     <label for="{{form.orgao.id_for_label}}">{{ form.orgao.label }}</label>
@@ -25,46 +18,68 @@
                 </div>
             </div>
         </div>
+
         <div class="row">
-            <h3>Filtrar por: <small><a href="javascript:void(0);" id="limpar-filtro">Limpar filtros</a></small></h3>
+            <h3 style="margin-top:8px;">Filtrar por: <small><a href="javascript:void(0);" id="limpar-filtro">Limpar filtros</a></small></h3>
 
+            {% for field in filtro.form %}
+                <div class="form-group col-md-3">
+                    <label for="{{field.id_for_label}}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+            {% endfor %}
 
-            <div class="form-group col-md-2">
-                <label for="{{filtro.form.estado.id_for_label}}">{{ filtro.form.estado.label }}</label>
-                {{ filtro.form.estado }}
+            {#            <div class="form-group col-md-2">#}
+            {#                <label for="{{filtro.form.estado.id_for_label}}">{{ filtro.form.estado.label }}</label>#}
+            {#                {{ filtro.form.estado }}#}
+            {##}
+            {#            </div>#}
+            {#            <div class="form-group col-md-2">#}
+            {#                <label for="{{filtro.form.tipo.id_for_label}}">{{ filtro.form.tipo.label }}</label>#}
+            {#                {{ filtro.form.tipo }}#}
+            {##}
+            {#            </div>#}
+            {#            <div class="form-group col-md-2">#}
+            {#                <label for="{{filtro.form.ano.id_for_label}}">{{ filtro.form.ano.label }}</label>#}
+            {#                {{ filtro.form.ano }}#}
+            {##}
+            {#            </div>#}
+            {#            <div class="form-group col-md-1">#}
+            {#                <label for="{{filtro.form.motorista.id_for_label}}">{{ filtro.form.motorista.label }}</label>#}
+            {#                {{ filtro.form.motorista }}#}
+            {##}
+            {#            </div>#}
+            {#            <div class="form-group col-md-1">#}
+            {#                <label for="{{filtro.form.requisitado.id_for_label}}">{{ filtro.form.requisitado.label }}</label>#}
+            {#                {{ filtro.form.requisitado }}#}
+            {##}
+            {#            </div>#}
+            {#            <div class="form-group col-md-2">#}
+            {#                <label for="{{filtro.form.requisitado_em_vistoria.id_for_label}}">{{ filtro.form.requisitado_em_vistoria.label }}</label>#}
+            {#                {{ filtro.form.requisitado_em_vistoria }}#}
+            {##}
+            {#            </div>#}
+            {#            <div class="form-group col-md-2">#}
+            {#                <label for="{{filtro.form.turno.id_for_label}}">{{ filtro.form.turno.label }}</label>#}
+            {#                {{ filtro.form.turno }}#}
+            {##}
+            {#            </div>#}
 
+        </div>
+        <div class="row col-filtro" style="padding: 10px 0 10px 0">
+            <div class="col-md-3">
+                <strong>Veículos listados: </strong>{{ filtro.qs.count }} <br />
             </div>
-            <div class="form-group col-md-2">
-                <label for="{{filtro.form.tipo.id_for_label}}">{{ filtro.form.tipo.label }}</label>
-                {{ filtro.form.tipo }}
-
+            <div class="col-md-3">
+                <strong>Veículos requisitados{% if id_orgao %} da secretaria{%endif%} {{ turno_selecionado }}: </strong>
+                {{ total_requisitados }} <br />
             </div>
-            <div class="form-group col-md-2">
-                <label for="{{filtro.form.ano.id_for_label}}">{{ filtro.form.ano.label }}</label>
-                {{ filtro.form.ano }}
-
+            <div class="col-md-3">
+                <strong>Veículos com motorista: </strong>{{ total_com_motorista }} <br />
             </div>
-            <div class="form-group col-md-1">
-                <label for="{{filtro.form.motorista.id_for_label}}">{{ filtro.form.motorista.label }}</label>
-                {{ filtro.form.motorista }}
-
+            <div class="col-md-3">
+                <strong>Veículos sem motorista: </strong>{{ total_sem_motorista }} <br />
             </div>
-            <div class="form-group col-md-1">
-                <label for="{{filtro.form.requisitado.id_for_label}}">{{ filtro.form.requisitado.label }}</label>
-                {{ filtro.form.requisitado }}
-
-            </div>
-            <div class="form-group col-md-2">
-                <label for="{{filtro.form.requisitado_em_vistoria.id_for_label}}">{{ filtro.form.requisitado_em_vistoria.label }}</label>
-                {{ filtro.form.requisitado_em_vistoria }}
-
-            </div>
-            <div class="form-group col-md-2">
-                <label for="{{filtro.form.turno.id_for_label}}">{{ filtro.form.turno.label }}</label>
-                {{ filtro.form.turno }}
-
-            </div>
-
         </div>
         <div class="row">
             <div class="col-md-12">
@@ -178,10 +193,10 @@
             });
             $('#limpar-filtro').click(function(){
                 $('#id_estado, #id_ano, #id_tipo, #id_turno').val('');
-                $(' #id_motorista, #id_requisitado, #id_requisitado_em_vistoria').val(1);
-                $('#id_estado, #id_ano, #id_tipo, #id_motorista, #id_requisitado, #id_requisitado_em_vistoria').trigger('change');
+                $(' #id_motorista, #id_requisitado, #id_alocado, #id_requisitado_em_vistoria').val(1);
+                $('#id_estado, #id_ano, #id_tipo, #id_alocado, #id_motorista, #id_requisitado, #id_requisitado_em_vistoria').trigger('change');
             });
-            $('#id_estado, #id_ano, #id_tipo, #id_motorista, #id_num_por_pagina, #id_requisitado, #id_requisitado_em_vistoria, #id_turno').change(function(){
+            $('#id_estado, #id_ano, #id_tipo, #id_motorista, #id_num_por_pagina, #id_requisitado, #id_alocado, #id_requisitado_em_vistoria, #id_turno').change(function(){
                 $('#pagina').val(1);
                 $('#form-filtro').submit();
             });

@@ -1,4 +1,5 @@
 #-*- coding: utf-8 -*-
+from django.db.models.query_utils import Q
 from .models import Veiculo, ano_choices
 from django import forms
 import datetime
@@ -50,9 +51,9 @@ def filter_ano(queryset, value):
 
 def filter_motorista(queryset, value):
     if value:
-        return queryset.exclude(motorista_titulo_eleitoral=None)
+        return queryset.exclude(motorista_veiculo=None)
     else:
-        return queryset.filter(motorista_titulo_eleitoral=None)
+        return queryset.filter(motorista_veiculo=None)
     
 def filter_selecionado(queryset, value):
     if value:
@@ -71,12 +72,52 @@ def filter_turno(queryset, value):
         return queryset.filter(veiculo_selecionado__segundo_turno=True).distinct()
     return queryset
 
+def filter_alocado(queryset, value):
+    if value=='1':
+        return queryset.filter(veiculoalocado__segundo_turno=False).distinct()
+    if value=='2':
+        return queryset.filter(veiculoalocado__segundo_turno=True).distinct()
+    if value=='3':
+        return queryset.exclude(veiculoalocado=None)
+    if value=='4':
+        return queryset.filter(Q(veiculoalocado__segundo_turno=True)&Q(veiculoalocado__segundo_turno=False)).distinct()
+    if value=='5':
+        if queryset.exists():
+            primeiro = queryset.first()
+            if not primeiro.veiculo_selecionado.exists() or primeiro.veiculo_selecionado.count() > 1:
+                return queryset.filter(veiculoalocado=None)
+            inicio = fim = primeiro.veiculo_selecionado.first().segundo_turno
+            for veiculo in queryset[1:]:
+                if not veiculo.veiculo_selecionado.exists() or veiculo.veiculo_selecionado.count() > 1:
+                    fim = not inicio
+                fim = veiculo.veiculo_selecionado.first().segundo_turno
+                if inicio != fim:
+                    break
+
+            if inicio == fim:
+                return queryset.filter(~Q(veiculoalocado__segundo_turno= inicio)|Q(veiculoalocado=None))
+                lista_ids = []
+                for veiculo in queryset:
+                    if not veiculo.veiculoalocado_set.filter(segundo_turno=inicio).exists():
+                        lista_ids.append(veiculo.pk)
+                return Veiculo.objects.filter(pk__in=lista_ids)
+        return queryset.filter(veiculoalocado=None)
+    return queryset
+
+
+
+
+
 class VeiculoFilter(django_filters.FilterSet):
     ano = django_filters.ChoiceFilter(choices=get_ano_choices(), action=filter_ano)
     motorista = MyBooleanFilter(action=filter_motorista)
     requisitado = MyBooleanFilter(action=filter_selecionado)
     turno = django_filters.ChoiceFilter(choices=((1,u'1º turno'),(2,u'2º turno')), action=filter_turno)
     requisitado_em_vistoria = MyBooleanFilter(action=filter_selecionado_em_vistoria)
+    alocado = django_filters.ChoiceFilter(choices=(
+        (1,u'Alocado no 1º turno'),(2,u'Alocado no 2º turno'), (3,u'Alocado no 1º ou 2º turno'), (4,u'Alocado no 1º e 2º turno')
+    ), action=filter_alocado)
+
     class Meta:
         model = Veiculo
         fields = ['tipo', 'estado']
