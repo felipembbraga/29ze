@@ -219,7 +219,7 @@
                 $(this).confirmar({
                     message: "Você deseja desalocar este veículo?",
                     onConfirm: function() {
-                        Dajaxice.veiculos.desalocar_veiculo(Dajax.process, {'id_veiculo': $(self).data('id'), 'turno': $(self).data('turno')});
+                        Dajaxice.veiculos.desalocar_veiculo(Dajax.process, {'id_veiculo': $(self).data('id'), 'turno': $(self).data('turno'), 'timeout': true});
                     }
                 })
             });

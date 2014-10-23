@@ -18,6 +18,7 @@ from veiculos.models import VeiculoSelecionado, VeiculoAlocado
 from django.db import models
 from veiculos.views import monta_monitoramento
 
+
 @dajaxice_register()
 def requisicao_veiculo(request, id_veiculo, formulario):
     dajax = Dajax()
@@ -65,6 +66,7 @@ def requisicao_veiculo(request, id_veiculo, formulario):
         render = render_to_string('veiculos/veiculo/requisicao_veiculo_form.html', {'form': form})
         dajax.assign('#requisicao-veiculo-txt', 'innerHTML', render)
     return dajax.json()
+
 
 @dajaxice_register()
 def consultar_veiculo(request, placa, turno):
@@ -504,7 +506,7 @@ def cadastrar_vistoria(request, formulario, turno):
     return dajax.json()
 
 @dajaxice_register()
-def desalocar_veiculo(request, id_veiculo, exibe_vistoria=False, turno=None):
+def desalocar_veiculo(request, id_veiculo, exibe_vistoria=False, turno=None, timeout=False):
     dajax = Dajax()
 
     if request.is_ajax():
@@ -527,7 +529,8 @@ def desalocar_veiculo(request, id_veiculo, exibe_vistoria=False, turno=None):
                                                   form_motorista=form_motorista, segundo_turno=turno)
 
                 dajax.script("$.notify({theme:'sucesso', title:'Veiculo da placa %s desalocado com sucesso!'});" % placa.upper())
-                dajax.script("window.setTimeout('location.reload()', 3000);")
+                if timeout:
+                    dajax.script("window.setTimeout('location.reload()', 3000);")
         except Exception, e:
             dajax = process_modal(dajax, 'msg',
                                   "Ocorreu um erro: <strong>%s</strong><br>Favor entrar em contato com o departamento de TI." % e,

@@ -19,7 +19,7 @@ function requisitar_veiculo(){
 }
 
 function add_veiculo(formulario){
-    $('#modal-novo-veiculo').modal('toggle');
+    $('#modal-novo-veiculo').modal('hide');
     block_screen();
     var turno = false;
     if (parseInt($('#turno').val()) > 0)
@@ -78,7 +78,7 @@ function aplica_mascaras(){
 function nova_busca(modal){
     $.unblockUI();
     if (modal)
-        modal.modal('toggle');
+        modal.modal('hide');
 
     var field_placa = $('#placa-veiculo');
     field_placa.val('');
@@ -106,6 +106,42 @@ function alocacao_por_equipe(e){
     }else{
         div_alocacao.hide();
         choice_alocacao_man.show()
+    }
+}
+
+function alocacao_manual(e){
+    var div_equipe_manual = $('#div-equipe-manual');
+    var equipe_manual_sl2 = $('#s2id_id_equipe_manual');
+    var equipe_manual = $('#id_equipe_manual');
+    var local_manual_sl2 = $('#s2id_id_local_manual');
+    var local_manual = $('#id_local_manual');
+    var perfil_manual_sl2 = $('#s2id_id_perfil_manual');
+    var perfil_manual = $('#id_perfil_manual');
+    if (e) {
+        div_equipe_manual.show();
+    }else{
+        div_equipe_manual.hide();
+        equipe_manual_sl2.find('span.select2-chosen').html('Selecione uma equipe');
+        equipe_manual_sl2.removeClass('select2-allowclear');
+        equipe_manual.val('');
+        local_manual_sl2.find('span.select2-chosen').html('Selecione um local');
+        local_manual_sl2.removeClass('select2-allowclear');
+        local_manual.val('');
+        perfil_manual_sl2.find('span.select2-chosen').html('Selecione uma função');
+        perfil_manual_sl2.removeClass('select2-allowclear');
+        perfil_manual.val('');
+    }
+}
+
+function alocacao_2_turno(e){
+    var div_dados_1_turno = $('#detalhes_alocacao_1_turno');
+    var div_dados_alocacao = $('#dados_alocacao');
+    if (e) {
+        div_dados_alocacao.show();
+        div_dados_1_turno.hide();
+    }else{
+        div_dados_alocacao.hide();
+        div_dados_1_turno.show();
     }
 }
 
@@ -141,39 +177,11 @@ $(document).ready(function(){
     });
 
     $('body').on('click', '#id_alocacao_manual', function() {
-        var div_equipe_manual = $('#div-equipe-manual');
-        var equipe_manual_sl2 = $('#s2id_id_equipe_manual');
-        var equipe_manual = $('#id_equipe_manual');
-        var local_manual_sl2 = $('#s2id_id_local_manual');
-        var local_manual = $('#id_local_manual');
-        var perfil_manual_sl2 = $('#s2id_id_perfil_manual');
-        var perfil_manual = $('#id_perfil_manual');
-        if ($(this).is(':checked'))
-            div_equipe_manual.show();
-        else{
-            div_equipe_manual.hide();
-            equipe_manual_sl2.find('span.select2-chosen').html('Selecione uma equipe');
-            equipe_manual_sl2.removeClass('select2-allowclear');
-            equipe_manual.val('');
-            local_manual_sl2.find('span.select2-chosen').html('Selecione um local');
-            local_manual_sl2.removeClass('select2-allowclear');
-            local_manual.val('');
-            perfil_manual_sl2.find('span.select2-chosen').html('Selecione uma função');
-            perfil_manual_sl2.removeClass('select2-allowclear');
-            perfil_manual.val('');
-        }
+        alocacao_manual($(this).is(':checked'));
     });
 
     $('body').on('click', '#id_alocacao_2_turno', function() {
-        var div_dados_1_turno = $('#detalhes_alocacao_1_turno');
-        var div_dados_alocacao = $('#dados_alocacao');
-        if ($(this).is(':checked')) {
-            div_dados_alocacao.show();
-            div_dados_1_turno.hide();
-        }else{
-            div_dados_alocacao.hide();
-            div_dados_1_turno.show();
-        }
+        alocacao_2_turno($(this).is(':checked'));
     });
 
     $('#placa-veiculo').keypress(function(event){
