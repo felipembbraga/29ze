@@ -155,13 +155,17 @@ def veiculo_excluir(request, id_veiculo):
 
 @login_required
 def veiculo_listar(request, id_orgao=None):
+
     if id_orgao:
         orgao = OrgaoPublico.objects.get(pk=int(id_orgao))
         queryset = Veiculo.objects.filter(eleicao = request.eleicao_atual, orgao=orgao)
         
     else:
         queryset = Veiculo.objects.filter(eleicao = request.eleicao_atual)
-    total_requisitados = queryset.exclude(veiculo_selecionado=None).count()
+    t = request.GET.get('turno')
+    turno_selecionado = t=='1' and u'1º turno' or (t=='2' and u'2º turno' or 'geral')
+    total_requisitados = t=='1' and queryset.filter(veiculo_selecionado__segundo_turno=False).count() or (t=='2' and queryset.filter(veiculo_selecionado__segundo_turno=True).count() or queryset.exclude(veiculo_selecionado=None).count())
+
     lista_veiculos = queryset.exclude(estado=3).order_by('orgao__nome_secretaria', 'marca__nome', 'modelo__nome')
     
     filtro = VeiculoFilter(request.GET, queryset = lista_veiculos)
@@ -286,10 +290,7 @@ def cronograma_cadastrar(request, id_perfil):
     if request.method == 'POST':
         form = CronogramaForm(request.POST, instance=cronograma)
         if form.is_valid():
-            cronograma.local = form.cleaned_data['local']
-            parametros_datetime = [form.cleaned_data['data'].year, form.cleaned_data['data'].month, form.cleaned_data['data'].day, form.cleaned_data['hora'].hour, form.cleaned_data['hora'].minute]
-            cronograma.dt_apresentacao = datetime.datetime(*parametros_datetime)
-            cronograma.save()
+            form.save()
             return redirect('perfil-veiculo:detalhar', perfil.pk)
     else:
         form = CronogramaForm(instance=cronograma)
@@ -308,10 +309,7 @@ def cronograma_editar(request, id_cronograma):
     if request.method == 'POST':
         form = CronogramaForm(request.POST, instance=cronograma)
         if form.is_valid():
-            cronograma.local = form.cleaned_data['local']
-            parametros_datetime = [form.cleaned_data['data'].year, form.cleaned_data['data'].month, form.cleaned_data['data'].day, form.cleaned_data['hora'].hour, form.cleaned_data['hora'].minute]
-            cronograma.dt_apresentacao = datetime.datetime(*parametros_datetime)
-            cronograma.save()
+            form.save()
             return redirect('perfil-veiculo:detalhar', perfil.pk)
     else:
         form = CronogramaForm(instance=cronograma)

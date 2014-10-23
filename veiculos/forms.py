@@ -7,6 +7,7 @@ Created on 05/08/2014
 import datetime
 from acesso.models import OrgaoPublico
 from django import forms
+from django.utils import timezone
 from eleicao.models import Equipe
 from models import Veiculo
 from core.models import Marca, Local, Pessoa
@@ -127,6 +128,59 @@ class PerfilVeiculoForm(forms.ModelForm):
                 self.fields[key].widget.attrs.update({'class': 'form-control'})
 
 
+# class CronogramaForm(forms.ModelForm):
+#     local = forms.ModelChoiceField(
+#         queryset=Local.objects.filter(localvotacao=None).order_by('id_local'),
+#         empty_label=u'NO LOCAL DE TRABALHO',
+#         required=False,
+#         label=u'Local de apresentação'
+#     )
+#     data = forms.DateField(label='Data da apresentação')
+#     hora = forms.TimeField(label='Horário de apresentação')
+#     dia_montagem = forms.BooleanField(initial=False,required=False,label='Dia de montagem')
+#
+#     class Meta:
+#         model = CronogramaVeiculo
+#         fields= ('local', 'data', 'hora', 'dia_montagem', 'segundo_turno')
+#
+#     def __init__(self, data=None, instance=None, *args, **kwargs):
+#         if instance:
+#             if instance.pk and not data:
+#                 data = {}
+#                 default_timezone = timezone.get_default_timezone()
+#                 value = timezone.make_aware(instance.dt_apresentacao, default_timezone)
+#                 raise Exception(value)
+#                 data.update({
+#                     'data': '{:%d/%m/%Y}'.format(instance.dt_apresentacao),
+#                     'hora': '{:%H:%M:%S}'.format(instance.dt_apresentacao),
+#                     'local': instance.local,
+#                     'dia_montagem': instance.dia_montagem,
+#                     'segundo_turno': instance.segundo_turno
+#                 })
+#         super(CronogramaForm, self).__init__(data=data, instance=instance, *args, **kwargs)
+#
+#         for key in self.fields:
+#             if (not isinstance(self.fields[key].widget, forms.CheckboxInput)) and (not isinstance(self.fields[key].widget, forms.SplitDateTimeWidget)):
+#                 self.fields[key].widget.attrs.update({
+#                     'class': ' '.join([i for i in ['form-control', self.fields[key].widget.attrs.get('class')] if i])
+#                 })
+#             if isinstance(self.fields[key].widget, forms.DateInput):
+#
+#                 self.fields[key].widget.attrs.update({
+#                     'class': ' '.join([i for i in ['date', self.fields[key].widget.attrs.get('class')] if i])
+#                 })
+#
+#             if isinstance(self.fields[key].widget, forms.TimeInput):
+#                 self.fields[key].widget.attrs.update({
+#                     'class': ' '.join([i for i in ['time', self.fields[key].widget.attrs.get('class')] if i])
+#                 })
+#
+#     def clean_local(self):
+#         if not self.cleaned_data.get('local'):
+#             if self.instance.perfil.perfil_equipe:
+#                 raise forms.ValidationError(u'O perfil está ligada à equipe, não possui local.')
+#         return self.cleaned_data.get('local')
+
 class CronogramaForm(forms.ModelForm):
     local = forms.ModelChoiceField(
         queryset=Local.objects.filter(localvotacao=None).order_by('id_local'),
@@ -134,25 +188,15 @@ class CronogramaForm(forms.ModelForm):
         required=False,
         label=u'Local de apresentação'
     )
-    data = forms.DateField(label='Data da apresentação')
-    hora = forms.TimeField(label='Horário de apresentação')
+    dt_apresentacao = forms.SplitDateTimeField(label=u'Data e Hora da Apresentação',widget=forms.SplitDateTimeWidget(attrs={'class': 'form-control'}))
     dia_montagem = forms.BooleanField(initial=False,required=False,label='Dia de montagem')
-    
+
     class Meta:
         model = CronogramaVeiculo
-        fields= ('local', 'data', 'hora', 'dia_montagem', 'segundo_turno')
+        fields= ('local', 'dt_apresentacao', 'dia_montagem', 'segundo_turno')
 
     def __init__(self, data=None, instance=None, *args, **kwargs):
-        if instance:
-            if instance.pk and not data:
-                data = {}
-                data.update({
-                    'data': '{:%d/%m/%Y}'.format(instance.dt_apresentacao),
-                    'hora': '{:%H:%M:%S}'.format(instance.dt_apresentacao),
-                    'local': instance.local,
-                    'dia_montagem': instance.dia_montagem,
-                    'segundo_turno': instance.segundo_turno
-                })
+
         super(CronogramaForm, self).__init__(data=data, instance=instance, *args, **kwargs)
 
         for key in self.fields:
