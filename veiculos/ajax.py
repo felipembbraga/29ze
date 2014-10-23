@@ -304,8 +304,8 @@ def process_form_vistoria(dajax, veiculo=None, exibe=False, request=None, form_v
         else:
             form_motorista = MotoristaVistoriaForm()
 
-        if segundo_turno and veiculo.veiculoalocado_set.filter(segundo_turno=segundo_turno).exists():
-            veiculo_alocado = veiculo.veiculoalocado_set.filter(segundo_turno=segundo_turno).first()
+        if segundo_turno and veiculo.veiculoalocado_set.filter(segundo_turno=False).exists():
+            veiculo_alocado = veiculo.veiculoalocado_set.filter(segundo_turno=False).first()
         else:
             veiculo_alocado = None
 
