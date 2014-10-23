@@ -393,7 +393,7 @@ def cadastrar_vistoria(request, formulario, turno):
                     # Se os formulários forem válidos
                     pessoa_motorista = form_pessoa_motorista.save()
 
-                    if not Motorista.objects.filter(pessoa=pessoa_motorista, veiculo=veiculo,
+                    if not Motorista.objects.filter(pessoa=pessoa_motorista,
                                                     eleicao=request.eleicao_atual, segundo_turno=turno).exists():
                         Motorista.objects.create(pessoa=pessoa_motorista, veiculo=veiculo,
                                                  eleicao=request.eleicao_atual, segundo_turno=turno)
@@ -523,6 +523,8 @@ def desalocar_veiculo(request, id_veiculo, exibe_vistoria=False, turno=None, tim
 
                 if exibe_vistoria:
                     motorista = veiculo.motorista_veiculo.filter(segundo_turno=turno).first()
+                    motorista.veiculo = None
+                    motorista.save()
                     form_motorista = MotoristaVistoriaForm(initial={'motorista': motorista.pessoa, 'id': motorista.pessoa.id},
                                                            instance=motorista.pessoa)
                     dajax = process_form_vistoria(dajax=dajax, veiculo=veiculo, exibe=True, request=request,
