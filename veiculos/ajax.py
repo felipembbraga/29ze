@@ -379,8 +379,6 @@ def cadastrar_vistoria(request, formulario, turno):
     if request.is_ajax():
         try:
             if formulario:
-                import pdb
-                pdb.set_trace()
                 # Caso esteja sendo enviado o formulário
                 formulario = deserialize_form(formulario)
                 veiculo = Veiculo.objects.get(placa__iexact=formulario.get('placa_veiculo_vist'))
