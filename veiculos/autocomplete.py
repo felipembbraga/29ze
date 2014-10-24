@@ -136,8 +136,6 @@ class EquipeManualLookup(ModelLookup):
 
 
 def locais_c_vagas(local):
-    import pdb
-    pdb.set_trace()
     soma_estimativa = local.alocacao_set.filter(segundo_turno=True).aggregate(models.Sum('quantidade')).get('quantidade__sum')
     total_veiculos = local.veiculoalocado_set.filter(segundo_turno=True).count()
     return soma_estimativa - total_veiculos > 0
