@@ -113,11 +113,11 @@
                     {% for veiculoalocado in dict_equipe.veiculos_equipe %}
                         <table class="table table-bordered" style="width: 100%; margin-bottom: 8px;">
                             <tr class="pagina">
-                                <td class="pagina" style="vertical-align: middle; font-size: 12px; width: 60%;">
+                                <td class="pagina" width="60%" style="vertical-align: middle; font-size: 12px">
                                     {{ veiculoalocado.get_motorista|upper }} - <strong>{{ veiculoalocado.get_motorista.pessoa.titulo_eleitoral }}</strong><br>
                                     <span style="font-size: 10px"><strong>{{ veiculoalocado.veiculo.placa|upper }}</strong> - {{ veiculoalocado.veiculo|upper }}</span>
                                 </td>
-                                <td style="font-size: 12px; text-align: center;"><br>
+                                <td width="40%" style="font-size: 12px; text-align: center;"><br>
                                     Manhã: _____________________________________________<br><br>
                                     Tarde: _____________________________________________
                                 </td>
@@ -126,11 +126,11 @@
                     {% endfor %}
                     <table class="table table-bordered" style="width: 100%; margin-bottom: 10px;">
                         <tr class="pagina">
-                            <td class="pagina" style="vertical-align: middle; font-size: 12px; width: 60%;">
-                                ___________________________________________________________________________<br><br>
+                            <td class="pagina" width="60%" style="vertical-align: middle; font-size: 12px;">
+                                ___________________________________________________<br><br>
                                 _______________________
                             </td>
-                            <td style="font-size: 12px; text-align: center;"><br>
+                            <td width="40%" style="font-size: 12px; text-align: center;"><br>
                                 Manhã: _____________________________________________<br><br>
                                 Tarde: _____________________________________________
                             </td>
@@ -189,7 +189,7 @@
                         <table class="table table-bordered" style="width: 100%;margin-bottom: 10px;">
                             <tr class="pagina">
                                 <td style="vertical-align: middle; font-size: 12px; width: 60%;">
-                                    ___________________________________________________________________________<br><br>
+                                    ___________________________________________________<br><br>
                                     _______________________
                                 </td>
                                 <td style="font-size: 12px; text-align: center;"><br>
