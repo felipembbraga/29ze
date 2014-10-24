@@ -63,9 +63,6 @@
             width: 100%;
         }
 
-        .panel{
-            page-break-after: always;
-        }
         .blockUI.blockMsg > img {
             margin-bottom: 30px;
             display: inline-block;
@@ -142,6 +139,9 @@
                 </div>
             </div>
         </div>
+        {% if dict_equipe.locais %}
+            <div class="quebra-pagina"></div>
+        {% endif %}
 
         {% for local in dict_equipe.locais %}
             <div id="cabecalho" class="center-block print">
@@ -172,25 +172,12 @@
                 <div class="panel-body" style="padding: 0 15px">
                     <div id="equipe-{{ dict_equipe.equipe.pk }}">
                         <h6 style="font-weight: 600">{{ local.local }}</h6>
-                            {% for veiculoalocado in local.veiculos_local %}
-                                <table class="table table-bordered" style="width: 100%; margin-bottom: 10px;">
-                                    <tr class="pagina">
-                                        <td style="vertical-align: middle; font-size: 12px; width: 60%;">
-                                            {{ veiculoalocado.get_motorista|upper }} - <strong>{{ veiculoalocado.get_motorista.pessoa.titulo_eleitoral }}</strong><br>
-                                            <span style="font-size: 10px"><strong>{{ veiculoalocado.veiculo.placa|upper }}</strong> - {{ veiculoalocado.veiculo|upper }}</span>
-                                        </td>
-                                        <td style="font-size: 12px; text-align: center;"><br>
-                                            Manhã: _____________________________________________<br><br>
-                                            Tarde: _____________________________________________
-                                        </td>
-                                    </tr>
-                                </table>
-                            {% endfor %}
-                            <table class="table table-bordered" style="width: 100%;margin-bottom: 10px;">
+                        {% for veiculoalocado in local.veiculos_local %}
+                            <table class="table table-bordered" style="width: 100%; margin-bottom: 10px;">
                                 <tr class="pagina">
                                     <td style="vertical-align: middle; font-size: 12px; width: 60%;">
-                                        ___________________________________________________________________________<br><br>
-                                        _______________________
+                                        {{ veiculoalocado.get_motorista|upper }} - <strong>{{ veiculoalocado.get_motorista.pessoa.titulo_eleitoral }}</strong><br>
+                                        <span style="font-size: 10px"><strong>{{ veiculoalocado.veiculo.placa|upper }}</strong> - {{ veiculoalocado.veiculo|upper }}</span>
                                     </td>
                                     <td style="font-size: 12px; text-align: center;"><br>
                                         Manhã: _____________________________________________<br><br>
@@ -198,9 +185,26 @@
                                     </td>
                                 </tr>
                             </table>
+                        {% endfor %}
+                        <table class="table table-bordered" style="width: 100%;margin-bottom: 10px;">
+                            <tr class="pagina">
+                                <td style="vertical-align: middle; font-size: 12px; width: 60%;">
+                                    ___________________________________________________________________________<br><br>
+                                    _______________________
+                                </td>
+                                <td style="font-size: 12px; text-align: center;"><br>
+                                    Manhã: _____________________________________________<br><br>
+                                    Tarde: _____________________________________________
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
+            {% if not forloop.last %}
+                <div class="quebra-pagina"></div>
+            {% endif %}
+
         {% endfor %}
     {% endif %}
 {% endblock %}
@@ -225,7 +229,7 @@
                 useCurrent: false
             });
 
-	        frequencia.mask('99/99/9999');
+            frequencia.mask('99/99/9999');
         });
     </script>
 {% endblock %}
