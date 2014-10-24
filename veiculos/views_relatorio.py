@@ -144,7 +144,7 @@ def frequencia_motoristas(request):
                 }
 
                 for local in equipe.local_equipe.all().order_by('local__nome'):
-                    veiculos_alocados_local = veiculos_alocados.get_perfis_local().distinct().filter(segundo_turno=True, local_votacao=local).order_by('veiculo__motorista_veiculo__pessoa__nome')
+                    veiculos_alocados_local = veiculos_alocados.get_perfis_local().filter(segundo_turno=True, local_votacao=local)
 
                     if veiculos_alocados_local:
                         dict_equipe['locais'].append({'local': local,
