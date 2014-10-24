@@ -242,6 +242,9 @@ class VeiculoAlocado(models.Model):
     def motorista_primeiro_turno(self):
         return self.veiculo.motorista_veiculo.filter(segundo_turno=False).first()
 
+    def get_motorista(self):
+        return self.veiculo.motorista_veiculo.filter(segundo_turno=self.segundo_turno).first()
+
     def motorista_segundo_turno(self):
         return self.veiculo.motorista_veiculo.filter(segundo_turno=True).first()
 
