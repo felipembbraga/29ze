@@ -164,7 +164,7 @@ def relatorio_motoristas_dia(request):
 
         if formulario.is_valid():
             data = formulario.cleaned_data['data_frequencia']
-            veiculos = VeiculoAlocado.objects.filter(perfil__cronograma_perfil__dt_apresentacao__range=(data, data.replace(day=data.day+1))).order_by('equipe__nome', 'veiculo__motorista_veiculo__pessoa__nome', 'local_votacao__local__nome').select_related()
+            veiculos = VeiculoAlocado.objects.filter(segundo_turno=True).filter(perfil__cronograma_perfil__dt_apresentacao__range=(data, data.replace(day=data.day+1))).distinct().order_by('equipe__nome', 'veiculo__motorista_veiculo__pessoa__nome', 'local_votacao__local__nome').select_related()
             cabecalho = ['nome_motorista', 'titulo_eleitor', 'placa_veiculo', 'equipe', 'local', 'perfil', 'telefone_celular', 'telefone_residencial', ]
             dados = [cabecalho, ]
 
