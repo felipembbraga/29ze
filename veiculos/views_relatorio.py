@@ -132,11 +132,11 @@ def frequencia_motoristas(request):
         if formulario.is_valid():
             data = formulario.cleaned_data['data_frequencia']
             equipe = formulario.cleaned_data['equipe']
-            equipe = Equipe.objects.filter(veiculoalocado__segundo_turno=True, veiculoalocado__perfil__cronograma_perfil__dt_apresentacao__range=(data, data.replace(day=data.day+1)), id=equipe.id).select_related()
+            equipe = Equipe.objects.filter(veiculoalocado__perfil__cronograma_perfil__dt_apresentacao__range=(data, data.replace(day=data.day+1)), id=equipe.id).select_related()
 
             if equipe:
                 equipe = equipe.first()
-                veiculos_alocados = equipe.veiculoalocado_set.filter(perfil__cronograma_perfil__dt_apresentacao__range=(data, data.replace(day=data.day+1)))
+                veiculos_alocados = equipe.veiculoalocado_set.filter(segundo_turno=True,perfil__cronograma_perfil__dt_apresentacao__range=(data, data.replace(day=data.day+1))).distinct()
                 dict_equipe = {
                     'equipe': equipe,
                     'veiculos_equipe': veiculos_alocados.get_perfis_equipe(),

@@ -117,7 +117,7 @@
                         <table class="table table-bordered" style="width: 100%; margin-bottom: 8px;">
                             <tr class="pagina">
                                 <td class="pagina" style="vertical-align: middle; font-size: 12px; width: 60%;">
-                                    {{ veiculoalocado.veiculo.motorista_veiculo.first|upper }} - <strong>{{ veiculoalocado.veiculo.motorista_veiculo.first.pessoa.titulo_eleitoral }}</strong><br>
+                                    {{ veiculoalocado.get_motorista|upper }} - <strong>{{ veiculoalocado.get_motorista.pessoa.titulo_eleitoral }}</strong><br>
                                     <span style="font-size: 10px"><strong>{{ veiculoalocado.veiculo.placa|upper }}</strong> - {{ veiculoalocado.veiculo|upper }}</span>
                                 </td>
                                 <td style="font-size: 12px; text-align: center;"><br>
@@ -176,7 +176,7 @@
                                 <table class="table table-bordered" style="width: 100%; margin-bottom: 10px;">
                                     <tr class="pagina">
                                         <td style="vertical-align: middle; font-size: 12px; width: 60%;">
-                                            {{ veiculoalocado.get_motorista|upper }} - <strong>{{ veiculoalocado.veiculo.motorista_veiculo.first.pessoa.titulo_eleitoral }}</strong><br>
+                                            {{ veiculoalocado.get_motorista|upper }} - <strong>{{ veiculoalocado.get_motorista.pessoa.titulo_eleitoral }}</strong><br>
                                             <span style="font-size: 10px"><strong>{{ veiculoalocado.veiculo.placa|upper }}</strong> - {{ veiculoalocado.veiculo|upper }}</span>
                                         </td>
                                         <td style="font-size: 12px; text-align: center;"><br>
