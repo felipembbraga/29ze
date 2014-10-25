@@ -169,14 +169,17 @@ def relatorio_motoristas_dia(request):
             dados = [cabecalho, ]
 
             for veiculoalocado in veiculos:
-                dados.append([unicode(veiculoalocado.veiculo.motorista_veiculo.first().pessoa.nome.upper()),
-                              unicode(veiculoalocado.veiculo.motorista_veiculo.first().pessoa.titulo_eleitoral),
-                              unicode(veiculoalocado.veiculo.placa.upper()),
-                              unicode(veiculoalocado.equipe),
-                              unicode(veiculoalocado.local_votacao) if veiculoalocado.local_votacao else '',
-                              unicode(veiculoalocado.perfil),
-                              unicode(veiculoalocado.veiculo.motorista_veiculo.first().pessoa.tel_celular()),
-                              unicode(veiculoalocado.veiculo.motorista_veiculo.first().pessoa.tel_residencial()), ])
+                motorista = veiculoalocado.get_motorista()
+                dados_veiculo = [unicode(motorista.pessoa.nome.upper() if motorista else ''),
+                                 unicode(motorista.pessoa.titulo_eleitoral if motorista else ''),
+                                 unicode(veiculoalocado.veiculo.placa.upper()),
+                                 unicode(veiculoalocado.equipe),
+                                 unicode(veiculoalocado.local_votacao) if veiculoalocado.local_votacao else '',
+                                 unicode(veiculoalocado.perfil),
+                                 unicode(motorista.pessoa.tel_celular() if motorista else ''),
+                                 unicode(motorista.pessoa.tel_residencial() if motorista else ''), ]
+                if dados_veiculo not in dados:
+                    dados.append(dados_veiculo)
 
             return ExcelResponse(dados, 'motoristas_do_dia')
 
