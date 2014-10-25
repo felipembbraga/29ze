@@ -160,7 +160,7 @@ class CronogramaVeiculo(models.Model):
 
 @receiver(post_save, sender=Motorista)
 def motorista_post_save(signal, instance, sender, **kwargs):
-    if instance.veiculo:
+    if instance.veiculo is not None:
         veiculo = instance.veiculo
         motoristas = veiculo.motorista_veiculo.filter(segundo_turno=instance.segundo_turno)
         for m in motoristas:
