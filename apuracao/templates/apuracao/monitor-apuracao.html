@@ -120,11 +120,11 @@
                     data: [
                         {
                             name: 'Sessões apuradas',
-                            y: sessoes_apuradas,
+                            y: parseInt(sessoes_apuradas.toString().replace('.', '')),
                             sliced: true,
                             selected: true
                         },
-                        ['Sessões restantes', sessoes_apurar]
+                        ['Sessões restantes', parseInt(sessoes_apurar.toString().replace('.', ''))]
                     ]
                 }],
                 lang: {
