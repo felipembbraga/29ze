@@ -7,7 +7,7 @@ __author__ = 'felipe'
 import zipfile
 import os
 from lxml import objectify
-from dateutil import parser
+import datetime
 
 def read_xml_from_zip(zipfile_name, xml_name):
     xml = ''
@@ -45,7 +45,7 @@ def get_percentual_apuracao(locais, xml):
             dicionario['secoes_totalizadas'] = float(abrangencia.attrib['secoesTotalizadas']) + float(abrangencia.attrib['secoesTotalizadasVT'])
             dicionario['secoes_restantes'] = int(abrangencia.attrib['secoesNaoTotalizadas']) + float(abrangencia.attrib['secoesNaoTotalizadasVT'])
             dicionario['percentual'] = Decimal((dicionario['secoes_totalizadas']*100) / dicionario['secoes']).quantize(Decimal('1.00'))
-            dicionario['dt_atualizacao'] = parser.parse('%s %s'%(abrangencia.attrib['dataTotalizacao'], abrangencia.attrib['horaTotalizacao']) )
+            dicionario['dt_atualizacao'] = datetime.datetime.strptime("%s %s"%(abrangencia.attrib['dataTotalizacao'], abrangencia.attrib['horaTotalizacao']), "%d/%m/%Y %H:%M:%S")
             dicionario['finalizado'] = abrangencia.attrib['totalizacaoFinal'] == 'S' and True or False
             dicionario['turno'] = int(xml.attrib['turno'])
             lista.append(dicionario)
