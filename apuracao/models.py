@@ -29,6 +29,7 @@ class Apuracao(models.Model):
     dt_fechamento = models.DateTimeField(null=True, blank=True)
     turno = models.IntegerField()
 
+
 def importar_dados():
     importacao = get_dados(settings.APURACAO_XML_LOCAIS, settings.APURACAO_XML_ABRANGENCIA, settings.APURACAO_PATH)
     for dicionario in importacao:

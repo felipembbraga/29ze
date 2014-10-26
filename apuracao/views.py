@@ -12,7 +12,10 @@ from django.utils.datetime_safe import datetime
 @permission_required('veiculos.monitor_vistoria', raise_exception=True)
 def monitorar_apuracao(request):
     data_padrao = timezone.make_aware(datetime(1900, 01, 01), timezone.get_default_timezone())
-    return render(request, 'apuracao/monitor-apuracao.html', RequestContext(request, {'lista_cidades': monta_monitoramento(request), 'data_padrao': data_padrao}))
+    return render(request, 'apuracao/monitor-apuracao.html', RequestContext(request, {'lista_cidades': monta_monitoramento(request),
+                                                                                      'data_padrao': data_padrao,
+                                                                                      'pleito': 144,
+                                                                                      'turno': u'2º'}))
 
 
 def monta_monitoramento(request):
@@ -22,7 +25,7 @@ def monta_monitoramento(request):
 
     for cidade in cidades:
         if cidade.apuracao_set.filter(turno=1).exists():
-            apuracao = cidade.apuracao_set.filter(turno=1).order_by('-dt_atualizacao').first()
+            apuracao = cidade.apuracao_set.filter(turno=2).order_by('-dt_atualizacao').first()
 
             if apuracao.percentual <= 25:
                 progress = 'danger'
