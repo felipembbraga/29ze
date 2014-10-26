@@ -65,9 +65,9 @@ AUTHENTICATION_BACKENDS = ('acesso.backends.OrgaoBackend',
                            'django.contrib.auth.backends.ModelBackend',
                            )
 
-APURACAO_PATH = '/home/felipe/recepcao_dados/2014/divulgacao/oficial/143/distribuicao/br'
-APURACAO_XML_LOCAIS = 'br-0000-e001431-f001'
-APURACAO_XML_ABRANGENCIA = 'br-0000-e001431-v'
+APURACAO_PATH = '/home/felipe/recepcao_dados/2014/divulgacao/oficial/%d/distribuicao/br'
+APURACAO_XML_LOCAIS = 'br-0000-e00%d1-f002'
+APURACAO_XML_ABRANGENCIA = 'br-0000-e00%d1-v'
 
 WSGI_APPLICATION = 'zona_eleitoral.deploy.wsgi-dev.application'
 

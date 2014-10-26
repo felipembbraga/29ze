@@ -30,7 +30,7 @@ class Apuracao(models.Model):
     turno = models.IntegerField()
 
 def importar_dados():
-    importacao = get_dados(settings.APURACAO_XML_LOCAIS, settings.APURACAO_XML_ABRANGENCIA, settings.APURACAO_PATH)
+    importacao = get_dados(settings.APURACAO_XML_LOCAIS%144, settings.APURACAO_XML_ABRANGENCIA%144, settings.APURACAO_PATH%144)
     for dicionario in importacao:
         if Cidade.objects.filter(codigo=dicionario['codigo']).exists():
             cidade = Cidade.objects.get(codigo=dicionario['codigo'])
@@ -48,7 +48,7 @@ def importar_dados():
                                                          )
         else:
             apuracao = Apuracao.objects.filter(cidade=cidade, dt_atualizacao=dicionario['dt_atualizacao']).first()
-        if apuracao.finalizado:
+        if apuracao.finalizado and not apuracao.dt_fechamento:
             apuracao.dt_fechamento = datetime.datetime.now()
 
         if not apuracao.dt_finalizacao and apuracao.percentual>=100:
