@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
 from south.v2 import DataMigration
-from django.db import models
 
 class Migration(DataMigration):
 
@@ -13,27 +10,26 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName". 
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
-
         for apuracao in orm.Apuracao.objects.all():
-            apuracao.dt_atualizacao = timezone.make_aware(datetime.datetime(
-                apuracao.dt_atualizacao.year,
-                apuracao.dt_atualizacao.day,
-                apuracao.dt_atualizacao.month,
-                apuracao.dt_atualizacao.hour,
-                apuracao.dt_atualizacao.minute,
-                apuracao.dt_atualizacao.second,
-                apuracao.dt_atualizacao.microsecond
-            ), timezone.get_current_timezone())
+            apuracao.dt_atualizacao = datetime.datetime(
+                year=apuracao.dt_atualizacao.year,
+                month=apuracao.dt_atualizacao.day,
+                day=apuracao.dt_atualizacao.month,
+                hour=apuracao.dt_atualizacao.hour,
+                minute=apuracao.dt_atualizacao.minute,
+                second=apuracao.dt_atualizacao.second,
+                microsecond=apuracao.dt_atualizacao.microsecond,
+                tzinfo=apuracao.dt_atualizacao.tzinfo)
             if apuracao.dt_finalizacao:
-                apuracao.dt_finalizacao = timezone.make_aware(datetime.datetime(
-                    apuracao.dt_finalizacao.year,
-                    apuracao.dt_finalizacao.day,
-                    apuracao.dt_finalizacao.month,
-                    apuracao.dt_finalizacao.hour,
-                    apuracao.dt_finalizacao.minute,
-                    apuracao.dt_finalizacao.second,
-                    apuracao.dt_finalizacao.microsecond
-                ), timezone.get_current_timezone())
+                apuracao.dt_finalizacao = datetime.datetime(
+                    year=apuracao.dt_finalizacao.year,
+                    month=apuracao.dt_finalizacao.day,
+                    day=apuracao.dt_finalizacao.month,
+                    hour=apuracao.dt_finalizacao.hour,
+                    minute=apuracao.dt_finalizacao.minute,
+                    second=apuracao.dt_finalizacao.second,
+                    microsecond=apuracao.dt_finalizacao.microsecond,
+                    tzinfo=apuracao.dt_finalizacao.tzinfo)
             apuracao.save()
 
     def backwards(self, orm):
