@@ -60,7 +60,7 @@ DATABASES = {
 }
 
 APURACAO_PATH = '/var/web/zona_eleitoral/media/dados_apuracao/2014/divulgacao/oficial/%d/distribuicao/br'
-APURACAO_XML_LOCAIS = 'br-0000-e00%d1-f001'
+APURACAO_XML_LOCAIS = 'br-0000-e00%d1-f002'
 APURACAO_XML_ABRANGENCIA = 'br-0000-e00%d1-v'
 
 LOGIN_URL = 'acesso:login'
