@@ -275,3 +275,10 @@ def equipe_m2m_add(sender, instance, action, *args, **kwargs):
                 alocacao.save()
 
 m2m_changed.connect(equipe_m2m_add, sender=PerfilVeiculo.equipes.through)
+
+class FaltaMotorista(models.Model):
+    veiculo = models.ForeignKey(VeiculoAlocado)
+    cronograma = models.ForeignKey(CronogramaVeiculo)
+    periodo = models.IntegerField(choices=((1,'Matutino'),(2,'Vespertino')))
+    class Media:
+        unique_together=('veiculo', 'cronograma', 'periodo')
