@@ -132,6 +132,18 @@ class Motorista(models.Model):
     def __unicode__(self):
         return unicode(self.pessoa.nome) + ' ' + unicode(self.pessoa.titulo_eleitoral)
 
+    def get_veiculo_alocado(self):
+        return self.veiculo.veiculoalocado_set.filter(segundo_turno=self.segundo_turno).first()
+
+    def datas_trabalhadas(self):
+        veiculo = self.get_veiculo_alocado()
+        faltas = list(self.faltamotorista_set.all())
+        #raise Exception(faltas)
+        for cronograma in veiculo.perfil.cronograma_perfil.filter(segundo_turno=self.segundo_turno, eleicao=self.eleicao):
+            if cronograma not in [f.cronograma for f in faltas]:
+                yield cronograma.dt_apresentacao
+
+
 
 
 

@@ -6,7 +6,7 @@ Created on 05/08/2014
 from django.conf.urls import include, url, patterns
 from veiculos.views_relatorio import frequencia_motoristas, relatorio_motoristas_dia, \
     relatorio_veiculos_alocados_por_perfil, relatorio_veiculos_alocados_por_orgao, \
-    relatorio_veiculos_nao_alocados_orgao
+    relatorio_veiculos_nao_alocados_orgao, relatorio_declaracao_motorista
 from veiculos.views_relatorio import relatorio_veiculos, relatorio_admin_orgao_sem_veiculo, \
     relatorio_veiculos_requisitados, relatorio_veiculo_alocado, relatorio_veiculos_alocados
 
@@ -76,6 +76,7 @@ report_patterns = [
     url(r'^veiculos-alocados-orgao/(\d+)/$', relatorio_veiculos_alocados_por_orgao, name='veiculos-alocados-orgao'),
     url(r'^veiculos-nao-alocados-orgao/$', relatorio_veiculos_nao_alocados_orgao, name='veiculos-nao-alocados-orgao'),
     url(r'^veiculos-nao-alocados-orgao/(\d+)/$', relatorio_veiculos_nao_alocados_orgao, name='veiculos-nao-alocados-orgao'),
+    url(r'^declaracao-motorista/(\d+)/$', relatorio_declaracao_motorista, name='declaracao-motorista'),
 ]
 
 urlpatterns = patterns('',
