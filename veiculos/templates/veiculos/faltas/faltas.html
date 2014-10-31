@@ -1,23 +1,10 @@
-{% extends 'veiculos/vistoria/base.html' %}
+{% extends 'base.html' %}
 {% load static from staticfiles %}
 {% load dajaxice_templatetags %}
 
 {% block extrabreadcrumb %}
     {{ block.super }}
-    <li><a href="{% url 'veiculo:vistoria:cadastrar' %}">Monitorar Vistoria</a></li>
-{% endblock %}
-
-{% block extrastyle %}
-    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'veiculos/css/botoes_menu.min.css' %}" />
-    <style type="text/css">
-        body{
-            padding-top: 10px;
-        }
-    </style>
-{% endblock %}
-
-{% block navbar %}
+    <li><a href="{% url 'lancar-faltas' %}">Lançamento de faltas</a></li>
 {% endblock %}
 
 {% block container %}
@@ -30,7 +17,7 @@
                 <div class="col-md-offset-2 col-md-8">
                     <div class="input-group">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-                        <input id="dados-consulta" type="text" class="form-control" placeholder="Informe o nome ou título de eleitor do motorista">
+                        <input id="dados-consulta" type="text" class="form-control" placeholder="Informe o nome ou título de eleitor do motorista" tabindex="1">
                         <span class="input-group-btn">
                             <button class="btn btn-primary" type="button" onclick="consultar_motorista()">Consultar</button>
                         </span>
@@ -68,5 +55,15 @@
             else
                 Dajaxice.veiculos.buscar_motorista_faltas(default_callback, {'consulta': $('#dados-consulta').val()});
         }
+
+        $(document).ready(function(){
+            var dados_consulta = $('#dados-consulta');
+            dados_consulta.focus();
+
+            dados_consulta.keypress(function(event){
+                if(event.keyCode == 13)
+                    consultar_motorista();
+            });
+        });
 	</script>
 {% endblock %}

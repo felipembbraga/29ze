@@ -1,5 +1,5 @@
 {% if salvo %}
-    <div class="alert alert-success" role="alert" style="margin-top: 20px;">
+    <div class="alert alert-success" role="alert" style="margin: 20px 0 0 0; font-weight: bold;">
         <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         Faltas salvas com sucesso!
     </div>
@@ -8,7 +8,8 @@
         <form id="dados_faltas">
             {{ formset.management_form }}
             {% for pessoa in pessoas %}
-                <div class="row" style="border-bottom: 1px solid #ccc; margin: 10px; padding: 10px;">
+                <div style="border: 1px solid #ccc; margin: 10px; ">
+                <div class="row" style="border-bottom: 1px solid #ccc; margin: 0 10px;  padding: 10px;">
                     <div class="col-md-6">
                         <label>Motorista:</label> {{ pessoa.pessoa.nome }}
                     </div>
@@ -20,7 +21,7 @@
                     {% for cronograma in pessoa.cronogramas %}
                         <div class="row" style="border: 1px solid #ccc; border-radius: 7px; margin: 10px; padding: 10px; width: 45%; display: inline-block;">
                             <div class="col-md-9">
-                                {{ cronograma.dt_apresentacao|date:'d/m/Y' }} - apresentação às {{ cronograma.dt_apresentacao|date:'H:i' }}
+                                <strong>{{ cronograma.dt_apresentacao|date:'d/m/Y' }}</strong> - apresentação às {{ cronograma.dt_apresentacao|date:'H:i' }}
                             </div>
                             <div class="col-md-3">
                             {% for form in formset %}
@@ -35,6 +36,7 @@
                         </div>
                     {% endfor %}
                 </div>
+                </div>
             {% endfor %}
             <div class="row">
                 <div class="col-md-12">
@@ -43,7 +45,8 @@
             </div>
         </form>
     {% else %}
-        <div class="row" style="border: 1px solid #ccc; border-radius: 7px; margin: 10px; padding: 10px;">
+        <div class="alert alert-danger" role="alert" style="margin: 20px 0 0 0; font-weight: bold">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             Motorista ou veículo não encontrado!
         </div>
     {% endif %}

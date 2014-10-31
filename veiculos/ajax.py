@@ -589,37 +589,39 @@ def buscar_motorista_faltas(request, consulta, formulario=None):
                 form_faltas = deserialize_form(formulario)
             faltas = []
             campos_form = []
+            formset = []
             salvo = False
             FaltasFormSet = formset_factory(FaltasForm, can_order=True)
-            pessoas = Pessoa.objects.filter(motorista__eleicao=request.eleicao_atual, motorista__veiculo__isnull=False).filter(Q(nome__icontains=consulta) | Q(titulo_eleitoral__icontains=consulta)).distinct('titulo_eleitoral')
-            for pessoa in pessoas:
-                cronogramas = []
-                for motorista in pessoa.motorista_set.all().order_by('segundo_turno'):
-                    for veiculo_alocado in motorista.veiculo.veiculoalocado_set.filter(segundo_turno=motorista.segundo_turno):
-                        for cronograma in veiculo_alocado.perfil.cronograma_perfil.filter(segundo_turno=veiculo_alocado.segundo_turno).order_by('dt_apresentacao'):
-                            cronogramas.append(cronograma)
-                            if FaltaMotorista.objects.filter(motorista=motorista, cronograma=cronograma).exists():
-                                campos_form.append({'pessoa': pessoa.id, 'motorista': motorista.id, 'cronograma': cronograma.id, 'falta': True})
+            if consulta and not consulta.isspace():
+                pessoas = Pessoa.objects.filter(motorista__eleicao=request.eleicao_atual, motorista__veiculo__isnull=False).filter(Q(nome__icontains=consulta) | Q(titulo_eleitoral__icontains=consulta)).distinct('titulo_eleitoral')
+                for pessoa in pessoas:
+                    cronogramas = []
+                    for motorista in pessoa.motorista_set.all().order_by('segundo_turno'):
+                        for veiculo_alocado in motorista.veiculo.veiculoalocado_set.filter(segundo_turno=motorista.segundo_turno):
+                            for cronograma in veiculo_alocado.perfil.cronograma_perfil.filter(segundo_turno=veiculo_alocado.segundo_turno).order_by('dt_apresentacao'):
+                                cronogramas.append(cronograma)
+                                if FaltaMotorista.objects.filter(motorista=motorista, cronograma=cronograma).exists():
+                                    campos_form.append({'pessoa': pessoa.id, 'motorista': motorista.id, 'cronograma': cronograma.id, 'falta': True})
+                                else:
+                                    campos_form.append({'pessoa': pessoa.id, 'motorista': motorista.id, 'cronograma': cronograma.id})
+
+                    faltas.append({'pessoa': pessoa, 'cronogramas': cronogramas})
+
+                if form_faltas:
+                    formset = FaltasFormSet(form_faltas)
+                    if formset.is_valid():
+                        for form in formset:
+                            if form.cleaned_data.get('falta'):
+                                FaltaMotorista.objects.get_or_create(motorista=Motorista.objects.get(pk=form.cleaned_data.get('motorista')),
+                                                                     cronograma=CronogramaVeiculo.objects.get(pk=form.cleaned_data.get('cronograma')))
                             else:
-                                campos_form.append({'pessoa': pessoa.id, 'motorista': motorista.id, 'cronograma': cronograma.id})
-
-                faltas.append({'pessoa': pessoa, 'cronogramas': cronogramas})
-
-            if form_faltas:
-                formset = FaltasFormSet(form_faltas)
-                if formset.is_valid():
-                    for form in formset:
-                        if form.cleaned_data.get('falta'):
-                            FaltaMotorista.objects.get_or_create(motorista=Motorista.objects.get(pk=form.cleaned_data.get('motorista')),
-                                                                 cronograma=CronogramaVeiculo.objects.get(pk=form.cleaned_data.get('cronograma')))
-                        else:
-                            if FaltaMotorista.objects.filter(motorista=form.cleaned_data.get('motorista'),
-                                                             cronograma=form.cleaned_data.get('cronograma')).exists():
-                                FaltaMotorista.objects.get(motorista=form.cleaned_data.get('motorista'),
-                                                             cronograma=form.cleaned_data.get('cronograma')).delete()
-                    salvo = True
-            else:
-                formset = FaltasFormSet(initial=campos_form)
+                                if FaltaMotorista.objects.filter(motorista=form.cleaned_data.get('motorista'),
+                                                                 cronograma=form.cleaned_data.get('cronograma')).exists():
+                                    FaltaMotorista.objects.get(motorista=form.cleaned_data.get('motorista'),
+                                                                 cronograma=form.cleaned_data.get('cronograma')).delete()
+                        salvo = True
+                else:
+                    formset = FaltasFormSet(initial=campos_form)
 
             render = render_to_string('veiculos/faltas/faltas-detalhe.html',
                                       RequestContext(request, {'pessoas': faltas, 'formset': formset, 'salvo': salvo}))
