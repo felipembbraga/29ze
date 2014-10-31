@@ -368,3 +368,11 @@ class RelatorioDiaForm(forms.Form):
                     'class': self.fields[key].widget.attrs.get('class') and
                              self.fields[key].widget.attrs.get('class') + ' form-control' or 'form-control'
                 })
+
+
+class FaltasForm(forms.Form):
+    motorista = forms.IntegerField(label=u'Motorista', widget=forms.HiddenInput())
+    pessoa = forms.IntegerField(label=u'Pessoa', widget=forms.HiddenInput())
+    cronograma = forms.IntegerField(label=u'Cronograma', widget=forms.HiddenInput())
+    falta = forms.BooleanField(label=u'Falta', initial=False, required=False)
+

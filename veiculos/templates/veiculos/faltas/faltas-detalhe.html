@@ -1,0 +1,56 @@
+{% if salvo %}
+    <div class="alert alert-success" role="alert" style="margin: 20px 0 0 0; font-weight: bold;">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        Faltas salvas com sucesso!
+    </div>
+{% else %}
+    {% if pessoas %}
+        <form id="dados_faltas">
+            {{ formset.management_form }}
+            {% for pessoa in pessoas %}
+                <div style="border: 1px solid #ccc; margin: 10px; ">
+                <div class="row" style="border-bottom: 1px solid #ccc; margin: 0 10px;  padding: 10px;">
+                    <div class="col-md-6">
+                        <label>Motorista:</label> {{ pessoa.pessoa.nome }}
+                    </div>
+                    <div class="col-md-5">
+                        <label>Título de eleitor:</label> {{ pessoa.pessoa.titulo_eleitoral }}
+                    </div>
+                    <div class="col-md-1">
+                        <a href="{% url 'report-veiculos:declaracao-motorista' pessoa.pessoa.id %}" class="btn btn-default btn-xs" title="Imprimir declaração de serviços prestados" target="_blank"><span class="glyphicon glyphicon-print"></span></a>
+                    </div>
+                </div>
+                <div style="margin: 20px">
+                    {% for cronograma in pessoa.cronogramas %}
+                        <div class="row" style="border: 1px solid #ccc; border-radius: 7px; margin: 10px; padding: 10px; width: 45%; display: inline-block;">
+                            <div class="col-md-9">
+                                <strong>{{ cronograma.dt_apresentacao|date:'d/m/Y' }}</strong> - apresentação às {{ cronograma.dt_apresentacao|date:'H:i' }}
+                            </div>
+                            <div class="col-md-3">
+                            {% for form in formset %}
+                                {% if form.cronograma.value == cronograma.id and form.pessoa.value == pessoa.pessoa.id %}
+                                        {{ form.falta.label_tag }} {{ form.falta }}
+                                    </div>
+                                    {{ form.pessoa }}
+                                    {{ form.motorista }}
+                                    {{ form.cronograma }}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                </div>
+            {% endfor %}
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-success pull-right" onclick="consultar_motorista(true)">Salvar Faltas</button>
+                </div>
+            </div>
+        </form>
+    {% else %}
+        <div class="alert alert-danger" role="alert" style="margin: 20px 0 0 0; font-weight: bold">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            Motorista ou veículo não encontrado!
+        </div>
+    {% endif %}
+{% endif %}

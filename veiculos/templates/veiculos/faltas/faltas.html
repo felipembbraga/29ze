@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static from staticfiles %}
+{% load dajaxice_templatetags %}
+
+{% block extrabreadcrumb %}
+    {{ block.super }}
+    <li><a href="{% url 'lancar-faltas' %}">Lançamento de faltas</a></li>
+{% endblock %}
+
+{% block container %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title" style="font-size: 20px">Lançamento de Faltas</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-offset-1 col-md-9">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                        <input id="dados-consulta" type="text" class="form-control" placeholder="Informe o nome ou título de eleitor do motorista" tabindex="1">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" onclick="consultar_motorista()">Consultar</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-info" type="button" onclick="consultar_motorista(false, true)">Exibir todos</button>
+                </div>
+            </div>
+            <div id="container-faltas"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{%block extrascripts %}
+    {% dajaxice_js_import %}
+    <script src="{% static "dajax/jquery.dajax.core.js" %}"></script>
+	<script src="{% static 'veiculos/js/vistoria/jquery.blockUI.min.js' %}"></script>
+	<script>
+        function default_callback(data){
+            $.unblockUI();
+            Dajax.process(data);
+        }
+
+        function block_screen(){
+            $.blockUI({ message: '<img src="/static/veiculos/img/loader.gif"/> <div class="loading-blockui">Processando...<br>Um momento por favor.</div>',
+                        css: { 'z-index': '9991', 'border-radius': '10px', 'border-color': '#D1D1D1'},
+                        overlayCSS: { 'z-index': '9990', 'background-color': '#F7F7F7'} });
+        }
+
+        function consultar_motorista(f, t){
+            block_screen();
+            var form = $( "#dados_faltas" );
+            if ( form.length && f )
+                Dajaxice.veiculos.buscar_motorista_faltas(default_callback, {'consulta': $('#dados-consulta').val(), 'formulario': form.serialize(true)});
+            else if (t)
+                Dajaxice.veiculos.buscar_motorista_faltas(default_callback, {'consulta': $('#dados-consulta').val(), 'todos': true});
+            else
+                Dajaxice.veiculos.buscar_motorista_faltas(default_callback, {'consulta': $('#dados-consulta').val()});
+        }
+
+        $(document).ready(function(){
+            var dados_consulta = $('#dados-consulta');
+            dados_consulta.focus();
+
+            dados_consulta.keypress(function(event){
+                if(event.keyCode == 13)
+                    consultar_motorista();
+            });
+        });
+	</script>
+{% endblock %}

@@ -130,9 +130,18 @@ class Motorista(models.Model):
         unique_together = ('pessoa', 'eleicao', 'segundo_turno')
 
     def __unicode__(self):
-        return unicode(self.pessoa.nome)
+        return unicode(self.pessoa.nome) + ' ' + unicode(self.pessoa.titulo_eleitoral)
 
+    def get_veiculo_alocado(self):
+        return self.veiculo.veiculoalocado_set.filter(segundo_turno=self.segundo_turno).first()
 
+    def datas_trabalhadas(self):
+        veiculo = self.get_veiculo_alocado()
+        faltas = list(self.faltamotorista_set.all())
+        #raise Exception(faltas)
+        for cronograma in veiculo.perfil.cronograma_perfil.filter(segundo_turno=self.segundo_turno, eleicao=self.eleicao):
+            if cronograma not in [f.cronograma for f in faltas]:
+                yield cronograma.dt_apresentacao
 
 
 class PerfilVeiculo(models.Model):
@@ -224,7 +233,6 @@ class VeiculoAlocadoManager(models.Manager):
         return self.get_queryset().get_perfis_local()
 
 
-
 class VeiculoAlocado(models.Model):
     veiculo = models.ForeignKey(Veiculo, verbose_name=u'Veículo')
     perfil = models.ForeignKey(PerfilVeiculo, verbose_name='Perfil')
@@ -275,3 +283,8 @@ def equipe_m2m_add(sender, instance, action, *args, **kwargs):
                 alocacao.save()
 
 m2m_changed.connect(equipe_m2m_add, sender=PerfilVeiculo.equipes.through)
+
+
+class FaltaMotorista(models.Model):
+   motorista = models.ForeignKey(Motorista)
+   cronograma = models.ForeignKey(CronogramaVeiculo)

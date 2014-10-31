@@ -13,6 +13,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.template import Context
 from excel_response import ExcelResponse
+from core.models import Pessoa
 from veiculos.forms import FrequenciaForm, RelatorioDiaForm
 import webodt
 from webodt.converters import converter
@@ -226,3 +227,24 @@ def relatorio_veiculos_nao_alocados_orgao(request, id_orgao=None):
     form = Form({'orgao':id_orgao})
     form.fields['orgao'].widget.attrs.update({'class':'form-control'})
     return render(request, 'veiculos/report/veiculos_nao_alocados_orgao.html', locals())
+
+
+def relatorio_declaracao_motorista(request, id_pessoa):
+    pessoa = get_object_or_404(Pessoa, pk=int(id_pessoa))
+    motoristas = pessoa.motorista_set.all().order_by('segundo_turno')
+    lista_datas = []
+    for motorista in motoristas:
+        veiculo = motorista.get_veiculo_alocado()
+        lista_datas += list(motorista.datas_trabalhadas())
+    datas = len(lista_datas)<=2 and ' e '.join(map(lambda x:x.strftime('%d/%m/%Y'), lista_datas)) or len(lista_datas) > 0 and ' e '.join([', '.join(map(lambda x:x.strftime('%d/%m/%Y'), lista_datas[:-1])), lista_datas[-1].strftime('%d/%m/%Y')]) or ''
+    context = dict(
+        datas=datas,
+        pessoa=pessoa,
+        qtde_convocacao=len(lista_datas),
+        hoje = datetime.date.today()
+    )
+    template = webodt.ODFTemplate('modelo_declaracao_motorista.odt')
+    document = template.render(Context(context))
+    conv = converter()
+    pdf = conv.convert(document, format='pdf')
+    return HttpResponse(pdf, mimetype='application/pdf')
