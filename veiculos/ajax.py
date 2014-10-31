@@ -604,7 +604,7 @@ def buscar_motorista_faltas(request, consulta, formulario=None, todos=False):
                     for motorista in pessoa.motorista_set.all().order_by('segundo_turno'):
                         if motorista.veiculo:
                             for veiculo_alocado in motorista.veiculo.veiculoalocado_set.filter(segundo_turno=motorista.segundo_turno):
-                                for cronograma in veiculo_alocado.perfil.cronograma_perfil.filter(segundo_turno=veiculo_alocado.segundo_turno).order_by('dt_apresentacao'):
+                                for cronograma in veiculo_alocado.perfil.cronograma_perfil.filter(segundo_turno=veiculo_alocado.segundo_turno, eleicao=request.eleicao_atual).order_by('dt_apresentacao'):
                                     cronogramas.append(cronograma)
                                     if FaltaMotorista.objects.filter(motorista=motorista, cronograma=cronograma).exists():
                                         campos_form.append({'pessoa': pessoa.id, 'motorista': motorista.id, 'cronograma': cronograma.id, 'falta': True})

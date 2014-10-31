@@ -13,8 +13,11 @@
                     <div class="col-md-6">
                         <label>Motorista:</label> {{ pessoa.pessoa.nome }}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <label>Título de eleitor:</label> {{ pessoa.pessoa.titulo_eleitoral }}
+                    </div>
+                    <div class="col-md-1">
+                        <a href="{% url 'report-veiculos:declaracao-motorista' pessoa.pessoa.id %}" class="btn btn-default btn-xs" title="Imprimir declaração de serviços prestados" target="_blank"><span class="glyphicon glyphicon-print"></span></a>
                     </div>
                 </div>
                 <div style="margin: 20px">
