@@ -1,0 +1,72 @@
+{% extends 'veiculos/vistoria/base.html' %}
+{% load static from staticfiles %}
+{% load dajaxice_templatetags %}
+
+{% block extrabreadcrumb %}
+    {{ block.super }}
+    <li><a href="{% url 'veiculo:vistoria:cadastrar' %}">Monitorar Vistoria</a></li>
+{% endblock %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static 'zona_eleitoral/css/misc/modal/modal.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'veiculos/css/botoes_menu.min.css' %}" />
+    <style type="text/css">
+        body{
+            padding-top: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block container %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title" style="font-size: 20px">Lançamento de Faltas</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                        <input id="dados-consulta" type="text" class="form-control" placeholder="Informe o nome ou título de eleitor do motorista">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" onclick="consultar_motorista()">Consultar</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div id="container-faltas">
+                {% include 'veiculos/faltas/faltas-detalhe.html' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{%block extrascripts %}
+    {% dajaxice_js_import %}
+    <script src="{% static "dajax/jquery.dajax.core.js" %}"></script>
+	<script src="{% static 'veiculos/js/vistoria/jquery.blockUI.min.js' %}"></script>
+	<script>
+        function default_callback(data){
+            $.unblockUI();
+            Dajax.process(data);
+        }
+
+        function block_screen(){
+            $.blockUI({ message: '<img src="/static/veiculos/img/loader.gif"/> <div class="loading-blockui">Processando...<br>Um momento por favor.</div>',
+                        css: { 'z-index': '9991', 'border-radius': '10px', 'border-color': '#D1D1D1'},
+                        overlayCSS: { 'z-index': '9990', 'background-color': '#F7F7F7'} });
+        }
+
+        function consultar_motorista(f){
+            block_screen();
+            var form = $( "#dados_faltas" );
+            if ( form.length && f )
+                Dajaxice.veiculos.buscar_motorista_faltas(default_callback, {'consulta': $('#dados-consulta').val(), 'formulario': form.serialize(true)});
+            else
+                Dajaxice.veiculos.buscar_motorista_faltas(default_callback, {'consulta': $('#dados-consulta').val()});
+        }
+	</script>
+{% endblock %}

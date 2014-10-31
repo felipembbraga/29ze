@@ -451,3 +451,9 @@ def monta_monitoramento(request, turno):
         equipe_monitoracao.append(dicionario)
 
     return equipe_monitoracao
+
+
+@login_required
+@permission_required('veiculos.monitor_vistoria', raise_exception=True)
+def lancar_faltas(request):
+    return render(request, 'veiculos/faltas/faltas.html', RequestContext(request))

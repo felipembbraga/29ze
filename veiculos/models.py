@@ -130,7 +130,7 @@ class Motorista(models.Model):
         unique_together = ('pessoa', 'eleicao', 'segundo_turno')
 
     def __unicode__(self):
-        return unicode(self.pessoa.nome)
+        return unicode(self.pessoa.nome) + ' ' + unicode(self.pessoa.titulo_eleitoral)
 
 
 
@@ -224,7 +224,6 @@ class VeiculoAlocadoManager(models.Manager):
         return self.get_queryset().get_perfis_local()
 
 
-
 class VeiculoAlocado(models.Model):
     veiculo = models.ForeignKey(Veiculo, verbose_name=u'Veículo')
     perfil = models.ForeignKey(PerfilVeiculo, verbose_name='Perfil')
@@ -276,9 +275,7 @@ def equipe_m2m_add(sender, instance, action, *args, **kwargs):
 
 m2m_changed.connect(equipe_m2m_add, sender=PerfilVeiculo.equipes.through)
 
+
 class FaltaMotorista(models.Model):
-    veiculo = models.ForeignKey(VeiculoAlocado)
-    cronograma = models.ForeignKey(CronogramaVeiculo)
-    periodo = models.IntegerField(choices=((1,'Matutino'),(2,'Vespertino')))
-    class Media:
-        unique_together=('veiculo', 'cronograma', 'periodo')
+   motorista = models.ForeignKey(Motorista)
+   cronograma = models.ForeignKey(CronogramaVeiculo)

@@ -15,7 +15,7 @@ from views import index, veiculo_index, veiculo_cadastrar, veiculo_editar, veicu
 from veiculos.views import veiculo_excluir, veiculo_listar, veiculo_requisitar, veiculo_liberar, veiculo_detalhar, \
     perfil_veiculo_cadastrar, perfil_veiculo_listar, perfil_veiculo_editar, perfil_veiculo_detalhar, \
     cronograma_cadastrar, cronograma_editar, cronograma_excluir, alocacao_editar, veiculo_vistoria, index_vistoria, \
-    monitorar_vistoria
+    monitorar_vistoria, lancar_faltas
 
 
 vistoria_veiculo_patterns = [
@@ -85,5 +85,6 @@ urlpatterns = patterns('',
                        url(r'^perfil-veiculo/', include(perfil_veiculo_patterns, namespace='perfil-veiculo')),
                        url(r'^cronograma/', include(cronograma_veiculo_patterns, namespace='cronograma-veiculo')),
                        url(r'^alocacao/', include(alocacao_patterns, namespace='alocacao-veiculo')),
+                       url(r'^lancar-faltas/$', lancar_faltas, name='lancar-faltas'),
                        url(r'^report/', include(report_patterns, namespace='report-veiculos')),
 )

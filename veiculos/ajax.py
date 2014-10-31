@@ -2,6 +2,7 @@
 import datetime
 from django.db.models.expressions import F
 from django.db.models.query_utils import Q
+from django.forms.formsets import formset_factory
 from django.shortcuts import get_object_or_404
 from core.models import Modelo, Pessoa
 from dajax.core import Dajax
@@ -13,8 +14,8 @@ from django.template.loader import render_to_string
 from eleicao.models import Equipe, EquipesAlocacao
 from models import Veiculo, Motorista
 from veiculos.autocomplete import equipes_c_vagas
-from veiculos.forms import VeiculoVistoriaForm, VistoriaForm, MotoristaVistoriaForm, SelecaoVeiculoForm
-from veiculos.models import VeiculoSelecionado, VeiculoAlocado
+from veiculos.forms import VeiculoVistoriaForm, VistoriaForm, MotoristaVistoriaForm, SelecaoVeiculoForm, FaltasForm
+from veiculos.models import VeiculoSelecionado, VeiculoAlocado, FaltaMotorista, CronogramaVeiculo
 from django.db import models
 from veiculos.views import monta_monitoramento
 
@@ -573,3 +574,60 @@ def locais_c_vagas(local):
 def alocacao_c_vagas(alocacao):
     total_veiculos = alocacao.local_votacao.veiculoalocado_set.filter(perfil=alocacao.perfil_veiculo, segundo_turno=alocacao.segundo_turno).count()
     return alocacao.quantidade - total_veiculos > 0
+
+
+@dajaxice_register()
+def buscar_motorista_faltas(request, consulta, formulario=None):
+    """
+    Busca faltas, monta o formulário e salva as faltas lançadas
+    """
+    dajax = Dajax()
+    if request.is_ajax():
+        try:
+            form_faltas = None
+            if formulario:
+                form_faltas = deserialize_form(formulario)
+            faltas = []
+            campos_form = []
+            salvo = False
+            FaltasFormSet = formset_factory(FaltasForm, can_order=True)
+            pessoas = Pessoa.objects.filter(motorista__eleicao=request.eleicao_atual, motorista__veiculo__isnull=False).filter(Q(nome__icontains=consulta) | Q(titulo_eleitoral__icontains=consulta)).distinct('titulo_eleitoral')
+            for pessoa in pessoas:
+                cronogramas = []
+                for motorista in pessoa.motorista_set.all().order_by('segundo_turno'):
+                    for veiculo_alocado in motorista.veiculo.veiculoalocado_set.filter(segundo_turno=motorista.segundo_turno):
+                        for cronograma in veiculo_alocado.perfil.cronograma_perfil.filter(segundo_turno=veiculo_alocado.segundo_turno).order_by('dt_apresentacao'):
+                            cronogramas.append(cronograma)
+                            if FaltaMotorista.objects.filter(motorista=motorista, cronograma=cronograma).exists():
+                                campos_form.append({'pessoa': pessoa.id, 'motorista': motorista.id, 'cronograma': cronograma.id, 'falta': True})
+                            else:
+                                campos_form.append({'pessoa': pessoa.id, 'motorista': motorista.id, 'cronograma': cronograma.id})
+
+                faltas.append({'pessoa': pessoa, 'cronogramas': cronogramas})
+
+            if form_faltas:
+                formset = FaltasFormSet(form_faltas)
+                if formset.is_valid():
+                    for form in formset:
+                        if form.cleaned_data.get('falta'):
+                            FaltaMotorista.objects.get_or_create(motorista=Motorista.objects.get(pk=form.cleaned_data.get('motorista')),
+                                                                 cronograma=CronogramaVeiculo.objects.get(pk=form.cleaned_data.get('cronograma')))
+                        else:
+                            if FaltaMotorista.objects.filter(motorista=form.cleaned_data.get('motorista'),
+                                                             cronograma=form.cleaned_data.get('cronograma')).exists():
+                                FaltaMotorista.objects.get(motorista=form.cleaned_data.get('motorista'),
+                                                             cronograma=form.cleaned_data.get('cronograma')).delete()
+                    salvo = True
+            else:
+                formset = FaltasFormSet(initial=campos_form)
+
+            render = render_to_string('veiculos/faltas/faltas-detalhe.html',
+                                      RequestContext(request, {'pessoas': faltas, 'formset': formset, 'salvo': salvo}))
+            dajax.assign('#container-faltas', 'innerHTML', render)
+        except Exception, e:
+            dajax = process_modal(dajax, 'msg',
+                                  "Ocorreu um erro: <strong>%s</strong><br>Favor entrar em contato com o departamento de TI." % e,
+                                  True)
+    else:
+        dajax = process_modal(dajax, 'msg', u"Instrução inválida!", True)
+    return dajax.json()
