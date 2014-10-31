@@ -12,7 +12,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import models
 from acesso.decorators import orgao_atualizar
 from acesso.models import OrgaoPublico
-from core.models import Modelo
+from core.models import Modelo, Pessoa
 from django.template.context import RequestContext
 from eleicao.models import LocalVotacao, Equipe, EquipesAlocacao
 from filters import VeiculoFilter
@@ -451,6 +451,32 @@ def monta_monitoramento(request, turno):
         equipe_monitoracao.append(dicionario)
 
     return equipe_monitoracao
+
+def motorista_listar(request):
+    queryset = Pessoa.objects.filter(motorista__eleicao=request.eleicao_atual).filter(motorista__veiculo__isnull=False, motorista__veiculo__veiculoalocado__isnull=False).distinct().order_by('nome', 'titulo_eleitoral')
+    pesquisar = request.GET.get('pesquisar') and request.GET.get('pesquisar') or ''
+    if pesquisar != '':
+       queryset = queryset.filter(Q(nome__icontains=pesquisar) | Q(titulo_eleitoral__icontains=pesquisar))
+
+    #filtro = VeiculoAlocadoFilter(request.GET, queryset = lista_veiculos)
+    #total_com_motorista = filtro.qs.exclude(motorista_titulo_eleitoral=None).count()
+    #total_sem_motorista = filtro.qs.filter(motorista_titulo_eleitoral=None).count()
+
+    new_lista_veiculos = []
+    form_pagina = NumPorPaginaForm(request.GET)
+    num_por_pagina = form_pagina.is_valid() and int(form_pagina.cleaned_data['num_por_pagina']) or 10
+    paginator = Paginator(queryset, num_por_pagina)
+    pagina = request.GET.get('pagina')
+
+    try:
+        pessoas = paginator.page(pagina)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        pessoas = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        pessoas = paginator.page(paginator.num_pages)
+    return render(request, 'veiculos/motorista/listar.html', locals())
 
 
 @login_required

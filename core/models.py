@@ -2,6 +2,7 @@
 from django.db import models
 import datetime
 # Create your models here.
+from django.db.models.expressions import F
 
 
 class Pessoa(models.Model):
@@ -20,6 +21,14 @@ class Pessoa(models.Model):
     def tel_celular(self):
         return '/'.join(unicode(telefone) for telefone in self.telefones_set.filter(tipo=2))
 
+    def turnos_trabalhados(self):
+        motoristas = self.motorista_set.filter(veiculo__veiculoalocado__isnull=False, veiculo__eleicao=F('eleicao')).distinct().order_by('segundo_turno')
+        def turno(object):
+            if object.segundo_turno:
+                return u'2º'
+            return u'1º'
+        lista_turnos = map(turno, motoristas)
+        return (motoristas.count() > 0 and ' e '.join(lista_turnos) + ' turno%s'%(motoristas.count()>1 and 's' or '') or 'Nenhum')
 
 class Telefones(models.Model):
     pessoa = models.ForeignKey(Pessoa)
