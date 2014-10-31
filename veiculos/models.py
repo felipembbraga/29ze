@@ -144,9 +144,6 @@ class Motorista(models.Model):
                 yield cronograma.dt_apresentacao
 
 
-
-
-
 class PerfilVeiculo(models.Model):
     nome = models.CharField(max_length=50)
     perfil_equipe = models.BooleanField(u'É perfil para equipe?', default=False)
