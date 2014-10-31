@@ -577,7 +577,7 @@ def alocacao_c_vagas(alocacao):
 
 
 @dajaxice_register()
-def buscar_motorista_faltas(request, consulta, formulario=None):
+def buscar_motorista_faltas(request, consulta, formulario=None, todos=False):
     """
     Busca faltas, monta o formulário e salva as faltas lançadas
     """
@@ -592,20 +592,26 @@ def buscar_motorista_faltas(request, consulta, formulario=None):
             formset = []
             salvo = False
             FaltasFormSet = formset_factory(FaltasForm, can_order=True)
-            if consulta and not consulta.isspace():
-                pessoas = Pessoa.objects.filter(motorista__eleicao=request.eleicao_atual, motorista__veiculo__isnull=False).filter(Q(nome__icontains=consulta) | Q(titulo_eleitoral__icontains=consulta)).distinct('titulo_eleitoral')
+            if (consulta and not consulta.isspace()) or todos:
+                if todos:
+                    pessoas = Pessoa.objects.filter(motorista__eleicao=request.eleicao_atual, motorista__veiculo__isnull=False).distinct('titulo_eleitoral')
+                else:
+                    pessoas = Pessoa.objects.filter(motorista__eleicao=request.eleicao_atual, motorista__veiculo__isnull=False).filter(Q(nome__icontains=consulta) | Q(titulo_eleitoral__icontains=consulta)).distinct('titulo_eleitoral')
+                pessoas = Pessoa.objects.filter(pk__in=[pessoa.id for pessoa in pessoas]).order_by('nome', 'titulo_eleitoral')
+
                 for pessoa in pessoas:
                     cronogramas = []
                     for motorista in pessoa.motorista_set.all().order_by('segundo_turno'):
-                        for veiculo_alocado in motorista.veiculo.veiculoalocado_set.filter(segundo_turno=motorista.segundo_turno):
-                            for cronograma in veiculo_alocado.perfil.cronograma_perfil.filter(segundo_turno=veiculo_alocado.segundo_turno).order_by('dt_apresentacao'):
-                                cronogramas.append(cronograma)
-                                if FaltaMotorista.objects.filter(motorista=motorista, cronograma=cronograma).exists():
-                                    campos_form.append({'pessoa': pessoa.id, 'motorista': motorista.id, 'cronograma': cronograma.id, 'falta': True})
-                                else:
-                                    campos_form.append({'pessoa': pessoa.id, 'motorista': motorista.id, 'cronograma': cronograma.id})
-
-                    faltas.append({'pessoa': pessoa, 'cronogramas': cronogramas})
+                        if motorista.veiculo:
+                            for veiculo_alocado in motorista.veiculo.veiculoalocado_set.filter(segundo_turno=motorista.segundo_turno):
+                                for cronograma in veiculo_alocado.perfil.cronograma_perfil.filter(segundo_turno=veiculo_alocado.segundo_turno).order_by('dt_apresentacao'):
+                                    cronogramas.append(cronograma)
+                                    if FaltaMotorista.objects.filter(motorista=motorista, cronograma=cronograma).exists():
+                                        campos_form.append({'pessoa': pessoa.id, 'motorista': motorista.id, 'cronograma': cronograma.id, 'falta': True})
+                                    else:
+                                        campos_form.append({'pessoa': pessoa.id, 'motorista': motorista.id, 'cronograma': cronograma.id})
+                    if cronogramas:
+                        faltas.append({'pessoa': pessoa, 'cronogramas': cronogramas})
 
                 if form_faltas:
                     formset = FaltasFormSet(form_faltas)
