@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static from staticfiles %}
 {% load dajaxice_templatetags %}
-
+{% block navbar %}
+{% endblock %}
 {% block extrabreadcrumb %}
     {{ block.super }}
     <li><a href="{% url 'apuracao:monitorar' %}">Monitorar Apuração</a></li>
@@ -76,9 +77,9 @@
 
         function exibe_modal(sessoes_apuradas, sessoes_apurar, sessoes_total, nome_cidade, data_finalizacao, data_fechamento){
             var modal = $('#modal-detalhe-apuracao');
-            modal.find('#val_sessoes_apuradas').html(sessoes_apuradas);
-            modal.find('#val_sessoes_restantes').html(sessoes_apurar);
-            modal.find('#val_sessoes_total').html(sessoes_total);
+            modal.find('#val_sessoes_apuradas').html(sessoes_apuradas.toString());
+            modal.find('#val_sessoes_restantes').html(sessoes_apurar.toString());
+            modal.find('#val_sessoes_total').html(sessoes_total.toString());
             modal.find('#val_nome_cidade').html(nome_cidade);
             modal.find('#val_data_finalizacao').html(data_finalizacao);
             modal.find('#val_data_fechamento').html(data_fechamento);
@@ -119,11 +120,11 @@
                     data: [
                         {
                             name: 'Sessões apuradas',
-                            y: sessoes_apuradas,
+                            y: parseInt(sessoes_apuradas.toString().replace('.', '')),
                             sliced: true,
                             selected: true
                         },
-                        ['Sessões restantes', sessoes_apurar]
+                        ['Sessões restantes', parseInt(sessoes_apurar.toString().replace('.', ''))]
                     ]
                 }],
                 lang: {

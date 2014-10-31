@@ -24,7 +24,7 @@ def monta_monitoramento(request):
     data_padrao = timezone.make_aware(datetime(1900, 01, 01), timezone.get_default_timezone())
 
     for cidade in cidades:
-        if cidade.apuracao_set.filter(turno=1).exists():
+        if cidade.apuracao_set.filter(turno=2).exists():
             apuracao = cidade.apuracao_set.filter(turno=2).order_by('-dt_atualizacao').first()
 
             if apuracao.percentual <= 25:
@@ -49,4 +49,7 @@ def monta_monitoramento(request):
 
         lista_cidades.append(dict)
 
-    return sorted(sorted(lista_cidades, key=itemgetter('data_finalizacao')), key=itemgetter('percentual'), reverse=True)
+    if lista_cidades:
+        return sorted(sorted(lista_cidades, key=itemgetter('data_finalizacao')), key=itemgetter('percentual'), reverse=True)
+
+    return []

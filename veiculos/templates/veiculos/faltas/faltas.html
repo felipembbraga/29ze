@@ -7,6 +7,23 @@
     <li><a href="{% url 'lancar-faltas' %}">Lançamento de faltas</a></li>
 {% endblock %}
 
+{% block extrastyle %}
+    <style type="text/css">
+        .blockUI.blockMsg > img {
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        .blockUI.blockMsg > .loading-blockui{
+            display: inline-block;
+            font-size: 1.3em;
+            text-align: left;
+            margin: 20px 10px;
+            font-weight: 700;
+        }
+    </style>
+{% endblock %}
+
 {% block container %}
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -24,7 +41,7 @@
                     </div>
                 </div>
                 <div class="col-md-1">
-                    <button class="btn btn-info" type="button" onclick="consultar_motorista(false, true)">Exibir todos</button>
+                    <button class="btn btn-info" type="button" onclick="consultar_motorista(false, true)" title="Exibe todos os motoristas. Essa ação pode demorar alguns minutos.">Exibir todos</button>
                 </div>
             </div>
             <div id="container-faltas"></div>
