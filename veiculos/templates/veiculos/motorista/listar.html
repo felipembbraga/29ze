@@ -1,0 +1,156 @@
+{% extends 'veiculos/motorista/base.html' %}
+{% load static from staticfiles %}
+{% load dajaxice_templatetags %}
+{% block extrabreadcrumb %}
+    {{ block.super }}
+{% endblock %}
+
+
+{% block container %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Motoristas</h3>
+        </div>
+        <div class="panel-body">
+            <form id="form-filtro" method="GET">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="{{form_pagina.num_por_pagina.id_for_label}}">{{ form_pagina.num_por_pagina.label }}</label>
+                            {{ form_pagina.num_por_pagina }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="{{ pesquisar }}" id="pesquisar" name="pesquisar" placeholder="Pesquisar Motorista" />
+                        <span class="input-group-btn">
+                            <a href="javascript:void(0);" class="btn btn-default" id="bt-pesquisar">Pesquisar</a>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped" id="tabela-veiculo">
+                            <thead>
+                            <tr>
+                                <th width="20%">Nome</th>
+                                <th width="8%">Título Eleitoral</th>
+                                <th width="10%">Turnos trabalhados</th>
+                                <th width="10%"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for pessoa in pessoas %}
+                                <tr>
+
+                                    <td>
+
+
+                                        {{ pessoa.nome|upper }}
+
+                                    </td>
+                                    <td>
+
+                                        {{ pessoa.titulo_eleitoral|upper }}
+                                    </td>
+                                    <td>
+                                        {{ pessoa.turnos_trabalhados }}
+                                    </td>
+                                    <td vertical-align="middle">
+
+                                        <div class="btn-group btn-group-xs"  style="float:right;">
+                                            <a href="{% url 'report-veiculos:declaracao-motorista' pessoa.pk %}"
+                                               class="btn btn-default btn-xs bt-liberar" target="_blank">Imprimir Declaração
+                                                <span class="glyphicon glyphicon-print"></span>
+
+                                            </a>
+
+                                        </div>
+
+                                    </td>
+
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <ul class="pager">
+                            {% if pessoas.has_previous %}
+                                <li class="previous">
+                                    <a href="javascript:void(0);" id="previous">&larr; Anterior</a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                Página <input type="number" value="{{pessoas.number}}"
+                                              style="width:40px;" min="1" max="{{pessoas.paginator.num_pages}}"
+                                              name="pagina" id="pagina"
+                                              onchange="form.submit();"/> de {{pessoas.paginator.num_pages}}
+                            </li>
+                            {% if pessoas.has_next %}
+                                <li class="next">
+                                    <a href="javascript:void(0);" id="next">Próximo &rarr;</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    {#                    <div class="col-md-2 col-filtro">#}
+                    {#                        <h3>Filtrar por:</h3>#}
+                    {##}
+                    {#                        <div class="form-group">#}
+                    {#                        {% for field in filtro.form %}#}
+                    {#                            <label for="{{field.id_for_label}}">{{ field.label }}</label>#}
+                    {#                            {{ field }}#}
+                    {#                        {% endfor %}#}
+                    {#                        </div>#}
+                    {##}
+                    {#                    </div>#}
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{%block extrascripts %}
+    <script src="{% static 'veiculos/js/classes/Veiculo.js' %}"></script>
+    <script src="{% static 'veiculos/js/veiculo/index.js' %}"></script>
+    {% dajaxice_js_import %}
+    <script src="{% static "dajax/jquery.dajax.core.js" %}"></script>
+    <script>
+        $(document).ready(function(){
+            var veiculo = new Veiculo();
+
+            $('#next').click(function(event){
+                var pagina = {% if pessoas.has_next %}{{ pessoas.next_page_number }}{% else %} ''{% endif %};
+                var url = '{% url 'motorista:listar' %}';
+                location.href = url + '?pagina='+pagina+'&num_por_pagina=' + $('#id_num_por_pagina').val() + '&pesquisar=' + $("#pesquisar").val();
+
+            });
+            $('#previous').click(function(event){
+                var pagina = {% if pessoas.has_previous %}{{ pessoas.previous_page_number }}{% else %} ''{% endif %};
+                var url = '{% url 'motorista:listar' %}';
+                location.href = url + '?pagina='+pagina+'&num_por_pagina=' + $('#id_num_por_pagina').val() + '&pesquisar=' + $("#pesquisar").val();
+
+            });
+
+            $('#bt-pesquisar').click(function(event){
+                var url = '{% url 'motorista:listar' %}';
+                location.href = url + '?pagina=' + {{ pessoas.number }} + '&num_por_pagina=' + $('#id_num_por_pagina').val() + '&pesquisar=' + $("#pesquisar").val();
+            });
+
+            $('#pesquisar').keypress(function(event) {
+                if (event.keyCode == 13)
+                    $('#bt-pesquisar').trigger('click');
+            });
+
+            $('#id_num_por_pagina').change(function(){
+                var url = '{% url 'motorista:listar' %}';
+                location.href = url + '?pagina=' + {{ pessoas.number }} + '&num_por_pagina=' + $(this).val() + '&pesquisar=' + $("#pesquisar").val();
+            });
+
+
+        });
+
+    </script>
+{% endblock %}
