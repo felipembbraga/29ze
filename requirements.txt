@@ -13,14 +13,12 @@ django-selectable-select2==0.3.0
 django-staticfiles-jquery==1.8.3
 django-staticfiles-select2==3.4.5
 django-webodt==0.3.1
+gunicorn==19.3.0
 html5lib==0.999
 lxml==3.4.0
 psycopg2==2.5.4
-reportlab==3.1.8
+pytz==2015.4
 six==1.8.0
 wsgiref==0.1.2
 xhtml2pdf==0.0.6
 xlwt==0.7.5
-pytz
-dateutils
-#teste
